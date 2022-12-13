@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "allowUmdGlobalAccess": true,
+        "allowJs": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "jsx": "react",
+        "moduleResolution": "node",
+        "noImplicitAny": false,
+        "experimentalDecorators": true,
+        "module": "es6",
+        "target": "es5",
+        "lib": ["DOM"]
+    }
+}

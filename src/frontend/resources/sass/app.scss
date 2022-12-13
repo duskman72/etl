@@ -1,0 +1,205 @@
+$blue-grey-50: #ECEFF1;
+$blue-grey-100: #CFD8DC;
+$blue-grey-200: #B0BEC5;
+$blue-grey-400: #78909C;
+$blue-grey-700: #455A64;
+
+@import "bootstrap";
+@import "breadcrumb";
+@import "@fontsource/roboto/latin-100.css";
+@import "@fontsource/roboto/latin-300.css";
+@import "@fontsource/roboto/latin-400.css";
+@import "@fontsource/roboto/latin-500.css";
+@import "@fontsource/roboto/latin-700.css";
+@import "@fontsource/roboto/latin-900.css";
+
+$blue-grey-50: #ECEFF1;
+$blue-grey-100: #CFD8DC;
+$blue-grey-200: #B0BEC5;
+$blue-grey-400: #78909C;
+$blue-grey-700: #455A64;
+
+:root {
+    --bs-border-radius: 3px;
+    --bs-card-border-radius: 3px;
+    --bs-modal-border-radius: 4px;
+}
+
+.flex {
+    display: flex;
+
+    &.flex-column {
+        flex-direction: column;
+    }
+
+    &.flex-row {
+        flex-direction: row;
+    }
+}
+
+.fs-7 {
+    font-size: .9rem;
+}
+
+.fs-8 {
+    font-size: .8rem;
+}
+
+.octicon {
+    fill: currentColor;
+    display: inline-block;
+
+}
+
+.alert {
+    @extend .p-2;
+}
+
+body {
+    font-family: "Roboto", sans-serif;
+    font-size: 9pt;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f7f7;
+
+    & .page {
+        @extend .flex;
+        @extend .flex-column;
+
+        h4, h5, h6 {
+            font-family: "Roboto", sans-serif;
+            font-weight: 300;
+            margin: 0;
+        }
+
+        h6 {
+            font-weight: 400;
+        }
+
+        .btn {
+            font-weight: 400;
+            --bs-btn-font-size: .75rem;
+            text-transform: uppercase;
+            border-radius: var(--bs-border-radius);
+
+            &.btn-sm {
+                --bs-btn-font-size: .65rem;
+                padding: 1px 4px;
+            }
+        }
+
+        .modal-dialog .modal-content {
+            --bs-modal-border-radius: 4px;
+            //border-radius: var(--bs-border-radius);
+        }
+
+        & .page-header {
+            @extend .flex;
+            @extend .flex-row;
+            @extend .align-items-center;
+            @extend .p-2;
+            max-height: 48px;
+            height: 48px;
+            background-color: $blue-grey-700;
+        }
+
+        & .page-content {
+            @extend .flex;
+            @extend .flex-row;
+            @extend .col-12;
+            height: calc( 100vh - 48px);
+            max-height: calc( 100vh - 48px);
+
+            & .card {
+                --bs-card-border-radius: 2px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            }
+
+            & .page-navigation {
+                @extend .navbar;
+                @extend .col-2;
+                @extend .flex;
+                @extend .flex-column;
+                align-items: flex-start;
+                height: calc(100vh - 48px);
+                border-right: 1px solid #ccc;
+
+                ol {
+                    @extend .mt-3;
+                    display: block;
+                    width: 100%;
+                }
+
+                & .nav-item-header {
+                    @extend .ms-3;
+                    @extend .mb-2;
+                    color: $blue-grey-400;
+                    font-weight: 700;
+                }
+
+                & .nav-item {
+                    display: block;
+                    transition: background-color 250ms ease;
+                    & .nav-link {
+                        @extend .ps-3;
+                        color: $dark;
+                    }
+
+                    &:hover {
+                        & .nav-link:not(.active) {
+                            background-color: $blue-grey-100;
+                        }
+                    }
+
+                    & .nav-link.active {
+                        background-color: $blue-grey-400;
+                        color: #fff;
+                        text-shadow: 0 0 1px rgba(0, 0, 0, .35);
+                    }
+                }
+            }
+
+            & .data-table {
+                @extend .container;
+                @extend .card;
+                border: 0;
+                background-color: #fff;
+
+                & .row {
+                    display: flex;
+                    border-bottom: 1px solid var(--bs-border-color);
+                    transition: background-color 250ms ease;
+
+                    & .table-column {
+                        @extend .ps-3;
+                        @extend .pe-3;
+                        @extend .pt-2;
+                        @extend .pb-2;
+                        min-width: 50px;
+
+                        &.table-header {
+                            @extend .pb-1;
+                            font-weight: 600;
+                            font-size: .6rem;
+                            color: $blue-grey-700;
+                        }
+                    }
+
+                    &:not(.header-row):hover {
+                        cursor: pointer;
+                        background-color: $blue-grey-50;
+                    }
+                }
+
+                & .row:first-of-type {
+                    @extend .mt-2;
+                }
+
+                & .row:last-of-type {
+                    @extend .mb-2;
+                    border: 0 none;
+                }
+            }
+        }
+    }
+}
