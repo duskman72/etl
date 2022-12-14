@@ -12,7 +12,14 @@ export const Icon = (props: PropsWithChildren<IconAttributes>) => {
         if( !classNames.includes( cl ))
             classNames.push( cl );
     })
-    return <span className={classNames.join(" ")} onClick={props.onClick}>
+
+    const filteredProps = {};
+    Object.keys(props).forEach( k => {
+        if( k !== "className" && k !== "onClick" && k !== "size") {
+            filteredProps[k] = props[k];
+        }
+    })
+    return <span className={classNames.join(" ")} onClick={props.onClick} {...filteredProps}>
         {props.children}
     </span>
 }

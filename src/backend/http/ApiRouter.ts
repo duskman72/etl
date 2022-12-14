@@ -1,11 +1,12 @@
 import { Router } from "express";
+import { DataSource } from "../model/DataSource";
 import { DataSourceType } from "../model/DataSourceType";
 import SourceTypes from "../types";
 
 export const ApiRouter = Router();
 
 ApiRouter.get("/data-source-types", async (_req, res) => {
-    const items = await DataSourceType.find();
+    const items = await DataSourceType.find().populate("dataSources");
     let responseItems = [];
     if( items.length ) {
         items.forEach( item => {
@@ -19,6 +20,7 @@ ApiRouter.get("/data-source-types", async (_req, res) => {
                 name: item.name,
                 typeName: item.typeName,
                 createdAt: item.createdAt,
+                dataSources: item.dataSources,
                 valid
             });
         })
@@ -42,7 +44,7 @@ ApiRouter.post("/data-source-types", async (req, res) => {
 
     let type = await DataSourceType.findOne({name, typeName});
     if( type ) {
-        res.status(201).json({items: [type]});
+        res.status(200).json({items: [type]});
         return;
     }
 
@@ -53,6 +55,16 @@ ApiRouter.post("/data-source-types", async (req, res) => {
 
     res.status(201).json({items: [type]});
 });
+
+/************************************************************************/
+
+ApiRouter.get("/data-sources", async (_req, res) => {
+    const items = await DataSource.find().populate("dataSourceType");
+    res.json({items})
+});
+
+/************************************************************************/
+
 
 /*
 ApiRouter.post("/data-sources/types", async (req, res) => {

@@ -88,9 +88,15 @@ body {
             }
         }
 
-        .modal-dialog .modal-content {
-            --bs-modal-border-radius: 4px;
-            //border-radius: var(--bs-border-radius);
+        .modal-dialog {
+            & .modal-content {
+                --bs-modal-border-radius: 4px;
+            }
+
+            & .modal-footer {
+                background-color: $blue-grey-50;
+                border-top: 0;
+            }
         }
 
         & .page-header {

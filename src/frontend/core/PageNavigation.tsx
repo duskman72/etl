@@ -8,6 +8,9 @@ export const PageNavigation = () => {
             <li className="nav-item">
                 <NavLink to="/data-source-types" className="nav-link">Data Source Types</NavLink>
             </li>
+            <li className="nav-item">
+                <NavLink to="/data-sources" className="nav-link">Data Sources</NavLink>
+            </li>
         </ol>
     </nav>
 }
