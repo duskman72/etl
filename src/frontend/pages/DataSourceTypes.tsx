@@ -153,7 +153,10 @@ export const DataSourceTypes = () => {
             }
             {
                 !loading && error &&
-                <div className="alert alert-danger">Unable to load items</div>
+                <div className="alert alert-danger flex align-items-center">
+                    <AlertIcon size={14} className="text-danger me-2"/>
+                    <span>Unable to load items.</span>
+                </div>
             }
             {
                 !loading && !error && items?.length === 0 &&

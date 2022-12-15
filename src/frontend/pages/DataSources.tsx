@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Page } from "../core/Page";
 import { Modal } from "bootstrap";
+import { AlertIcon } from "../core/icons/AlertIcon";
 
 export const DataSources = () => {
     const [items, setItems] = useState([]);
@@ -128,7 +129,10 @@ export const DataSources = () => {
             }
             {
                 !loading && error &&
-                <div className="alert alert-danger">Unable to load items</div>
+                <div className="alert alert-danger flex align-items-center">
+                    <AlertIcon size={14} className="text-danger me-2"/>
+                    <span>Unable to load items.</span>
+                </div>
             }
             {
                 !loading && !error && items?.length === 0 &&
