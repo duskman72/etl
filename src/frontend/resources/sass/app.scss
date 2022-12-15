@@ -5,6 +5,7 @@ $blue-grey-400: #78909C;
 $blue-grey-700: #455A64;
 
 @import "bootstrap";
+@import "select2-component/dist/select2.css";
 @import "breadcrumb";
 @import "@fontsource/roboto/latin-100.css";
 @import "@fontsource/roboto/latin-300.css";
@@ -53,6 +54,10 @@ $blue-grey-700: #455A64;
 
 .alert {
     @extend .p-2;
+}
+
+.select2-selection {
+    border-color: #ced4da !important;
 }
 
 body {

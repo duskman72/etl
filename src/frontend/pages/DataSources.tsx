@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Page } from "../core/Page";
 import { Modal } from "bootstrap";
 import { AlertIcon } from "../core/icons/AlertIcon";
+import { Select2 } from "select2-react-component";
 
 export const DataSources = () => {
     const [items, setItems] = useState([]);
@@ -11,6 +12,7 @@ export const DataSources = () => {
     const [dataSourceTypesLoading, setDataSourceTypesLoading] = useState(false);
     const [error, setError] = useState(false);
     const nameRef = useRef<HTMLInputElement>();
+    const selectRef = useRef<HTMLSelectElement>();
 
     const refresh = () => {
         setItems([]);
@@ -88,20 +90,19 @@ export const DataSources = () => {
                             !dataSourceTypesLoading &&
                             <>
                                 <div className="flex flex-column mb-3">
-                                    <label className="form-label mb-1 fw-bolder">Source Name</label>
+                                    <label className="form-label mb-1 fw-bolder">Display Name</label>
                                     <input type="text" ref={nameRef} className="form-control form-control-sm disabled" />
                                 </div>
                                 <div className="flex flex-column">
                                     <label className="form-label mb-1 fw-bolder">TypeName</label>
-                                    <select className="form-control form-control-sm">
-                                        {
-                                            dataSourceTypes.map( dst => {
-                                                return <option key={dst._id} value={dst._id}>
-                                                    {dst.typeName}
-                                                </option>
-                                            })
-                                        }
-                                    </select>
+                                    <Select2 placeholder="Please choose..." data={
+                                        dataSourceTypes.map( dst => {
+                                            return {
+                                                label: dst.typeName,
+                                                value: dst._id
+                                            }
+                                        })
+                                    }/>
                                 </div>
                             </>
                         }
