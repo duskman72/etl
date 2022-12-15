@@ -56,10 +56,30 @@ export const DataSources = () => {
         })
     }
 
+    const deleteItem = () => {
+        const modal = Modal.getInstance(document.querySelector("#deleteSourceDialog"));
+        modal.hide();
+
+        const id = selectedItem._id;
+        setSelectedItem( null );
+        
+        $.ajax({
+            url: "/api/data-sources/" + id,
+            method: "delete"
+        })
+        .done(() => {
+            refresh();
+        });
+    }
+
     const addItem = () => {
         const select2: any = selectRef.current;
         const typeId = select2.option?.value;
         const name = nameRef.current.value;
+
+        const el = document.querySelector("#addSourceDialog");
+        const modal = Modal.getInstance(el);
+        modal.hide();
 
         $.ajax({
             url: "/api/data-sources",
@@ -70,8 +90,8 @@ export const DataSources = () => {
                 typeId
             })
         })
-        .done(response => {
-            console.log( response );
+        .done(() => {
+           refresh();
         })
         .fail(() => {
             console.log("ERROR!!!")
@@ -79,7 +99,7 @@ export const DataSources = () => {
     }
 
     const showAddDialog = () => {
-        const el = document.querySelector("#addSourceTypeDialog");
+        const el = document.querySelector("#addSourceDialog");
         const modal = Modal.getOrCreateInstance(el);
         modal.show();
 
@@ -94,11 +114,11 @@ export const DataSources = () => {
     }, []);
 
     return <Page>
-        <div className={`modal fade`} id="addSourceTypeDialog" tabIndex={1} aria-labelledby="addSourceTypeDialogLabel" aria-hidden="true">
+        <div className={`modal fade`} id="addSourceDialog" tabIndex={1} aria-labelledby="addSourceDialogLabel" aria-hidden="true">
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h6 id="addSourceTypeDialogLabel" className="fs-7">Add Data Source</h6>
+                        <h6 id="addSourceDialogLabel" className="fs-7">Add Data Source</h6>
                         {
                             !dataSourceTypesLoading &&
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -126,6 +146,7 @@ export const DataSources = () => {
                             </>
                         }
                     </div>
+
                     {
                         !dataSourceTypesLoading &&
                         <div className="modal-footer">
@@ -133,6 +154,24 @@ export const DataSources = () => {
                             <button type="button" className="btn btn-primary" onClick={() => addItem()}>Save</button>
                         </div>
                     }
+                </div>
+            </div>
+        </div>
+
+        <div className={`modal fade`} id="deleteSourceDialog" tabIndex={1} aria-labelledby="deleteSourceDialogLabel" aria-hidden="true">
+            <div className="modal-dialog">
+                <div className="modal-content">
+                <div className="modal-header">
+                    <h6 id="deleteSourceDialogLabel" className="fs-7">Delete Data Source</h6>
+                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div className="modal-body">
+                    Do you realy want to delete this data source?
+                </div>
+                <div className="modal-footer">
+                    <button type="button" className="btn btn-default" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" className="btn btn-danger" onClick={() => deleteItem()}>Delete</button>
+                </div>
                 </div>
             </div>
         </div>
@@ -178,7 +217,7 @@ export const DataSources = () => {
                                     {item.name}
                                 </div>
                                 <div className="table-column col">
-                                    {item.type.typeName}
+                                    {item.type?.typeName}
                                 </div>
                                 <div className="table-column col">
                                     {moment(item.createdAt).fromNow()}
@@ -186,7 +225,7 @@ export const DataSources = () => {
                                 <div className="table-column col-1">
                                     <TrashIcon className="text-danger" size={14} onClick={() => {
                                         setSelectedItem( item );
-                                        const modal = Modal.getOrCreateInstance(document.querySelector("#deleteSourceTypeDialog"));
+                                        const modal = Modal.getOrCreateInstance(document.querySelector("#deleteSourceDialog"));
                                         modal.show();
                                     }}/>
                                 </div>

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { DataSource } from "../model/DataSource";
 import { DataSourceType } from "../model/DataSourceType";
-import SourceTypes from "../types";
+import SourceTypes from "../data-source-types";
 
 export const ApiRouter = Router();
 
@@ -10,9 +10,9 @@ ApiRouter.get("/data-source-types", async (_req, res) => {
     let responseItems = [];
     if( items.length ) {
         items.forEach( item => {
-            let valid = false;
+            let type = undefined;
             if( SourceTypes[item.typeName] ) {
-                valid = true
+                type = new SourceTypes[item.typeName]
             }
 
             responseItems.push({
@@ -20,16 +20,26 @@ ApiRouter.get("/data-source-types", async (_req, res) => {
                 typeName: item.typeName,
                 createdAt: item.createdAt,
                 dataSources: item.dataSources,
-                valid
+                valid: type ? true : false
             });
         })
     }
     res.json({items: responseItems})
 });
 
+ApiRouter.get("/data-source-types/:id", async (req, res) => {
+    const item = await DataSourceType.findOne({_id: req.params.id});
+    if( item ) {
+        res.status(200).json({item});
+        return;
+    }
+    res.status(404).json({item});
+})
+
 ApiRouter.delete("/data-source-types/:id", async (req, res) => {
     const item = await DataSourceType.findOne({_id: req.params.id});
     if( item ) {
+        // TODO fix data sources dependency
         item.delete();
         res.status(200).json({});
         return;
@@ -60,6 +70,17 @@ ApiRouter.get("/data-sources", async (_req, res) => {
     res.json({items})
 });
 
+ApiRouter.delete("/data-sources/:id", async (req, res) => {
+    const item = await DataSource.findOne({_id: req.params.id});
+    if( item ) {
+        // TODO fix source types dependency!!!
+        item.delete();
+        res.status(200).json({});
+        return;
+    }
+    res.status(404).json({});
+});
+
 ApiRouter.post("/data-sources", async (req, res) => {
     const typeId = req.body?.typeId;
     const name = req?.body.name;
@@ -78,7 +99,13 @@ ApiRouter.post("/data-sources", async (req, res) => {
     type.dataSources.push( source );
     await type.save();
 
-    res.status(201).json({items: [source]});
+    // TBD respond with Fields of DataSourceType
+    let sourceType = undefined;
+    if( SourceTypes[type.typeName] ) {
+        sourceType = new SourceTypes[type.typeName]
+    }
+
+    res.status(201).json({item: source, config: sourceType.config()});
 });
 
 /************************************************************************/

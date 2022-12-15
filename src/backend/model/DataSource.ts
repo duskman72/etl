@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import { DataSourceTypeSchema } from "./DataSourceType";
 
 const ObjectId = Schema.Types.ObjectId;
 
@@ -10,6 +9,7 @@ export const DataSourceSchema = new Schema({
         type: ObjectId,
         ref: "DataSourceType"
     },
+    config: Object,
     active: Boolean,
     createdAt: {
         type: Date,

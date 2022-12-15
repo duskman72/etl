@@ -1,4 +1,5 @@
+
 export interface FormField {
-    name(): string;
-    component(): string;
+    type: string;
+    required?: boolean;
 }
