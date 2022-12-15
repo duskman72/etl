@@ -168,7 +168,6 @@ export const DataSourceTypes = () => {
                     <div className="row header-row">
                         <div className="table-column table-header col-1">&nbsp;</div>
                         <div className="table-column table-header col-2">ID</div>
-                        <div className="table-column table-header col">NAME</div>
                         <div className="table-column table-header col">TYPENAME</div>
                         <div className="table-column table-header col">CREATED</div>
                         <div className="table-column table-header col-1">&nbsp;</div>
@@ -188,9 +187,6 @@ export const DataSourceTypes = () => {
                                 </div>
                                 <div className="table-column col-2">
                                     {item._id.toUpperCase()}
-                                </div>
-                                <div className="table-column col">
-                                    {item.name}
                                 </div>
                                 <div className="table-column col">
                                     {item.typeName}
