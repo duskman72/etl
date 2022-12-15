@@ -169,6 +169,7 @@ export const DataSourceTypes = () => {
                         <div className="table-column table-header col-1">&nbsp;</div>
                         <div className="table-column table-header col-2">ID</div>
                         <div className="table-column table-header col">TYPENAME</div>
+                        <div className="table-column table-header col-1">IN USE</div>
                         <div className="table-column table-header col">CREATED</div>
                         <div className="table-column table-header col-1">&nbsp;</div>
                     </div>
@@ -190,6 +191,12 @@ export const DataSourceTypes = () => {
                                 </div>
                                 <div className="table-column col">
                                     {item.typeName}
+                                </div>
+                                <div className="table-column col-1">
+                                    {
+                                        item.dataSources.length > 0 &&
+                                        <CheckCircleFillIcon size={14} className="text-success"/>
+                                    }
                                 </div>
                                 <div className="table-column col">
                                     {moment(item.createdAt).fromNow()}
