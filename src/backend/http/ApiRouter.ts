@@ -11,13 +11,12 @@ ApiRouter.get("/data-source-types", async (_req, res) => {
     if( items.length ) {
         items.forEach( item => {
             let valid = false;
-            if( SourceTypes[item.typeName]) {
+            if( SourceTypes[item.typeName] ) {
                 valid = true
             }
 
             responseItems.push({
                 _id: item._id,
-                name: item.name,
                 typeName: item.typeName,
                 createdAt: item.createdAt,
                 dataSources: item.dataSources,
@@ -39,17 +38,15 @@ ApiRouter.delete("/data-source-types/:id", async (req, res) => {
 })
 
 ApiRouter.post("/data-source-types", async (req, res) => {
-    const name = req.body?.name;
     const typeName = req.body?.typeName;
 
-    let type = await DataSourceType.findOne({name, typeName});
+    let type = await DataSourceType.findOne({typeName});
     if( type ) {
         res.status(200).json({items: [type]});
         return;
     }
 
     type = new DataSourceType();
-    type.name = name;
     type.typeName = typeName;
     await type.save();
 

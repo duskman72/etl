@@ -5,7 +5,6 @@ const ObjectId = Schema.Types.ObjectId;
 
 const DataSourceTypeSchema = new Schema({
     id: ObjectId,
-    name: String,
     typeName: String,
     active: Boolean,
     dataSources: [{
