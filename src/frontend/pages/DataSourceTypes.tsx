@@ -176,11 +176,11 @@ export const DataSourceTypes = () => {
                             return <div key={item._id} className="row">
                                 <div className="table-column col-1">
                                     {
-                                        !item.valid &&
+                                        !item.config &&
                                         <AlertIcon title="Invalid type" size={14} className="text-danger"/>
                                     }
                                     {
-                                        item.valid &&
+                                        item.config &&
                                         <CheckCircleFillIcon title="Type is valid" size={14} className="text-success"/>
                                     }
                                 </div>

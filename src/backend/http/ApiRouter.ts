@@ -10,9 +10,9 @@ ApiRouter.get("/data-source-types", async (_req, res) => {
     let responseItems = [];
     if( items.length ) {
         items.forEach( item => {
-            let type = undefined;
+            let config = undefined;
             if( SourceTypes[item.typeName] ) {
-                type = new SourceTypes[item.typeName]
+                config = (new SourceTypes[item.typeName]).config()
             }
 
             responseItems.push({
@@ -20,7 +20,7 @@ ApiRouter.get("/data-source-types", async (_req, res) => {
                 typeName: item.typeName,
                 createdAt: item.createdAt,
                 dataSources: item.dataSources,
-                valid: type ? true : false
+                config
             });
         })
     }
@@ -28,23 +28,33 @@ ApiRouter.get("/data-source-types", async (_req, res) => {
 });
 
 ApiRouter.get("/data-source-types/:id", async (req, res) => {
-    const item = await DataSourceType.findOne({_id: req.params.id});
+    const item = await DataSourceType.findOne({_id: req.params.id}).populate("dataSources");
     if( item ) {
-        res.status(200).json({item});
+        let config = undefined;
+        if( SourceTypes[item.typeName] ) {
+            config = (new SourceTypes[item.typeName]).config()
+        }
+        res.status(200).json({item: {
+            _id: item._id,
+            typeName: item.typeName,
+            createdAt: item.createdAt,
+            dataSources: item.dataSources,
+            config
+        }});
         return;
     }
     res.status(404).json({item});
 })
 
+// TODO fix data sources dependency
 ApiRouter.delete("/data-source-types/:id", async (req, res) => {
     const item = await DataSourceType.findOne({_id: req.params.id});
     if( item ) {
-        // TODO fix data sources dependency
         item.delete();
-        res.status(200).json({});
+        res.status(200).end();
         return;
     }
-    res.status(404).json({});
+    res.status(404).end();
 })
 
 ApiRouter.post("/data-source-types", async (req, res) => {
@@ -52,7 +62,7 @@ ApiRouter.post("/data-source-types", async (req, res) => {
 
     let type = await DataSourceType.findOne({typeName});
     if( type ) {
-        res.status(200).json({items: [type]});
+        res.status(200).end();
         return;
     }
 
@@ -60,25 +70,59 @@ ApiRouter.post("/data-source-types", async (req, res) => {
     type.typeName = typeName;
     await type.save();
 
-    res.status(201).json({items: [type]});
+    let config = undefined;
+    if( SourceTypes[type.typeName] ) {
+        config = (new SourceTypes[type.typeName]).config()
+    }
+
+    res.status(201).json({item: {
+        _id: type._id,
+        typeName: type.typeName,
+        createdAt: type.createdAt,
+        active: type.active,
+        config
+    }}).end();
 });
 
 /************************************************************************/
 
+// TODO fill with DataSourceType config
 ApiRouter.get("/data-sources", async (_req, res) => {
     const items = await DataSource.find().populate("type");
-    res.json({items})
+    const responseItems = items.map( item => {
+        let type: any = item.type;
+        let config = undefined;
+        if( SourceTypes[type?.typeName] ) {
+            config = (new SourceTypes[type.typeName]).config()
+        }
+
+        return {
+            _id: item._id,
+            name: item.name,
+            type: type ? {
+                _id: type._id,
+                typeName: type.typeName,
+                createdAt: type.createdAt,
+                config
+            } : null,
+            createdAt: item.createdAt
+        }
+    })
+
+
+
+    res.json({items: responseItems})
 });
 
+// TODO fix source types dependency
 ApiRouter.delete("/data-sources/:id", async (req, res) => {
     const item = await DataSource.findOne({_id: req.params.id});
     if( item ) {
-        // TODO fix source types dependency!!!
         item.delete();
-        res.status(200).json({});
+        res.status(200).end();
         return;
     }
-    res.status(404).json({});
+    res.status(404).end();
 });
 
 ApiRouter.post("/data-sources", async (req, res) => {
@@ -87,7 +131,7 @@ ApiRouter.post("/data-sources", async (req, res) => {
 
     const type = await DataSourceType.findOne({_id: typeId});
     if( !type ) {
-        res.status(404).json({items: []});
+        res.status(404).end();
         return;
     }
 
@@ -99,13 +143,23 @@ ApiRouter.post("/data-sources", async (req, res) => {
     type.dataSources.push( source );
     await type.save();
 
-    // TBD respond with Fields of DataSourceType
-    let sourceType = undefined;
+    let config = undefined;
     if( SourceTypes[type.typeName] ) {
-        sourceType = new SourceTypes[type.typeName]
+        config = (new SourceTypes[type.typeName]).config()
     }
 
-    res.status(201).json({item: source, config: sourceType.config()});
+    res.status(201).json({item: {
+        _id: source._id,
+        name: source.name,
+        type: {
+            _id: type._id,
+            typeName: type.typeName,
+            config,
+            createdAt: type.createdAt
+        },
+        active: source.active,
+        createdAt: source.createdAt
+    }});
 });
 
 /************************************************************************/
