@@ -17,6 +17,7 @@ ApiRouter.get("/data-source-types", async (_req, res) => {
 
             responseItems.push({
                 _id: item._id,
+                active: item.active || "false",
                 typeName: item.typeName,
                 createdAt: item.createdAt,
                 dataSources: item.dataSources,
@@ -36,6 +37,7 @@ ApiRouter.get("/data-source-types/:id", async (req, res) => {
         }
         res.status(200).json({item: {
             _id: item._id,
+            active: item.active || "false",
             typeName: item.typeName,
             createdAt: item.createdAt,
             dataSources: item.dataSources,
@@ -46,10 +48,12 @@ ApiRouter.get("/data-source-types/:id", async (req, res) => {
     res.status(404).json({item});
 })
 
-// TODO fix data sources dependency
 ApiRouter.delete("/data-source-types/:id", async (req, res) => {
     const item = await DataSourceType.findOne({_id: req.params.id});
     if( item ) {
+        await DataSource.deleteMany({
+            id: item.dataSources.map(src => src.id)
+        })
         item.delete();
         res.status(200).end();
         return;
@@ -79,14 +83,13 @@ ApiRouter.post("/data-source-types", async (req, res) => {
         _id: type._id,
         typeName: type.typeName,
         createdAt: type.createdAt,
-        active: type.active,
+        active: type.active || "false",
         config
     }}).end();
 });
 
 /************************************************************************/
 
-// TODO fill with DataSourceType config
 ApiRouter.get("/data-sources", async (_req, res) => {
     const items = await DataSource.find().populate("type");
     const responseItems = items.map( item => {
@@ -99,7 +102,9 @@ ApiRouter.get("/data-sources", async (_req, res) => {
         return {
             _id: item._id,
             name: item.name,
+            active: item.active || "false",
             type: type ? {
+                active: type.active || "false",
                 _id: type._id,
                 typeName: type.typeName,
                 createdAt: type.createdAt,
@@ -108,8 +113,6 @@ ApiRouter.get("/data-sources", async (_req, res) => {
             createdAt: item.createdAt
         }
     })
-
-
 
     res.json({items: responseItems})
 });
@@ -151,13 +154,14 @@ ApiRouter.post("/data-sources", async (req, res) => {
     res.status(201).json({item: {
         _id: source._id,
         name: source.name,
+        active: source.active || "false",
         type: {
             _id: type._id,
+            active: type.active || "false",
             typeName: type.typeName,
             config,
             createdAt: type.createdAt
         },
-        active: source.active,
         createdAt: source.createdAt
     }});
 });
