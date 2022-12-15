@@ -3,6 +3,7 @@ import { Page } from "../core/Page";
 import { Modal } from "bootstrap";
 import { AlertIcon } from "../core/icons/AlertIcon";
 import { Select2 } from "select2-react-component";
+import { TrashIcon } from "../core/icons/TrashIcon";
 
 export const DataSources = () => {
     const [items, setItems] = useState([]);
@@ -12,7 +13,7 @@ export const DataSources = () => {
     const [dataSourceTypesLoading, setDataSourceTypesLoading] = useState(false);
     const [error, setError] = useState(false);
     const nameRef = useRef<HTMLInputElement>();
-    const selectRef = useRef<HTMLSelectElement>();
+    const selectRef = useRef<Select2>();
 
     const refresh = () => {
         setItems([]);
@@ -56,7 +57,25 @@ export const DataSources = () => {
     }
 
     const addItem = () => {
+        const select2: any = selectRef.current;
+        const typeId = select2.option?.value;
+        const name = nameRef.current.value;
 
+        $.ajax({
+            url: "/api/data-sources",
+            method: "post",
+            contentType: "application/json",
+            data: JSON.stringify({
+                name,
+                typeId
+            })
+        })
+        .done(response => {
+            console.log( response );
+        })
+        .fail(() => {
+            console.log("ERROR!!!")
+        });
     }
 
     const showAddDialog = () => {
@@ -95,7 +114,7 @@ export const DataSources = () => {
                                 </div>
                                 <div className="flex flex-column">
                                     <label className="form-label mb-1 fw-bolder">TypeName</label>
-                                    <Select2 placeholder="Please choose..." data={
+                                    <Select2 ref={selectRef} placeholder="Please choose..." data={
                                         dataSourceTypes.map( dst => {
                                             return {
                                                 label: dst.typeName,
@@ -138,6 +157,43 @@ export const DataSources = () => {
             {
                 !loading && !error && items?.length === 0 &&
                 <div className="alert alert-info">There are no items in this view.</div>
+            }
+            {
+                items?.length > 0 &&
+                <div className="data-table">
+                    <div className="row header-row">
+                        <div className="table-column table-header col-2">ID</div>
+                        <div className="table-column table-header col">NAME</div>
+                        <div className="table-column table-header col">TYPENAME</div>
+                        <div className="table-column table-header col">CREATED</div>
+                        <div className="table-column table-header col-1">&nbsp;</div>
+                    </div>
+                    {
+                        items.map( item => {
+                            return <div key={item._id} className="row">
+                                <div className="table-column col-2">
+                                    {item._id.toUpperCase()}
+                                </div>
+                                <div className="table-column col">
+                                    {item.name}
+                                </div>
+                                <div className="table-column col">
+                                    {item.type.typeName}
+                                </div>
+                                <div className="table-column col">
+                                    {moment(item.createdAt).fromNow()}
+                                </div>
+                                <div className="table-column col-1">
+                                    <TrashIcon className="text-danger" size={14} onClick={() => {
+                                        setSelectedItem( item );
+                                        const modal = Modal.getOrCreateInstance(document.querySelector("#deleteSourceTypeDialog"));
+                                        modal.show();
+                                    }}/>
+                                </div>
+                            </div>
+                        })
+                    }
+                </div>
             }
         </div>
     </Page>

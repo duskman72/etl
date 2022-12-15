@@ -3,7 +3,7 @@ import { DataSourceSchema } from "./DataSource";
 
 const ObjectId = Schema.Types.ObjectId;
 
-const DataSourceTypeSchema = new Schema({
+export const DataSourceTypeSchema = new Schema({
     id: ObjectId,
     typeName: String,
     active: Boolean,

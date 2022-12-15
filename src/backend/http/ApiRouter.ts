@@ -56,8 +56,29 @@ ApiRouter.post("/data-source-types", async (req, res) => {
 /************************************************************************/
 
 ApiRouter.get("/data-sources", async (_req, res) => {
-    const items = await DataSource.find().populate("dataSourceType");
+    const items = await DataSource.find().populate("type");
     res.json({items})
+});
+
+ApiRouter.post("/data-sources", async (req, res) => {
+    const typeId = req.body?.typeId;
+    const name = req?.body.name;
+
+    const type = await DataSourceType.findOne({_id: typeId});
+    if( !type ) {
+        res.status(404).json({items: []});
+        return;
+    }
+
+    const source = new DataSource();
+    source.type = typeId;
+    source.name = name;
+    await source.save();
+
+    type.dataSources.push( source );
+    await type.save();
+
+    res.status(201).json({items: [source]});
 });
 
 /************************************************************************/

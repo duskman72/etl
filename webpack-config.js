@@ -116,6 +116,7 @@ const buildFrontend = (_, argv) => {
         stats: 'errors-only',
         externals: [
             { 
+                moment: "moment",
                 jquery: "jQuery",
                 react: "React",
                 "react-dom": "ReactDOM"
