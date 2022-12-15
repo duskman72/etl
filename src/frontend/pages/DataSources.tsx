@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Page } from "../core/Page";
-import * as Inflector from "inflection";
 import { Modal } from "bootstrap";
 
 export const DataSources = () => {
@@ -89,20 +88,14 @@ export const DataSources = () => {
                             <>
                                 <div className="flex flex-column mb-3">
                                     <label className="form-label mb-1 fw-bolder">Source Name</label>
-                                    <input type="text"  onKeyUp={(e: any) => {
-                                        const text = e.target.value.trim()
-                                            .replace(/[äöüß]+/ig, "")
-                                            .replace(/[\,\.\;\:\<\>\|\@\#\'\-\_\/\\\=\?\)\(\&\%\$\§\"\!\°\^\[\]\{\}\`\`\*\+\~\s]+/g, "");
-
-                                            nameRef.current.value = Inflector.camelize(text);  
-                                    }} ref={nameRef} className="form-control form-control-sm disabled" />
+                                    <input type="text" ref={nameRef} className="form-control form-control-sm disabled" />
                                 </div>
                                 <div className="flex flex-column">
                                     <label className="form-label mb-1 fw-bolder">TypeName</label>
                                     <select className="form-control form-control-sm">
                                         {
                                             dataSourceTypes.map( dst => {
-                                                return <option value={dst._id}>
+                                                return <option key={dst._id} value={dst._id}>
                                                     {dst.typeName}
                                                 </option>
                                             })
@@ -126,7 +119,7 @@ export const DataSources = () => {
         <div className="flex flex-column p-2">
             <h6 className="mb-3 flex align-items-center">
                 <span className="me-3">Data Sources</span>
-                <button className="btn btn-sm btn-primary me-2" onClick={showAddDialog}>Add Source</button>
+                <button className="btn btn-sm btn-primary me-2" disabled={error || loading} onClick={showAddDialog}>Add Source</button>
                 <button className="btn btn-sm btn-default" onClick={refresh}>Refresh</button>
             </h6>
             {

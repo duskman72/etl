@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Page } from "../core/Page";
 import $ from "jquery";
 import moment from "moment";
-import ash from "lodash";
+import { camelCase, upperFirst } from "lodash";
 import { Modal } from "bootstrap";
 import { AlertIcon } from "../core/icons/AlertIcon";
 import { TrashIcon } from "../core/icons/TrashIcon";
@@ -106,8 +106,8 @@ export const DataSourceTypes = () => {
                     <div className="flex flex-column mb-3">
                         <label className="form-label mb-1 fw-bolder">Source Name</label>
                         <input type="text"  onKeyUp={(e: any) => {
-                            const text = e.target.value.trim();
-                            typeNameRef.current.value = ash.upperFirst(ash.camelCase(text.toUpperCase()));  
+                            const text = e.target.value.trim(); 
+                            typeNameRef.current.value = upperFirst(camelCase(text.toUpperCase()));  
                         }} ref={nameRef} className="form-control form-control-sm" />
                     </div>
                     <div className="flex flex-column">
@@ -144,7 +144,7 @@ export const DataSourceTypes = () => {
         <div className="flex flex-column p-2">
             <h6 className="mb-3 flex align-items-center">
                 <span className="me-3">Data Source Types</span>
-                <button className="btn btn-sm btn-primary me-2" onClick={showAddDialog}>Add Type</button>
+                <button className="btn btn-sm btn-primary me-2" disabled={error || loading} onClick={showAddDialog}>Add Type</button>
                 <button className="btn btn-sm btn-default" onClick={refresh}>Refresh</button>
             </h6>
             {
