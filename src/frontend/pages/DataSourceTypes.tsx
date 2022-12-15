@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Page } from "../core/Page";
 import $ from "jquery";
 import moment from "moment";

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Page } from "../core/Page";
 import { Modal } from "bootstrap";
 import { AlertIcon } from "../core/icons/AlertIcon";

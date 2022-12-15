@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from "react";
+import { PropsWithChildren } from "react";
 import { PageNavigation } from "./PageNavigation";
 
 export const PageContent = (props: PropsWithChildren) => {

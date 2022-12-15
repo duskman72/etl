@@ -1,4 +1,3 @@
-import React from "react";
 import { Icon, IconAttributes } from "../Icon";
 
 export const EditIcon = (props: IconAttributes) => {
