@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { Page } from "../core/Page";
-import $ from "jquery";
-import moment from "moment";
 import { camelCase, upperFirst } from "lodash";
 import { Modal } from "bootstrap";
 import { AlertIcon } from "../core/icons/AlertIcon";
