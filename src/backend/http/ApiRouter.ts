@@ -74,18 +74,7 @@ ApiRouter.post("/data-source-types", async (req, res) => {
     type.typeName = typeName;
     await type.save();
 
-    let config = undefined;
-    if( SourceTypes[type.typeName] ) {
-        config = (new SourceTypes[type.typeName]).config()
-    }
-
-    res.status(201).json({item: {
-        _id: type._id,
-        typeName: type.typeName,
-        createdAt: type.createdAt,
-        active: type.active || "false",
-        config
-    }}).end();
+    res.status(201).end();
 });
 
 /************************************************************************/
@@ -117,10 +106,10 @@ ApiRouter.get("/data-sources", async (_req, res) => {
     res.json({items: responseItems})
 });
 
-// TODO fix source types dependency
 ApiRouter.delete("/data-sources/:id", async (req, res) => {
     const item = await DataSource.findOne({_id: req.params.id});
     if( item ) {
+        // TODO delete from DataSourceType
         item.delete();
         res.status(200).end();
         return;
@@ -141,29 +130,13 @@ ApiRouter.post("/data-sources", async (req, res) => {
     const source = new DataSource();
     source.type = typeId;
     source.name = name;
+    // TODO save config
     await source.save();
 
     type.dataSources.push( source );
     await type.save();
 
-    let config = undefined;
-    if( SourceTypes[type.typeName] ) {
-        config = (new SourceTypes[type.typeName]).config()
-    }
-
-    res.status(201).json({item: {
-        _id: source._id,
-        name: source.name,
-        active: source.active || "false",
-        type: {
-            _id: type._id,
-            active: type.active || "false",
-            typeName: type.typeName,
-            config,
-            createdAt: type.createdAt
-        },
-        createdAt: source.createdAt
-    }});
+    res.status(201);
 });
 
 /************************************************************************/
