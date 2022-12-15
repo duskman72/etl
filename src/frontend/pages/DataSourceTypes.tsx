@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Page } from "../core/Page";
 import $ from "jquery";
 import moment from "moment";
-import * as Inflector from "inflection";
+import ash from "lodash";
 import { Modal } from "bootstrap";
 import { AlertIcon } from "../core/icons/AlertIcon";
 import { TrashIcon } from "../core/icons/TrashIcon";
@@ -106,16 +106,13 @@ export const DataSourceTypes = () => {
                     <div className="flex flex-column mb-3">
                         <label className="form-label mb-1 fw-bolder">Source Name</label>
                         <input type="text"  onKeyUp={(e: any) => {
-                            const text = e.target.value.trim()
-                                .replace(/[äöüß]+/ig, "")
-                                .replace(/[\,\.\;\:\<\>\|\@\#\'\-\_\/\\\=\?\)\(\&\%\$\§\"\!\°\^\[\]\{\}\`\`\*\+\~\s]+/g, "");
-
-                            typeNameRef.current.value = Inflector.camelize(text);  
-                        }} ref={nameRef} className="form-control form-control-sm disabled" />
+                            const text = e.target.value.trim();
+                            typeNameRef.current.value = ash.upperFirst(ash.camelCase(text.toUpperCase()));  
+                        }} ref={nameRef} className="form-control form-control-sm" />
                     </div>
                     <div className="flex flex-column">
                         <label className="form-label mb-1 fw-bolder">Type Name</label>
-                        <input type="text" ref={typeNameRef} className="form-control form-control-sm" />
+                        <input type="text" ref={typeNameRef} disabled className="form-control form-control-sm disabled" />
                     </div>
                 </div>
                 <div className="modal-footer">
