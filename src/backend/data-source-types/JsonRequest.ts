@@ -8,12 +8,14 @@ export class JsonRequest extends DataSourceType {
 
     config = () => {
         return {
-            formFields: {
-                "url": {
+            formFields: [
+                {
+                    name: "url",
+                    label: "Url",
                     type: "input",
                     required: true
                 }
-            }
+            ]
         }
-    };
+    }
 }

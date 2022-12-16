@@ -9,11 +9,15 @@ export const DataSources = () => {
     const [items, setItems] = useState([]);
     const [dataSourceTypes, setDataSourceTypes] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
+    const [selectedDataSourceType, setSelectedDataSourceType] = useState(null);
     const [loading, setLoading] = useState(false);
     const [dataSourceTypesLoading, setDataSourceTypesLoading] = useState(false);
     const [error, setError] = useState(false);
+    const [wizardStep, setWizardStep] = useState(0);
     const nameRef = useRef<HTMLInputElement>();
     const selectRef = useRef<Select2>();
+
+    const dynamicRefs = {};
 
     const refresh = () => {
         setItems([]);
@@ -99,6 +103,9 @@ export const DataSources = () => {
     }
 
     const showAddDialog = () => {
+        setWizardStep( 0 );
+        setSelectedDataSourceType( null );
+        
         const el = document.querySelector("#addSourceDialog");
         const modal = Modal.getOrCreateInstance(el);
         modal.show();
@@ -113,6 +120,16 @@ export const DataSources = () => {
         loadItems();
     }, []);
 
+    const renderField = (field) => {
+        return <div className="flex flex-column mb-3">
+            <label className="form-label mb-1 fw-bolder">{field.label}</label>
+            {
+                field.type === "input" &&
+                <input type="text" name={field.name} className="form-control form-control-sm disabled" />
+            }
+        </div>
+    }
+
     return <Page>
         <div className={`modal fade`} id="addSourceDialog" tabIndex={1} aria-labelledby="addSourceDialogLabel" aria-hidden="true">
             <div className="modal-dialog">
@@ -126,7 +143,7 @@ export const DataSources = () => {
                     </div>
                     <div className="modal-body">
                         {
-                            !dataSourceTypesLoading &&
+                            !dataSourceTypesLoading && wizardStep === 0 &&
                             <>
                                 <div className="flex flex-column mb-3">
                                     <label className="form-label mb-1 fw-bolder">Display Name</label>
@@ -145,13 +162,52 @@ export const DataSources = () => {
                                 </div>
                             </>
                         }
+                        {
+                            !dataSourceTypesLoading && wizardStep === 1 &&
+                            <>
+                            {
+                                selectedDataSourceType.config.formFields.map( field => {
+                                    return renderField(field);
+                                })
+                            }
+                            </>
+                        }
                     </div>
 
                     {
                         !dataSourceTypesLoading &&
                         <div className="modal-footer">
                             <button type="button" className="btn btn-default" data-bs-dismiss="modal">Cancel</button>
-                            <button type="button" className="btn btn-primary" onClick={() => addItem()}>Save</button>
+                            <button type="button" className="btn btn-primary" onClick={() => {
+                                switch( wizardStep ) {
+                                    case 0:
+                                        const select2: any = selectRef.current;
+                                        const typeId = select2.option?.value;
+                                        if( typeId ) {
+                                            const type = dataSourceTypes.find(dst => {
+                                                return dst._id === typeId;
+                                            });
+                                            if( type ) {
+                                                setSelectedDataSourceType( type );
+                                                setWizardStep( 1 );
+                                            }
+                                        } else {
+                                            // TODO show error to user
+                                        }
+                                        break;
+
+                                    case 1:
+                                        // SAVE TO DATABASE
+                                        break;
+                                }
+                            }}>
+                            {
+                                wizardStep === 0 && "Next"
+                            }
+                            {
+                                wizardStep === 1 && "Save"
+                            }
+                            </button>
                         </div>
                     }
                 </div>
