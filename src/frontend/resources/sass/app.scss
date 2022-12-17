@@ -2,7 +2,17 @@ $blue-grey-50: #ECEFF1;
 $blue-grey-100: #CFD8DC;
 $blue-grey-200: #B0BEC5;
 $blue-grey-400: #78909C;
+$blue-grey-600: #546E7A;
 $blue-grey-700: #455A64;
+
+$blue-50: #E3F2FD;
+$blue-100: #BBDEFB;
+$blue-200: #90CAF9;
+$blue-700: #1976D2;
+$blue-800: #1565C0;
+$blue-900: #0D47A1;
+
+$secondary: $blue-grey-100;
 
 @import "bootstrap";
 @import "select2-component/dist/select2.css";
@@ -14,15 +24,11 @@ $blue-grey-700: #455A64;
 @import "@fontsource/roboto/latin-700.css";
 @import "@fontsource/roboto/latin-900.css";
 
-$blue-grey-50: #ECEFF1;
-$blue-grey-100: #CFD8DC;
-$blue-grey-200: #B0BEC5;
-$blue-grey-400: #78909C;
-$blue-grey-700: #455A64;
+$border-radius: 3px;
 
 :root {
-    --bs-border-radius: 3px;
-    --bs-card-border-radius: 3px;
+    --bs-border-radius: $border-radius;
+    --bs-card-border-radius: $border-radius;
     --bs-modal-border-radius: 4px;
 }
 
@@ -54,6 +60,13 @@ $blue-grey-700: #455A64;
 
 .alert {
     @extend .p-2;
+    border-radius: $border-radius;
+
+    &.alert-info {
+        background-color: $blue-50;
+        color: $blue-900;
+        border-color: $blue-100;
+    }
 }
 
 .select2-selection {
@@ -65,7 +78,7 @@ body {
     font-size: 9pt;
     margin: 0;
     padding: 0;
-    background-color: #f7f7f7;
+    background-color: #f9f9f9;
 
     & .page {
         @extend .flex;
@@ -85,7 +98,7 @@ body {
             font-weight: 400;
             --bs-btn-font-size: .75rem;
             text-transform: uppercase;
-            border-radius: var(--bs-border-radius);
+            border-radius: $border-radius;
 
             &.btn-sm {
                 --bs-btn-font-size: .65rem;
@@ -111,7 +124,7 @@ body {
             @extend .p-2;
             max-height: 48px;
             height: 48px;
-            background-color: $blue-grey-700;
+            background-color: #1565C0;
         }
 
         & .page-content {
@@ -132,6 +145,7 @@ body {
                 @extend .flex;
                 @extend .flex-column;
                 align-items: flex-start;
+                background-color: #fff;
                 height: calc(100vh - 48px);
                 border-right: 1px solid #ccc;
 
@@ -144,7 +158,7 @@ body {
                 & .nav-item-header {
                     @extend .ms-3;
                     @extend .mb-2;
-                    color: $blue-grey-400;
+                    color: $blue-800;
                     font-weight: 700;
                 }
 
@@ -152,20 +166,19 @@ body {
                     display: block;
                     transition: background-color 250ms ease;
                     & .nav-link {
-                        @extend .ps-3;
-                        color: $dark;
+                        @extend .ps-4;
+                        color: $blue-grey-600;
                     }
 
                     &:hover {
                         & .nav-link:not(.active) {
-                            background-color: $blue-grey-100;
+                            background-color: $blue-50;
                         }
                     }
 
                     & .nav-link.active {
-                        background-color: $blue-grey-400;
-                        color: #fff;
-                        text-shadow: 0 0 1px rgba(0, 0, 0, .35);
+                        background-color: $blue-100;
+                        color: $blue-900;
                     }
                 }
             }

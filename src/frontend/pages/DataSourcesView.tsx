@@ -4,8 +4,10 @@ import { Modal } from "bootstrap";
 import { AlertIcon } from "../core/icons/AlertIcon";
 import { Select2 } from "select2-react-component";
 import { TrashIcon } from "../core/icons/TrashIcon";
+import { AddIcon } from "../core/icons/AddIcon";
+import { CredentialsDialog } from "../core/CredentialsDialog";
 
-export const DataSources = () => {
+export const DataSourcesView = () => {
     const [items, setItems] = useState([]);
     const [dataSourceTypes, setDataSourceTypes] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -16,8 +18,6 @@ export const DataSources = () => {
     const [wizardStep, setWizardStep] = useState(0);
     const nameRef = useRef<HTMLInputElement>();
     const selectRef = useRef<Select2>();
-
-    const dynamicRefs = {};
 
     const refresh = () => {
         setItems([]);
@@ -122,10 +122,31 @@ export const DataSources = () => {
 
     const renderField = (field) => {
         return <div className="flex flex-column mb-3">
-            <label className="form-label mb-1 fw-bolder">{field.label}</label>
+            <label className="form-label mb-1 fw-bolder">
+                <span>{field.label}</span>
+                {
+                    field.required &&
+                    <span className="text-danger ps-1">*</span>
+                }
+            </label>
             {
                 field.type === "input" &&
-                <input type="text" name={field.name} className="form-control form-control-sm disabled" />
+                <input type="text" name={field.name} className="form-control form-control-sm" />
+            }
+            {
+                // TODO check for credentials to apply
+                // show dropdown with list or button to configure new credentials
+                field.type === "credentials-mgr" &&
+                <div>
+                    <button className="btn btn-secondary" onClick={() => {
+                        const el = document.querySelector("#credentialsDialog");
+                        const modal = Modal.getOrCreateInstance(el);
+                        modal.show();
+                    }}>
+                        <AddIcon size={16} className="me-1" />
+                    <span>Add Credentials</span>
+                </button>
+                </div>
             }
         </div>
     }
@@ -135,7 +156,7 @@ export const DataSources = () => {
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h6 id="addSourceDialogLabel" className="fs-7">Add Data Source</h6>
+                        <h6 id="addSourceDialogLabel" className="fs-7">Add Data Source {wizardStep === 1 ? selectedDataSourceType.typeName : ""}</h6>
                         {
                             !dataSourceTypesLoading &&
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -147,7 +168,7 @@ export const DataSources = () => {
                             <>
                                 <div className="flex flex-column mb-3">
                                     <label className="form-label mb-1 fw-bolder">Display Name</label>
-                                    <input type="text" ref={nameRef} className="form-control form-control-sm disabled" />
+                                    <input type="text" ref={nameRef} className="form-control form-control-sm" />
                                 </div>
                                 <div className="flex flex-column">
                                     <label className="form-label mb-1 fw-bolder">TypeName</label>
@@ -166,7 +187,8 @@ export const DataSources = () => {
                             !dataSourceTypesLoading && wizardStep === 1 &&
                             <>
                             {
-                                selectedDataSourceType.config.formFields.map( field => {
+                                // render general fields
+                                selectedDataSourceType.config.formFields.general.map( field => {
                                     return renderField(field);
                                 })
                             }
@@ -177,7 +199,7 @@ export const DataSources = () => {
                     {
                         !dataSourceTypesLoading &&
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-default" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                             <button type="button" className="btn btn-primary" onClick={() => {
                                 switch( wizardStep ) {
                                     case 0:
@@ -214,6 +236,8 @@ export const DataSources = () => {
             </div>
         </div>
 
+        <CredentialsDialog />
+
         <div className={`modal fade`} id="deleteSourceDialog" tabIndex={1} aria-labelledby="deleteSourceDialogLabel" aria-hidden="true">
             <div className="modal-dialog">
                 <div className="modal-content">
@@ -225,7 +249,7 @@ export const DataSources = () => {
                     Do you realy want to delete this data source?
                 </div>
                 <div className="modal-footer">
-                    <button type="button" className="btn btn-default" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" className="btn btn-danger" onClick={() => deleteItem()}>Delete</button>
                 </div>
                 </div>

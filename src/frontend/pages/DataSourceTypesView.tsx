@@ -6,7 +6,7 @@ import { AlertIcon } from "../core/icons/AlertIcon";
 import { TrashIcon } from "../core/icons/TrashIcon";
 import { CheckCircleFillIcon } from "../core/icons/CheckCircleFillIcon";
 
-export const DataSourceTypes = () => {
+export const DataSourceTypesView = () => {
     const [items, setItems] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -114,7 +114,7 @@ export const DataSourceTypes = () => {
                     </div>
                 </div>
                 <div className="modal-footer">
-                    <button type="button" className="btn btn-default" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" className="btn btn-primary" onClick={() => addItem()}>Save</button>
                 </div>
                 </div>
@@ -132,7 +132,7 @@ export const DataSourceTypes = () => {
                     Do you realy want to delete this data source type?
                 </div>
                 <div className="modal-footer">
-                    <button type="button" className="btn btn-default" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" className="btn btn-danger" onClick={() => deleteItem()}>Delete</button>
                 </div>
                 </div>

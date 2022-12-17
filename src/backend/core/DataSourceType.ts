@@ -1,7 +1,10 @@
 import { FormField } from "../core/FormField";
 
 export type DataSourceConfig = {
-    formFields: Array<FormField>;
+    formFields: {
+        general: Array<FormField>,
+        additional?: Array<FormField>,
+    };
 }
 
 export abstract class DataSourceType {

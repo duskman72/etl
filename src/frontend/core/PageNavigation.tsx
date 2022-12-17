@@ -10,6 +10,10 @@ export const PageNavigation = () => {
             <li className="nav-item">
                 <NavLink to="/data-sources" className="nav-link">Data Sources</NavLink>
             </li>
+            <li className="nav-item-header mt-3">Security</li>
+            <li className="nav-item">
+                <NavLink to="/credentials" className="nav-link">Credentials</NavLink>
+            </li>
         </ol>
     </nav>
 }
