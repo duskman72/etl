@@ -97,7 +97,7 @@ export const DataSourceTypesView = () => {
             <div className="modal-dialog">
                 <div className="modal-content">
                 <div className="modal-header">
-                    <h6 id="addSourceTypeDialogLabel" className="fs-7">Add Data Source Type</h6>
+                    <h6 id="addSourceTypeDialogLabel" className="fs-8">Add Data Source Type</h6>
                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div className="modal-body">
@@ -125,7 +125,7 @@ export const DataSourceTypesView = () => {
             <div className="modal-dialog">
                 <div className="modal-content">
                 <div className="modal-header">
-                    <h6 id="deleteSourceTypeDialogLabel" className="fs-7">Delete Data Source Type</h6>
+                    <h6 id="deleteSourceTypeDialogLabel" className="fs-8">Delete Data Source Type</h6>
                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div className="modal-body">

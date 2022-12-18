@@ -4,8 +4,7 @@ import { Modal } from "bootstrap";
 import { AlertIcon } from "../core/icons/AlertIcon";
 import { Select2 } from "select2-react-component";
 import { TrashIcon } from "../core/icons/TrashIcon";
-import { AddIcon } from "../core/icons/AddIcon";
-import { CredentialsDialog } from "../core/CredentialsDialog";
+import { CredentialsSelect } from "../core/CredentialsSelect";
 
 export const DataSourcesView = () => {
     const [items, setItems] = useState([]);
@@ -137,16 +136,7 @@ export const DataSourcesView = () => {
                 // TODO check for credentials to apply
                 // show dropdown with list or button to configure new credentials
                 field.type === "credentials-mgr" &&
-                <div>
-                    <button className="btn btn-secondary" onClick={() => {
-                        const el = document.querySelector("#credentialsDialog");
-                        const modal = Modal.getOrCreateInstance(el);
-                        modal.show();
-                    }}>
-                        <AddIcon size={16} className="me-1" />
-                    <span>Add Credentials</span>
-                </button>
-                </div>
+                <CredentialsSelect />
             }
         </div>
     }
@@ -156,7 +146,7 @@ export const DataSourcesView = () => {
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h6 id="addSourceDialogLabel" className="fs-7">Add Data Source {wizardStep === 1 ? selectedDataSourceType.typeName : ""}</h6>
+                        <h6 id="addSourceDialogLabel" className="fs-8">Add Data Source of type {wizardStep === 1 ? selectedDataSourceType.typeName : ""}</h6>
                         {
                             !dataSourceTypesLoading &&
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -236,13 +226,11 @@ export const DataSourcesView = () => {
             </div>
         </div>
 
-        <CredentialsDialog />
-
         <div className={`modal fade`} id="deleteSourceDialog" tabIndex={1} aria-labelledby="deleteSourceDialogLabel" aria-hidden="true">
             <div className="modal-dialog">
                 <div className="modal-content">
                 <div className="modal-header">
-                    <h6 id="deleteSourceDialogLabel" className="fs-7">Delete Data Source</h6>
+                    <h6 id="deleteSourceDialogLabel" className="fs-8">Delete Data Source</h6>
                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div className="modal-body">

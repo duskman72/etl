@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect } from "react";
+import { PropsWithChildren, useEffect, useLayoutEffect } from "react";
 
 export type DialogProps = {
     id: string;
@@ -8,11 +8,6 @@ export type DialogProps = {
 
 export const Dialog = (props: PropsWithChildren<DialogProps>) => {
     const id = props.id;
-
-    useEffect(() => {
-        const modal = document.querySelector(`#${id}`);
-        document.body.appendChild( modal )
-    });
 
     return <div className={`modal fade`} id={id} tabIndex={1} aria-hidden="true">
     <div className="modal-dialog">
@@ -28,7 +23,7 @@ export const Dialog = (props: PropsWithChildren<DialogProps>) => {
             </div>
             <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" className="btn btn-danger" onClick={props.onOk}>Delete</button>
+                <button type="button" className="btn btn-primary" onClick={props.onOk}>OK</button>
             </div>
         </div>
     </div>

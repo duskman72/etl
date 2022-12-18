@@ -2,6 +2,7 @@ import { Router } from "express";
 import { DataSource } from "../model/DataSource";
 import { DataSourceType } from "../model/DataSourceType";
 import SourceTypes from "../data-source-types";
+import { Credentials } from "../model/Credentials";
 
 export const ApiRouter = Router();
 
@@ -141,6 +142,30 @@ ApiRouter.post("/data-sources", async (req, res) => {
 
 /************************************************************************/
 
+ApiRouter.get("/credentials", async (req, res) => {
+    const items = await Credentials.find();
+    res.json({items}).end();
+});
+
+ApiRouter.post("/credentials", async (req, res) => {
+    const name = req.body?.name;
+    const config = req.body?.config;
+    const type = req.body?.type;
+
+    let cred = await Credentials.findOne({name});
+    if( cred ) {
+        res.status(400).json({error: {message: "Credentials with name already exists"}});
+        return;
+    }
+
+    cred = new Credentials();
+    cred.name = name;
+    cred.config = config;
+    cred.type = type;
+    await cred.save();
+
+    res.status(201).json( cred );
+})
 
 /*
 ApiRouter.post("/data-sources/types", async (req, res) => {

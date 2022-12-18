@@ -53,6 +53,10 @@ export class WebServer {
             app.use(route.prefix, route.router);
         })
 
+        app.use((req, res, next) => {
+            res.status( 404 ).end();
+        });
+
         // start server
 
         WebServer.initialized = true;
