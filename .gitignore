@@ -2,4 +2,6 @@ node_modules
 dist
 public
 yarn.lock
+yarn-error.log
+npm-error.log
 package-json.lock
