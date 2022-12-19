@@ -21,6 +21,7 @@
     "@types/jquery": "^3.5.14",
     "@types/lodash": "^4.14.191",
     "@types/mime-types": "^2.1.1",
+    "@types/mongoose": "^5.11.97",
     "@types/node": "^18.11.11",
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.0.9",

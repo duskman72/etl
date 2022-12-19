@@ -32,9 +32,9 @@ ApiRouter.get("/data-source-types", async (_req, res) => {
 ApiRouter.get("/data-source-types/:id", async (req, res) => {
     const item = await DataSourceType.findOne({_id: req.params.id}).populate("dataSources");
     if( item ) {
-        let config = undefined;
+        let typeConfig = undefined;
         if( SourceTypes[item.typeName] ) {
-            config = (new SourceTypes[item.typeName]).config()
+            typeConfig = (new SourceTypes[item.typeName]).config()
         }
         res.status(200).json({item: {
             _id: item._id,
@@ -42,7 +42,7 @@ ApiRouter.get("/data-source-types/:id", async (req, res) => {
             typeName: item.typeName,
             createdAt: item.createdAt,
             dataSources: item.dataSources,
-            config
+            config: typeConfig
         }});
         return;
     }
@@ -52,9 +52,16 @@ ApiRouter.get("/data-source-types/:id", async (req, res) => {
 ApiRouter.delete("/data-source-types/:id", async (req, res) => {
     const item = await DataSourceType.findOne({_id: req.params.id});
     if( item ) {
-        await DataSource.deleteMany({
-            id: item.dataSources.map(src => src.id)
-        })
+        const dataSources = await DataSource.find({
+            "type": item._id
+        });
+        
+        if( dataSources.length ) {
+            for( const ds of dataSources ) {
+                await ds.delete();
+            }
+        }
+
         item.delete();
         res.status(200).end();
         return;
@@ -84,9 +91,9 @@ ApiRouter.get("/data-sources", async (_req, res) => {
     const items = await DataSource.find().populate("type");
     const responseItems = items.map( item => {
         let type: any = item.type;
-        let config = undefined;
+        let typeConfig = undefined;
         if( SourceTypes[type?.typeName] ) {
-            config = (new SourceTypes[type.typeName]).config()
+            typeConfig = (new SourceTypes[type.typeName]).config()
         }
 
         return {
@@ -99,7 +106,7 @@ ApiRouter.get("/data-sources", async (_req, res) => {
                 _id: type._id,
                 typeName: type.typeName,
                 createdAt: type.createdAt,
-                config
+                config: typeConfig
             } : null,
             createdAt: item.createdAt
         }
@@ -111,8 +118,12 @@ ApiRouter.get("/data-sources", async (_req, res) => {
 ApiRouter.delete("/data-sources/:id", async (req, res) => {
     const item = await DataSource.findOne({_id: req.params.id});
     if( item ) {
-        // TODO delete from DataSourceType
-        item.delete();
+        const type = await DataSourceType.findOne({_id: item.type._id});
+        if( type ) {
+            type.dataSources = type.dataSources.filter( ds => ds.id != item._id);
+            await type.save();
+        }
+        await item.delete();
         res.status(200).end();
         return;
     }
@@ -123,8 +134,6 @@ ApiRouter.post("/data-sources", async (req, res) => {
     const typeId = req.body?.typeId;
     const name = req?.body?.name;
     const config = req?.body?.config;
-
-    console.log( config )
 
     const type = await DataSourceType.findOne({_id: typeId});
     if( !type ) {
