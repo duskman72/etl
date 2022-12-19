@@ -120,7 +120,7 @@ ApiRouter.delete("/data-sources/:id", async (req, res) => {
     if( item ) {
         const type = await DataSourceType.findOne({_id: item.type._id});
         if( type ) {
-            type.dataSources = type.dataSources.filter( ds => ds.id != item._id);
+            type.dataSources.pull({_id: item._id});
             await type.save();
         }
         await item.delete();
