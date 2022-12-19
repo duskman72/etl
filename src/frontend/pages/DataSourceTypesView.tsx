@@ -11,6 +11,7 @@ export const DataSourceTypesView = () => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
+    const [dialogError, setDialogError] = useState(null);
     const nameRef = useRef<HTMLInputElement>();
     const typeNameRef = useRef<HTMLInputElement>();
 
@@ -54,12 +55,17 @@ export const DataSourceTypesView = () => {
     }
 
     const addItem = () => {
+        setDialogError( null );
         const name = nameRef.current.value?.trim();
         const typeName = typeNameRef.current.value?.trim();
 
+        if( name.length <= 5 ) {
+            setDialogError( "Error: name must be at least 5 characters");
+            return;
+        }
+
         const el = document.querySelector("#addSourceTypeDialog");
         const modal = Modal.getInstance(el);
-        modal.hide();
 
         $.ajax({
             url: "/api/data-source-types",
@@ -68,10 +74,12 @@ export const DataSourceTypesView = () => {
             data: JSON.stringify({name, typeName})
         })
         .done(() => {
+            modal.hide();
             refresh();
         })
         .fail(() => {
             // TBD show error to user
+            modal.hide();
         })
     }
 
@@ -79,6 +87,8 @@ export const DataSourceTypesView = () => {
         const el = document.querySelector("#addSourceTypeDialog");
         const modal = Modal.getOrCreateInstance(el);
         modal.show();
+
+        setDialogError( null );
 
         if( nameRef )
             nameRef.current.value = "";
@@ -101,6 +111,12 @@ export const DataSourceTypesView = () => {
                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div className="modal-body">
+                    {
+                        dialogError &&
+                        <div className="alert alert-sm alert-danger">
+                            {dialogError}
+                        </div>
+                    }
                     <div className="flex flex-column mb-3">
                         <label className="form-label mb-1 fw-bolder">Source Name</label>
                         <input type="text"  onKeyUp={(e: any) => {
