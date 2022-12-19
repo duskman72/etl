@@ -93,6 +93,7 @@ ApiRouter.get("/data-sources", async (_req, res) => {
             _id: item._id,
             name: item.name,
             active: item.active || "false",
+            config: item.config,
             type: type ? {
                 active: type.active || "false",
                 _id: type._id,
@@ -120,7 +121,10 @@ ApiRouter.delete("/data-sources/:id", async (req, res) => {
 
 ApiRouter.post("/data-sources", async (req, res) => {
     const typeId = req.body?.typeId;
-    const name = req?.body.name;
+    const name = req?.body?.name;
+    const config = req?.body?.config;
+
+    console.log( config )
 
     const type = await DataSourceType.findOne({_id: typeId});
     if( !type ) {
@@ -131,13 +135,13 @@ ApiRouter.post("/data-sources", async (req, res) => {
     const source = new DataSource();
     source.type = typeId;
     source.name = name;
-    // TODO save config
+    source.config = config;
     await source.save();
 
     type.dataSources.push( source );
     await type.save();
 
-    res.status(201);
+    res.status(201).end();
 });
 
 /************************************************************************/

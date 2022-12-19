@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { HTMLAttributes, PropsWithChildren, useEffect, useRef, useState } from "react";
 
-export const CredentialsSelect = () => {
+export const CredentialsSelect = (props: {name: string}) => {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
@@ -29,7 +29,7 @@ export const CredentialsSelect = () => {
     if( error ) return <div className="alert alert-sm alert-danger">Unable to load credentials list.</div>
     if( items?.length === 0 ) return <div className="alert alert-sm alert-warning">There are no credentials configured.</div>
 
-    return <select className="form-control form-control-sm form-select">
+    return <select className="form-control form-control-sm form-select" name={props.name}>
         <>
             <option value="">Please Choose...</option>
             {

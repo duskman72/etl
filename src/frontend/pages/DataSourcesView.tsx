@@ -13,7 +13,9 @@ export const DataSourcesView = () => {
     const [loading, setLoading] = useState(false);
     const [dataSourceTypesLoading, setDataSourceTypesLoading] = useState(false);
     const [error, setError] = useState(false);
+    const [dialogError, setDialogError] = useState(null);
     const [wizardStep, setWizardStep] = useState(0);
+    const [config, setConfig] = useState({});
     const nameRef = useRef<HTMLInputElement>();
     const selectRef = useRef<HTMLSelectElement>();
 
@@ -74,10 +76,11 @@ export const DataSourcesView = () => {
         });
     }
 
-    const addItem = () => {
-        const select2 = selectRef.current;
-        const typeId = select2.options[select2.selectedIndex].value;
-        const name = nameRef.current.value;
+    const addItem = (configValues) => {
+        setWizardStep( 0 );
+        setSelectedDataSourceType( null );
+        setDialogError( null );
+        setConfig({});
 
         const el = document.querySelector("#addSourceDialog");
         const modal = Modal.getInstance(el);
@@ -87,10 +90,7 @@ export const DataSourcesView = () => {
             url: "/api/data-sources",
             method: "post",
             contentType: "application/json",
-            data: JSON.stringify({
-                name,
-                typeId
-            })
+            data: JSON.stringify({...configValues})
         })
         .done(() => {
            refresh();
@@ -103,6 +103,8 @@ export const DataSourcesView = () => {
     const showAddDialog = () => {
         setWizardStep( 0 );
         setSelectedDataSourceType( null );
+        setDialogError( null );
+        setConfig({});
         
         const el = document.querySelector("#addSourceDialog");
         const modal = Modal.getOrCreateInstance(el);
@@ -110,7 +112,7 @@ export const DataSourcesView = () => {
 
         loadDataSourceTypes();
 
-        if( nameRef )
+        if( nameRef && nameRef.current )
             nameRef.current.value = "";
     }
 
@@ -133,7 +135,7 @@ export const DataSourcesView = () => {
             }
             {
                 field.type === "credentials-mgr" &&
-                <CredentialsSelect />
+                <CredentialsSelect name={field.name} />
             }
         </div>
     }
@@ -143,7 +145,7 @@ export const DataSourcesView = () => {
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h6 id="addSourceDialogLabel" className="fs-8">Add Data Source of type {wizardStep === 1 ? selectedDataSourceType.typeName : ""}</h6>
+                        <h6 id="addSourceDialogLabel" className="fs-8">Add Data Source{wizardStep === 1 ? ` of type ${selectedDataSourceType.typeName}` : ""}</h6>
                         {
                             !dataSourceTypesLoading &&
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -151,29 +153,49 @@ export const DataSourcesView = () => {
                     </div>
                     <div className="modal-body">
                         {
+                            dialogError &&
+                            <div className="alert alert-sm alert-danger">
+                                {dialogError}
+                            </div>
+                        }
+                        {
                             !dataSourceTypesLoading && wizardStep === 0 &&
                             <>
-                                <div className="flex flex-column mb-3">
-                                    <label className="form-label mb-1 fw-bolder">Display Name</label>
-                                    <input type="text" ref={nameRef} className="form-control form-control-sm" />
-                                </div>
+                                {
+                                    dataSourceTypes?.length > 0 &&
+                                    <div className="flex flex-column mb-3">
+                                        <label className="form-label mb-1 fw-bolder">Display Name <span className="text-danger">*</span></label>
+                                        <input type="text" ref={nameRef} className="form-control form-control-sm" />
+                                    </div>
+                                }
                                 <div className="flex flex-column">
-                                    <label className="form-label mb-1 fw-bolder">TypeName</label>
-                                    <select onChange={() => {
-                                        setSelectedDataSourceType(() => {
-                                            const typeId = selectRef.current.options[selectRef.current.selectedIndex]?.value;
-                                            return dataSourceTypes.find(dst => dst._id === typeId);
-                                        });
-                                    }} ref={selectRef} defaultValue={""} className="form-control form-control-sm form-select">
+                                    {
+                                        dataSourceTypes?.length > 0 &&
                                         <>
-                                        <option value="">Please Choose...</option>
-                                        {
-                                            dataSourceTypes.map( dst => {
-                                                return <option key={dst._id} value={dst._id}>{dst.typeName}</option>
-                                            })
-                                        }
+                                            <label className="form-label mb-1 fw-bolder">TypeName <span className="text-danger">*</span></label>
+                                            <select onChange={() => {
+                                                setSelectedDataSourceType(() => {
+                                                    const typeId = selectRef.current.options[selectRef.current.selectedIndex]?.value;
+                                                    return dataSourceTypes.find(dst => dst._id === typeId);
+                                                });
+                                            }} ref={selectRef} defaultValue={""} className="form-control form-control-sm form-select">
+                                                <>
+                                                <option value="">Please Choose...</option>
+                                                {
+                                                    dataSourceTypes.map( dst => {
+                                                        return <option key={dst._id} value={dst._id}>{dst.typeName}</option>
+                                                    })
+                                                }
+                                                </>
+                                            </select>
                                         </>
-                                    </select>
+                                    }
+                                    {
+                                        dataSourceTypes?.length === 0 &&
+                                        <div className="alert alert-sm alert-warning">
+                                            There are no data source types configured
+                                        </div>
+                                    }
                                 </div>
                             </>
                         }
@@ -189,31 +211,101 @@ export const DataSourcesView = () => {
                             </>
                         }
                     </div>
-
                     {
                         !dataSourceTypesLoading &&
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="button" className="btn btn-primary" onClick={() => {
-                                switch( wizardStep ) {
-                                    case 0:
-                                        if( selectedDataSourceType ) {
-                                            setWizardStep( 1 );
-                                        }
-                                        break;
+                            {
+                                dataSourceTypes?.length > 0 &&
+                                <button type="button" className="btn btn-primary" onClick={() => {
+                                    switch( wizardStep ) {
+                                        case 0:
+                                            const name = nameRef.current.value.trim();
+                                            setDialogError( null );
+                                            if( name.length < 4 ) {
+                                                setDialogError("Error: Display name must be at least 4 characters");
+                                                return;
+                                            }
 
-                                    case 1:
-                                        // SAVE TO DATABASE
-                                        break;
+                                            if( !selectedDataSourceType ) {
+                                                setDialogError("Error: Please select a data source type");
+                                                return;
+                                            }
+
+                                            if( !selectedDataSourceType.config ) {
+                                                setDialogError("Error: Missing config in selected DataSourceType");
+                                                return;
+                                            }
+
+                                            if( !selectedDataSourceType.config.formFields ) {
+                                                setDialogError("Error: No form fields in selected DataSourceType");
+                                                return;
+                                            }
+
+                                            if( !selectedDataSourceType.config.formFields.general ) {
+                                                setDialogError("Error: No form fields in selected DataSourceType");
+                                                return;
+                                            }
+
+                                            if( selectedDataSourceType.config.formFields.general.length === 0 ) {
+                                                setDialogError("Error: No form fields in selected DataSourceType");
+                                                return;
+                                            }
+
+                                            setConfig(prev => {
+                                                return {
+                                                    ...prev,
+                                                    typeId: selectedDataSourceType._id,
+                                                    name
+                                                }
+                                            })
+                                            setWizardStep( 1 );
+
+                                            break;
+    
+                                        case 1:
+                                            setDialogError( null )
+                                            const configuredFields = selectedDataSourceType.config.formFields.general.map(item => {
+                                                const domNode: any = document.querySelector(`[name=${item.name}]`) || {};
+                                                return {
+                                                    name: item.name,
+                                                    label: item.label,
+                                                    required: item.required,
+                                                    value: (""+(domNode.value || "")).trim()
+                                                }
+                                            });
+
+                                            const requiredFields = configuredFields.filter( field => field.required );
+                                            for( const rf of requiredFields ) {
+                                                if( rf.value.length === 0 ) {
+                                                    setDialogError(`Error: Missing value for field ${rf.label}`);
+                                                    return;
+                                                }
+                                            }
+
+                                            // SAVE TO DATABASE
+                                            const fieldMap = {};
+                                            for( const field of configuredFields) {
+                                                console.log( field )
+                                                fieldMap[field.name] = field.value
+                                            }
+
+                                            addItem( {
+                                                ...config,
+                                                config: fieldMap
+                                            } );
+                                            
+                                            break;
+                                    }
+                                }}>
+                                {
+                                    wizardStep === 0 && "Next"
                                 }
-                            }}>
-                            {
-                                wizardStep === 0 && "Next"
+                                {
+                                    wizardStep === 1 && "Save"
+                                }
+                                </button>
                             }
-                            {
-                                wizardStep === 1 && "Save"
-                            }
-                            </button>
                         </div>
                     }
                 </div>
@@ -263,7 +355,7 @@ export const DataSourcesView = () => {
                 items?.length > 0 &&
                 <div className="data-table">
                     <div className="row header-row">
-                        <div className="table-column table-header col-2">ID</div>
+                        <div className="table-column table-header col">ID</div>
                         <div className="table-column table-header col">NAME</div>
                         <div className="table-column table-header col">TYPENAME</div>
                         <div className="table-column table-header col">CREATED</div>
@@ -272,7 +364,7 @@ export const DataSourcesView = () => {
                     {
                         items.map( item => {
                             return <div key={item._id} className="row">
-                                <div className="table-column col-2">
+                                <div className="table-column col">
                                     {item._id.toUpperCase()}
                                 </div>
                                 <div className="table-column col">

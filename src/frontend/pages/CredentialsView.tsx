@@ -8,16 +8,16 @@ import { TrashIcon } from "../core/icons/TrashIcon";
 const ApikeyConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
     return <>
         <div className="flex flex-column mb-3">
-            <label className="form-label mb-1 fw-bolder">API Key Name</label>
-            <input ref={props.refObjects[0]} name="name" type="text" className="form-control form-control-sm" />
+            <label className="form-label mb-1 fw-bolder">API Key Name <span className="text-danger">*</span></label>
+            <input ref={props.refObjects[0]} name="name" data-display-name="API Key Name" data-required={true} type="text" className="form-control form-control-sm" />
         </div>
         <div className="flex flex-column mb-3">
-            <label className="form-label mb-1 fw-bolder">API Key</label>
-            <input ref={props.refObjects[1]} type="text" name="value" className="form-control form-control-sm" />
+            <label className="form-label mb-1 fw-bolder">API Key <span className="text-danger">*</span></label>
+            <input ref={props.refObjects[1]} type="text" data-display-name="API Key" data-required={true} name="value" className="form-control form-control-sm" />
         </div>
         <div className="flex flex-column mb-3">
-            <label className="form-label mb-1 fw-bolder">API Key Location</label>
-            <select ref={props.refObjects[2]} defaultValue={""} className="form-control form-control-sm form-select">
+            <label className="form-label mb-1 fw-bolder">API Key Location <span className="text-danger">*</span></label>
+            <select ref={props.refObjects[2]} defaultValue={""} data-required={true} data-display-name="API Key Location" name="location" className="form-control form-control-sm form-select">
                 <option value="">Please Choose...</option>
                 <option value="header">Http Header</option>
                 <option value="query-string">Query String</option>
@@ -29,8 +29,8 @@ const ApikeyConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
 const BearerConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
     return <>
         <div className="flex flex-column mb-3">
-            <label className="form-label mb-1 fw-bolder">JWT / Bearer Token</label>
-            <input ref={props.refObjects[0]} type="text" name="token" className="form-control form-control-sm" />
+            <label className="form-label mb-1 fw-bolder">JWT / Bearer Token <span className="text-danger">*</span></label>
+            <input ref={props.refObjects[0]} type="text" data-required={true} name="token" data-display-name="JWT / Bearer Token" className="form-control form-control-sm" />
         </div>
     </>
 }
@@ -38,12 +38,12 @@ const BearerConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
 const UserConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
     return <>
         <div className="flex flex-column mb-3">
-            <label className="form-label mb-1 fw-bolder">Username</label>
-            <input ref={props.refObjects[0]} type="text" name="user" className="form-control form-control-sm" />
+            <label className="form-label mb-1 fw-bolder">Username <span className="text-danger">*</span></label>
+            <input ref={props.refObjects[0]} type="text" data-required={true} name="user" data-display-name="Username" className="form-control form-control-sm" />
         </div>
         <div className="flex flex-column mb-3">
-            <label className="form-label mb-1 fw-bolder">Password</label>
-            <input ref={props.refObjects[1]} type="text" name="password" className="form-control form-control-sm" />
+            <label className="form-label mb-1 fw-bolder">Password <span className="text-danger">*</span></label>
+            <input ref={props.refObjects[1]} type="text" data-required={true} name="password" data-display-name="Password" className="form-control form-control-sm" />
         </div>
     </>
 }
@@ -51,12 +51,12 @@ const UserConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
 const BasicConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
     return <>
         <div className="flex flex-column mb-3">
-            <label className="form-label mb-1 fw-bolder">Username</label>
-            <input ref={props.refObjects[0]} type="text" name="user" className="form-control form-control-sm" />
+            <label className="form-label mb-1 fw-bolder">Username <span className="text-danger">*</span></label>
+            <input ref={props.refObjects[0]} type="text" data-required={true} name="user" data-display-name="Username" className="form-control form-control-sm" />
         </div>
         <div className="flex flex-column mb-3">
-            <label className="form-label mb-1 fw-bolder">Password</label>
-            <input ref={props.refObjects[1]} type="text" name="password" className="form-control form-control-sm" />
+            <label className="form-label mb-1 fw-bolder">Password <span className="text-danger">*</span></label>
+            <input ref={props.refObjects[1]} type="text" data-required={true} name="password" data-display-name="Password" className="form-control form-control-sm" />
         </div>
     </>
 }
@@ -64,16 +64,16 @@ const BasicConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
 const OAuthConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
     return <>
         <div className="flex flex-column mb-3">
-            <label className="form-label mb-1 fw-bolder">OAuth Client ID</label>
-            <input ref={props.refObjects[0]} type="text" name="client-id" className="form-control form-control-sm" />
+            <label className="form-label mb-1 fw-bolder">OAuth Client ID <span className="text-danger">*</span></label>
+            <input ref={props.refObjects[0]} type="text" data-required={true} name="client-id" data-display-name="OAuth Client ID" className="form-control form-control-sm" />
         </div>
         <div className="flex flex-column mb-3">
-            <label className="form-label mb-1 fw-bolder">OAuth Client Secret</label>
-            <input ref={props.refObjects[1]} type="text" name="client-secret" className="form-control form-control-sm" />
+            <label className="form-label mb-1 fw-bolder">OAuth Client Secret <span className="text-danger">*</span></label>
+            <input ref={props.refObjects[1]} type="text" data-required={true} name="client-secret" data-display-name="OAuth Client Secret" className="form-control form-control-sm" />
         </div>
         <div className="flex flex-column mb-3">
-            <label className="form-label mb-1 fw-bolder">OAuth Token URL</label>
-            <input ref={props.refObjects[2]} type="text" name="token-url" className="form-control form-control-sm" />
+            <label className="form-label mb-1 fw-bolder">OAuth Token Url <span className="text-danger">*</span></label>
+            <input ref={props.refObjects[2]} type="text" data-required={true} name="token-url" data-display-name="OAuth Token Url" className="form-control form-control-sm" />
         </div>
     </>
 }
@@ -84,6 +84,7 @@ export const CredentialsView = () => {
     const [selectedCredentailsType, setSelectedCredentailsType] = useState(null);
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [dialogError, setDialogError] = useState(null);
 
     const nameRef = useRef<HTMLInputElement>();
     const selectRef = useRef<HTMLSelectElement>();
@@ -129,10 +130,15 @@ export const CredentialsView = () => {
     }
 
     const showAddDialog = () => {
+        setSelectedCredentailsType( null );
+        setDialogError( null );
+
         const el = document.querySelector("#addCredentialsDialog");
         const modal = Modal.getOrCreateInstance(el);
+        modal.show();
 
-        setSelectedCredentailsType( null );
+        nameRef.current.value = "";
+
         if( selectRef.current ) {
             selectRef.current.selectedIndex = 0;
         }
@@ -141,24 +147,41 @@ export const CredentialsView = () => {
             const refObject: any = ref.current;
             if( refObject ) refObject.value = "";
         });
-        modal.show();
     }
 
     const onDialogOk = () => {
+        setDialogError( null );
         const el = document.querySelector("#addCredentialsDialog");
         const modal = Modal.getOrCreateInstance( el );
 
         const config = {};
-        const name = nameRef.current.value;
+        const name = nameRef.current.value?.trim();
         const type = selectedCredentailsType;
 
-        refObjects.forEach( ref => {
+        if( name.length < 4 ) {
+            setDialogError("Error: name must be at least 4 characters");
+            return;
+        }
+
+        if( !type ) {
+            setDialogError("Error: credentials type must be set");
+            return;
+        }
+
+        for(const ref of refObjects ) {
             const refObject: any = ref.current;
             if( refObject ) {
                 const key = refObject.getAttribute("name");
-                config[key] = refObject.value
+                const required = refObject.getAttribute("data-required");
+                const value = refObject.value.trim();
+                if( required && !value ) {
+                    const displayName = refObject.getAttribute("data-display-name");
+                    setDialogError(`Error: Missing value for field ${displayName}`);
+                    return;
+                }
+                config[key] = value;
             }
-        });
+        }
         modal.hide();
 
         // TODO send values to database
@@ -187,13 +210,19 @@ export const CredentialsView = () => {
 
     return <Page>
         <Dialog id="addCredentialsDialog" title="Add Credentials" onOk={onDialogOk}>
+            {
+                dialogError &&
+                <div className="alert alert-sm alert-danger">
+                    {dialogError}
+                </div>
+            }
             <div className="flex flex-column mb-3">
-                <label className="form-label mb-1 fw-bolder">Name</label>
-                <input type="text" ref={nameRef} className="form-control form-control-sm" />
+                <label className="form-label mb-1 fw-bolder">Name <span className="text-danger">*</span></label>
+                <input type="text" name="name" ref={nameRef} className="form-control form-control-sm" />
             </div>
             <div className="flex flex-column mb-3">
-                <label className="form-label mb-1 fw-bolder">Credentials Type</label>
-                <select ref={selectRef} className="form-control form-control-sm form-select" onChange={(event) => {
+                <label className="form-label mb-1 fw-bolder">Credentials Type <span className="text-danger">*</span></label>
+                <select ref={selectRef} name="type" className="form-control form-control-sm form-select" onChange={(event) => {
                     const index = selectRef.current.selectedIndex;
                     let type = null;
                     if( index > 0 ) {
@@ -275,7 +304,7 @@ export const CredentialsView = () => {
                 <div className="data-table">
                     <div className="row header-row">
                         
-                        <div className="table-column table-header col-2">ID</div>
+                        <div className="table-column table-header col">ID</div>
                         <div className="table-column table-header col">NAME</div>
                         <div className="table-column table-header col">TYPE</div>
                         <div className="table-column table-header col">CREATED</div>
@@ -284,7 +313,7 @@ export const CredentialsView = () => {
                     {
                         items.map( item => {
                             return <div key={item._id} className="row">
-                                <div className="table-column col-2">
+                                <div className="table-column col">
                                     {item._id.toUpperCase()}
                                 </div>
                                 <div className="table-column col">

@@ -59,8 +59,8 @@ export const DataSourceTypesView = () => {
         const name = nameRef.current.value?.trim();
         const typeName = typeNameRef.current.value?.trim();
 
-        if( name.length <= 5 ) {
-            setDialogError( "Error: name must be at least 5 characters");
+        if( name.length < 4 ) {
+            setDialogError( "Error: name must be at least 4 characters");
             return;
         }
 
@@ -84,16 +84,15 @@ export const DataSourceTypesView = () => {
     }
 
     const showAddDialog = () => {
+        setDialogError( null );
         const el = document.querySelector("#addSourceTypeDialog");
         const modal = Modal.getOrCreateInstance(el);
         modal.show();
 
-        setDialogError( null );
-
-        if( nameRef )
+        if( nameRef && nameRef.current )
             nameRef.current.value = "";
 
-        if( typeNameRef )
+        if( typeNameRef && typeNameRef.current )
             typeNameRef.current.value = "";
     }
     
@@ -118,14 +117,14 @@ export const DataSourceTypesView = () => {
                         </div>
                     }
                     <div className="flex flex-column mb-3">
-                        <label className="form-label mb-1 fw-bolder">Source Name</label>
+                        <label className="form-label mb-1 fw-bolder">Source Type Name <span className="text-danger">*</span></label>
                         <input type="text"  onKeyUp={(e: any) => {
                             const text = e.target.value.trim(); 
                             typeNameRef.current.value = upperFirst(camelCase(text.toUpperCase()));  
                         }} ref={nameRef} className="form-control form-control-sm" />
                     </div>
                     <div className="flex flex-column">
-                        <label className="form-label mb-1 fw-bolder">Type Name</label>
+                        <label className="form-label mb-1 fw-bolder">Generated Type Name</label>
                         <input type="text" ref={typeNameRef} disabled className="form-control form-control-sm disabled" />
                     </div>
                 </div>
@@ -181,7 +180,7 @@ export const DataSourceTypesView = () => {
                 <div className="data-table">
                     <div className="row header-row">
                         <div className="table-column table-header col-1">&nbsp;</div>
-                        <div className="table-column table-header col-2">ID</div>
+                        <div className="table-column table-header col">ID</div>
                         <div className="table-column table-header col">TYPENAME</div>
                         <div className="table-column table-header col-1">IN USE</div>
                         <div className="table-column table-header col">CREATED</div>
@@ -200,7 +199,7 @@ export const DataSourceTypesView = () => {
                                         <CheckCircleFillIcon title="Type is valid" size={14} className="text-success"/>
                                     }
                                 </div>
-                                <div className="table-column col-2">
+                                <div className="table-column col">
                                     {item._id.toUpperCase()}
                                 </div>
                                 <div className="table-column col">
