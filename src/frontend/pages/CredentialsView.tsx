@@ -112,6 +112,22 @@ export const CredentialsView = () => {
         })
     }
 
+    const deleteItem = () => {
+        const modal = Modal.getOrCreateInstance(document.querySelector("#deleteCredentialsDialog"));
+        modal.hide();
+
+        $.ajax({
+            url: "/api/credentials/" + selectedItem._id,
+            method: "delete"
+        })
+        .done(() => {
+            refresh();
+        })
+        .fail(() => {
+            // TODO show error to user
+        });
+    }
+
     const showAddDialog = () => {
         const el = document.querySelector("#addCredentialsDialog");
         const modal = Modal.getOrCreateInstance(el);
@@ -215,6 +231,24 @@ export const CredentialsView = () => {
             }
         </Dialog>
 
+        <div className={`modal fade`} id="deleteCredentialsDialog" tabIndex={1} aria-labelledby="deleteCredentialsDialogLabel" aria-hidden="true">
+            <div className="modal-dialog">
+                <div className="modal-content">
+                <div className="modal-header">
+                    <h6 id="deleteCredentialsDialogLabel" className="fs-8">Delete Credentials</h6>
+                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div className="modal-body">
+                    Do you realy want to delete this credentials?
+                </div>
+                <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" className="btn btn-danger" onClick={() => deleteItem()}>Delete</button>
+                </div>
+                </div>
+            </div>
+        </div>
+
         <div className="flex flex-column p-2">
             <h6 className="mb-3 flex align-items-center">
                 <span className="me-3">Credentials</span>
@@ -266,7 +300,7 @@ export const CredentialsView = () => {
                                 <div className="table-column col-1">
                                     <TrashIcon className="text-danger" size={14} onClick={() => {
                                         setSelectedItem( item );
-                                        const modal = Modal.getOrCreateInstance(document.querySelector("#deleteSourceTypeDialog"));
+                                        const modal = Modal.getOrCreateInstance(document.querySelector("#deleteCredentialsDialog"));
                                         modal.show();
                                     }}/>
                                 </div>

@@ -167,6 +167,16 @@ ApiRouter.post("/credentials", async (req, res) => {
     res.status(201).json( cred );
 })
 
+ApiRouter.delete("/credentials/:id", async (req, res) => {
+    const item = await Credentials.findOne({_id: req.params.id});
+    if( item ) {
+        item.delete();
+        res.status(200).end();
+        return;
+    }
+    res.status(404).end();
+})
+
 /*
 ApiRouter.post("/data-sources/types", async (req, res) => {
     const name = req.body?.name;
