@@ -15,6 +15,14 @@ const ApikeyConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
             <label className="form-label mb-1 fw-bolder">API Key</label>
             <input ref={props.refObjects[1]} type="text" name="value" className="form-control form-control-sm" />
         </div>
+        <div className="flex flex-column mb-3">
+            <label className="form-label mb-1 fw-bolder">API Key Location</label>
+            <select ref={props.refObjects[2]} defaultValue={""} className="form-control form-control-sm form-select">
+                <option value="">Please Choose...</option>
+                <option value="header">Http Header</option>
+                <option value="query-string">Query String</option>
+            </select>
+        </div>
     </>
 }
 
@@ -28,6 +36,19 @@ const BearerConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
 }
 
 const UserConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
+    return <>
+        <div className="flex flex-column mb-3">
+            <label className="form-label mb-1 fw-bolder">Username</label>
+            <input ref={props.refObjects[0]} type="text" name="user" className="form-control form-control-sm" />
+        </div>
+        <div className="flex flex-column mb-3">
+            <label className="form-label mb-1 fw-bolder">Password</label>
+            <input ref={props.refObjects[1]} type="text" name="password" className="form-control form-control-sm" />
+        </div>
+    </>
+}
+
+const BasicConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
     return <>
         <div className="flex flex-column mb-3">
             <label className="form-label mb-1 fw-bolder">Username</label>
@@ -167,7 +188,8 @@ export const CredentialsView = () => {
                     <option value={""}>Please Choose...</option>
                     <option value="apikey">Api Key</option>
                     <option value="oauth">OAuth v2</option>
-                    <option value="bearer">JWT / Bearer Token</option>
+                    <option value="bearer">Auth Bearer</option>
+                    <option value="basic">Auth Basic</option>
                     <option value="user">Username &amp; Password</option>
                 </select>
             </div>
@@ -186,6 +208,10 @@ export const CredentialsView = () => {
             {
                 selectedCredentailsType === "bearer" &&
                 <BearerConfigFields refObjects={refObjects} />
+            }
+            {
+                selectedCredentailsType === "basic" &&
+                <BasicConfigFields refObjects={refObjects} />
             }
         </Dialog>
 
@@ -217,6 +243,7 @@ export const CredentialsView = () => {
                         
                         <div className="table-column table-header col-2">ID</div>
                         <div className="table-column table-header col">NAME</div>
+                        <div className="table-column table-header col">TYPE</div>
                         <div className="table-column table-header col">CREATED</div>
                         <div className="table-column table-header col-1">&nbsp;</div>
                     </div>
@@ -228,6 +255,9 @@ export const CredentialsView = () => {
                                 </div>
                                 <div className="table-column col">
                                     {item.name}
+                                </div>
+                                <div className="table-column col">
+                                    {item.type}
                                 </div>
                                 
                                 <div className="table-column col">

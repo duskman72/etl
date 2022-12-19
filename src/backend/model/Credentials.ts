@@ -7,7 +7,8 @@ export enum SupportedCredentialsTypes {
     USER = "user",
     OAUTH = "oauth",
     BEARER = "bearer",
-    UNKNOWN = "unknown"
+    BASIC = "basic",
+    NONE = "none"
 }
 
 export const CredentialsSchema = new Schema({
@@ -16,7 +17,7 @@ export const CredentialsSchema = new Schema({
     type: {
         type: String,
         enum: SupportedCredentialsTypes,
-        default: SupportedCredentialsTypes.UNKNOWN
+        default: SupportedCredentialsTypes.NONE
     },
     config: Object,
     active: Boolean,

@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { Page } from "../core/Page";
 import { Modal } from "bootstrap";
 import { AlertIcon } from "../core/icons/AlertIcon";
-import { Select2 } from "select2-react-component";
 import { TrashIcon } from "../core/icons/TrashIcon";
 import { CredentialsSelect } from "../core/CredentialsSelect";
 
@@ -16,7 +15,7 @@ export const DataSourcesView = () => {
     const [error, setError] = useState(false);
     const [wizardStep, setWizardStep] = useState(0);
     const nameRef = useRef<HTMLInputElement>();
-    const selectRef = useRef<Select2>();
+    const selectRef = useRef<HTMLSelectElement>();
 
     const refresh = () => {
         setItems([]);
@@ -76,8 +75,8 @@ export const DataSourcesView = () => {
     }
 
     const addItem = () => {
-        const select2: any = selectRef.current;
-        const typeId = select2.option?.value;
+        const select2 = selectRef.current;
+        const typeId = select2.options[select2.selectedIndex].value;
         const name = nameRef.current.value;
 
         const el = document.querySelector("#addSourceDialog");
@@ -133,8 +132,6 @@ export const DataSourcesView = () => {
                 <input type="text" name={field.name} className="form-control form-control-sm" />
             }
             {
-                // TODO check for credentials to apply
-                // show dropdown with list or button to configure new credentials
                 field.type === "credentials-mgr" &&
                 <CredentialsSelect />
             }
@@ -162,14 +159,21 @@ export const DataSourcesView = () => {
                                 </div>
                                 <div className="flex flex-column">
                                     <label className="form-label mb-1 fw-bolder">TypeName</label>
-                                    <Select2 ref={selectRef} placeholder="Please choose..." data={
-                                        dataSourceTypes.map( dst => {
-                                            return {
-                                                label: dst.typeName,
-                                                value: dst._id
-                                            }
-                                        })
-                                    }/>
+                                    <select onChange={() => {
+                                        setSelectedDataSourceType(() => {
+                                            const typeId = selectRef.current.options[selectRef.current.selectedIndex]?.value;
+                                            return dataSourceTypes.find(dst => dst._id === typeId);
+                                        });
+                                    }} ref={selectRef} defaultValue={""} className="form-control form-control-sm form-select">
+                                        <>
+                                        <option value="">Please Choose...</option>
+                                        {
+                                            dataSourceTypes.map( dst => {
+                                                return <option key={dst._id} value={dst._id}>{dst.typeName}</option>
+                                            })
+                                        }
+                                        </>
+                                    </select>
                                 </div>
                             </>
                         }
@@ -193,18 +197,8 @@ export const DataSourcesView = () => {
                             <button type="button" className="btn btn-primary" onClick={() => {
                                 switch( wizardStep ) {
                                     case 0:
-                                        const select2: any = selectRef.current;
-                                        const typeId = select2.option?.value;
-                                        if( typeId ) {
-                                            const type = dataSourceTypes.find(dst => {
-                                                return dst._id === typeId;
-                                            });
-                                            if( type ) {
-                                                setSelectedDataSourceType( type );
-                                                setWizardStep( 1 );
-                                            }
-                                        } else {
-                                            // TODO show error to user
+                                        if( selectedDataSourceType ) {
+                                            setWizardStep( 1 );
                                         }
                                         break;
 

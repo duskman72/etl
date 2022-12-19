@@ -1,11 +1,9 @@
-import { useEffect, useRef, useState } from "react"
-import { Select2 } from "select2-react-component";
+import { useEffect, useRef, useState } from "react";
 
 export const CredentialsSelect = () => {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
-    const selectRef = useRef();
 
     const loadCredentials = () => {
         if( loading ) return;
@@ -31,12 +29,14 @@ export const CredentialsSelect = () => {
     if( error ) return <div className="alert alert-sm alert-danger">Unable to load credentials list.</div>
     if( items?.length === 0 ) return <div className="alert alert-sm alert-warning">There are no credentials configured.</div>
 
-    return <Select2 ref={selectRef} placeholder="Please Choose..." data={
-        items.map( dst => {
-            return {
-                label: dst.name,
-                value: dst._id
+    return <select className="form-control form-control-sm form-select">
+        <>
+            <option value="">Please Choose...</option>
+            {
+                items.map( item => {
+                    return <option key={item._id} value={item._id}>{item.name}</option>
+                })
             }
-        })
-    }/>
+        </>
+    </select>
 }
