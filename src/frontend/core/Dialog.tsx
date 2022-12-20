@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect, useLayoutEffect } from "react";
+import { PropsWithChildren } from "react";
 
 export type DialogProps = {
     id: string;

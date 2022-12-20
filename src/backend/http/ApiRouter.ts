@@ -1,8 +1,6 @@
 import { Router } from "express";
-import { DataSource } from "../model/DataSource";
-import { DataSourceType } from "../model/DataSourceType";
+import { Credentials, DataSource, DataSourceType } from "../model";
 import SourceTypes from "../data-source-types";
-import { Credentials } from "../model/Credentials";
 
 export const ApiRouter = Router();
 
