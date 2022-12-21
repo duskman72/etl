@@ -7,6 +7,7 @@ import { TrashIcon } from "../core/icons/TrashIcon";
 import { CheckCircleFillIcon } from "../core/icons/CheckCircleFillIcon";
 import { AddIcon } from "../core/icons/AddIcon";
 import { RefreshIcon } from "../core/icons/RefreshIcon";
+import { PackageIcon } from "../core/icons/PackageIcon";
 
 export const DataSourceTypesView = () => {
     const [items, setItems] = useState([]);
@@ -157,7 +158,10 @@ export const DataSourceTypesView = () => {
         </div>
 
         <div className="flex flex-column p-2">
-            <h5 className="mb-3">Data Source Types</h5>
+            <h5 className="mb-3 flex align-items-center">
+                <PackageIcon size={16} className="text-blue-800 me-2" />
+                <span>Data Source Types</span>
+            </h5>
             <div className="command-bar">
                 <button className="btn btn-sm btn-default me-2 flex align-items-center" disabled={error || loading} onClick={showAddDialog}>
                     <AddIcon className={`me-1 ${error || loading ? "" : "text-primary"}`}/>

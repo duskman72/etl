@@ -6,6 +6,7 @@ import { TrashIcon } from "../core/icons/TrashIcon";
 import { CredentialsSelect } from "../core/CredentialsSelect";
 import { AddIcon } from "../core/icons/AddIcon";
 import { RefreshIcon } from "../core/icons/RefreshIcon";
+import { PackageDependendsIcon } from "../core/icons/PackageDependendsIcon";
 
 export const DataSourcesView = () => {
     const [items, setItems] = useState([]);
@@ -333,8 +334,9 @@ export const DataSourcesView = () => {
         </div>
 
         <div className="flex flex-column p-2">
-            <h5 className="mb-3 flex align-items-center mb-3">
-                <span className="me-3">Data Sources</span>
+            <h5 className="mb-3 flex align-items-center">
+                <PackageDependendsIcon size={16} className="text-blue-800 me-2" />
+                <span>Data Sources</span>
             </h5>
             <div className="command-bar">
                 <button className="btn btn-sm btn-default me-2 flex align-items-center" disabled={error || loading} onClick={showAddDialog}>

@@ -6,6 +6,7 @@ import { AlertIcon } from "../core/icons/AlertIcon";
 import { TrashIcon } from "../core/icons/TrashIcon";
 import { AddIcon } from "../core/icons/AddIcon";
 import { RefreshIcon } from "../core/icons/RefreshIcon";
+import { LockIcon } from "../core/icons/LockIcon";
 
 const ApikeyConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
     return <>
@@ -282,7 +283,8 @@ export const CredentialsView = () => {
 
         <div className="flex flex-column p-2">
             <h5 className="mb-3 flex align-items-center">
-                Credentials
+                <LockIcon size={16} className="text-amber-500 flex me-2"/>
+                <span>Credentials</span>
             </h5>
             <div className="command-bar">
                 <button className="btn btn-sm btn-default me-2 flex align-items-center" disabled={error || loading} onClick={showAddDialog}>

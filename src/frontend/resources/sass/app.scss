@@ -79,13 +79,14 @@ $border-radius: 3px;
 
 .octicon {
     fill: currentColor;
-    display: inline-block;
+    display: flex;
 
 }
 
 .alert {
     @extend .p-2;
-    border-radius: $border-radius;
+    border-radius: 0;
+    border: 0;
 
     &.alert-sm {
         @extend .p-1;
@@ -95,6 +96,10 @@ $border-radius: 3px;
         background-color: $blue-50;
         color: $blue-900;
         border-color: $blue-100;
+    }
+
+    &.alert-danger {
+        background-color: #fde7e9;
     }
 }
 
@@ -136,6 +141,19 @@ $border-radius: 3px;
 }
 .text-blue-800 {
     color: $blue-800;
+}
+
+.form-control {
+    border-radius: 0;
+    &:not(:focus) {
+        border-color: $grey-600;
+    }
+
+    &:disabled {
+        border-color: $grey-300;
+        background-color: $grey-100;
+        color: $grey-500;
+    }
 }
 
 body {
@@ -182,20 +200,9 @@ body {
         
         & .modal-content {
             --bs-modal-border-radius: 3px;
-            & input, & select {
-                border-radius: 0;
-                &:not(:focus) {
-                    border-color: $grey-600;
-                }
-            }
-    
-            & select option {
-                padding: 3px 5px;
-            }
         }
     
         & .modal-footer {
-            // background-color: $blue-grey-50;
             border-top: 0;
     
             & .btn {
@@ -360,7 +367,7 @@ body {
                     }
 
                     &[disabled] {
-                        color: $grey-200;
+                        color: $grey-600;
                     }
                 }
             }
