@@ -3,6 +3,7 @@ $blue-grey-100: #CFD8DC;
 $blue-grey-200: #B0BEC5;
 $blue-grey-300: #90A4AE;
 $blue-grey-400: #78909C;
+$blue-grey-500: #607D8B;
 $blue-grey-600: #546E7A;
 $blue-grey-700: #455A64;
 $blue-grey-800: #37474F;
@@ -19,10 +20,22 @@ $blue-700: #1976D2;
 $blue-800: #1565C0;
 $blue-900: #0D47A1;
 
+$grey-50: #FAFAFA;
+$grey-100: #F5F5F5;
+$grey-200: #EEEEEE;
+$grey-300: #E0E0E0;
+$grey-400: #BDBDBD;
+$grey-500: #9E9E9E;
+$grey-600: #757575;
+$grey-700: #616161;
+$grey-800: #424242;
+$grey-900: #212121;
+
 $amber-200: #FFE082;
 $amber-500: #FFC107;
 $amber-800: #FF8F00;
 
+$primary: #0078D4;
 $secondary: $blue-grey-100;
 
 @import "bootstrap";
@@ -88,7 +101,7 @@ $border-radius: 3px;
 .btn {
     font-weight: 400;
     --bs-btn-font-size: .75rem;
-    text-transform: uppercase;
+    //text-transform: uppercase;
     border-radius: $border-radius;
 
     &.btn-sm {
@@ -99,24 +112,6 @@ $border-radius: 3px;
 
 .cursor-pointer {
     cursor: pointer;
-}
-
-.modal-dialog {
-    & .modal-content {
-        --bs-modal-border-radius: 4px;
-    }
-
-    & .modal-footer {
-        background-color: $blue-grey-50;
-        border-top: 0;
-
-        & .btn {
-            @extend .p-0;
-            min-width: 70px;
-            height: 32px;
-            line-height: 32px;
-        }
-    }
 }
 
 .select2-selection {
@@ -150,19 +145,86 @@ body {
     padding: 0;
     background-color: #fff;
 
+    h1, h2, h3, h4, h5, h6 {
+        font-family: "Roboto", sans-serif;
+        margin: 0;
+    }
+
+    h5, h6 {
+        font-weight: 400;
+    }
+
+    .modal-dialog {
+        box-shadow: 0px 26px 58px 0px rgba(0, 0, 0, .22), 0px 5px 15px 0px rgba(0, 0, 0, .18);
+
+        h6 {
+            font-weight: 500;
+        }
+
+        & .modal-header {
+            border: 0;
+
+            & .btn-close {
+                border: 0 !important;
+                outline: 0 !important;
+                box-shadow: none !important;
+                border-radius: 0;
+
+                &:hover {
+                    background-color: $grey-200;
+                }
+
+                &:active {
+                    background-color: $grey-300;
+                }
+            }
+        }
+        
+        & .modal-content {
+            --bs-modal-border-radius: 3px;
+            & input, & select {
+                border-radius: 0;
+                &:not(:focus) {
+                    border-color: $grey-600;
+                }
+            }
+    
+            & select option {
+                padding: 3px 5px;
+            }
+        }
+    
+        & .modal-footer {
+            // background-color: $blue-grey-50;
+            border-top: 0;
+    
+            & .btn {
+                @extend .p-0;
+                border-radius: 2px;
+                min-width: 70px;
+                height: 32px;
+                line-height: 1;
+                padding: 4px 12px;
+                font-weight: 400;
+    
+                &.btn-secondary {
+                    background-color: $white;
+                    border: 1px solid $grey-700;
+                    &:hover {
+                        background-color: $grey-200;
+                    }
+
+                    &:active {
+                        background-color: $grey-300;
+                    }
+                }
+            }
+        }
+    }
+
     & .page {
         @extend .flex;
         @extend .flex-column;
-
-        h4, h5, h6 {
-            font-family: "Roboto", sans-serif;
-            font-weight: 300;
-            margin: 0;
-        }
-
-        h5 {
-            font-weight: 400;
-        }
 
         & .page-header {
             @extend .flex;
@@ -281,8 +343,12 @@ body {
                 .btn {
                     padding: 6px 8px;
                     border-radius: 0;
+                    text-transform: none;
+                    font-size: 9pt !important;
+                    font-weight: 400 !important;
+
                     &:hover {
-                        background-color: $blue-grey-50;
+                        background-color: $grey-200;
                     }
 
                     &:active, &:focus, &[disabled] {
@@ -290,11 +356,11 @@ body {
                     }
 
                     &:active {
-                        background-color: $blue-grey-100;
+                        background-color: $grey-300;
                     }
 
                     &[disabled] {
-                        color: $blue-grey-200;
+                        color: $grey-200;
                     }
                 }
             }
