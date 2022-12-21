@@ -4,6 +4,8 @@ import { Modal } from "bootstrap";
 import { AlertIcon } from "../core/icons/AlertIcon";
 import { TrashIcon } from "../core/icons/TrashIcon";
 import { CredentialsSelect } from "../core/CredentialsSelect";
+import { AddIcon } from "../core/icons/AddIcon";
+import { RefreshIcon } from "../core/icons/RefreshIcon";
 
 export const DataSourcesView = () => {
     const [items, setItems] = useState([]);
@@ -331,11 +333,19 @@ export const DataSourcesView = () => {
         </div>
 
         <div className="flex flex-column p-2">
-            <h6 className="mb-3 flex align-items-center">
+            <h5 className="mb-3 flex align-items-center mb-3">
                 <span className="me-3">Data Sources</span>
-                <button className="btn btn-sm btn-primary me-2" disabled={error || loading} onClick={showAddDialog}>Add Source</button>
-                <button className="btn btn-sm btn-default" onClick={refresh}>Refresh</button>
-            </h6>
+            </h5>
+            <div className="command-bar">
+                <button className="btn btn-sm btn-default me-2 flex align-items-center" disabled={error || loading} onClick={showAddDialog}>
+                    <AddIcon className={`me-1 ${error || loading ? "" : "text-primary"}`}/>
+                    <span>Create</span>
+                </button>
+                <button className="btn btn-sm btn-default flex align-items-center" onClick={refresh}>
+                    <RefreshIcon className="text-primary me-1"/>
+                    <span>Refresh</span>
+                </button>
+            </div>
             {
                 loading &&
                 <div className="alert alert-info">Please wait while loading...</div>
@@ -355,7 +365,6 @@ export const DataSourcesView = () => {
                 items?.length > 0 &&
                 <div className="data-table">
                     <div className="row header-row">
-                        <div className="table-column table-header col">ID</div>
                         <div className="table-column table-header col">NAME</div>
                         <div className="table-column table-header col">TYPENAME</div>
                         <div className="table-column table-header col">CREATED</div>
@@ -364,9 +373,6 @@ export const DataSourcesView = () => {
                     {
                         items.map( item => {
                             return <div key={item._id} className="row">
-                                <div className="table-column col">
-                                    {item._id.toUpperCase()}
-                                </div>
                                 <div className="table-column col">
                                     {item.name}
                                 </div>

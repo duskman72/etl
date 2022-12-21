@@ -19,8 +19,7 @@ export class JsonRequest extends DataSourceType {
                     {
                         name: "request-credentials",
                         label: "Request Credentials",
-                        type: "credentials-mgr",
-                        required: true
+                        type: "credentials-mgr"
                     }
                 ]
             }

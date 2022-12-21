@@ -1,22 +1,34 @@
 $blue-grey-50: #ECEFF1;
 $blue-grey-100: #CFD8DC;
 $blue-grey-200: #B0BEC5;
+$blue-grey-300: #90A4AE;
 $blue-grey-400: #78909C;
 $blue-grey-600: #546E7A;
 $blue-grey-700: #455A64;
+$blue-grey-800: #37474F;
+$blue-grey-900: #263238;
 
 $blue-50: #E3F2FD;
 $blue-100: #BBDEFB;
 $blue-200: #90CAF9;
+$blue-300: #64B5F6;
+$blue-400: #42A5F5;
+$blue-500: #2196F3;
+$blue-600: #1E88E5;
 $blue-700: #1976D2;
 $blue-800: #1565C0;
 $blue-900: #0D47A1;
 
+$amber-200: #FFE082;
+$amber-500: #FFC107;
+$amber-800: #FF8F00;
+
 $secondary: $blue-grey-100;
 
 @import "bootstrap";
-@import "select2-component/dist/select2.css";
+//@import "select2-component/dist/select2.css";
 @import "breadcrumb";
+@import 'material-icons/iconfont/material-icons.css';
 @import "@fontsource/roboto/latin-100.css";
 @import "@fontsource/roboto/latin-300.css";
 @import "@fontsource/roboto/latin-400.css";
@@ -85,6 +97,10 @@ $border-radius: 3px;
     }
 }
 
+.cursor-pointer {
+    cursor: pointer;
+}
+
 .modal-dialog {
     & .modal-content {
         --bs-modal-border-radius: 4px;
@@ -114,12 +130,25 @@ $border-radius: 3px;
     border-radius: 0.25rem;
 }
 
+.text-amber-200 {
+    color: $amber-200;
+}
+.text-amber-500 {
+    color: $amber-500;
+}
+.text-amber-800 {
+    color: $amber-800;
+}
+.text-blue-800 {
+    color: $blue-800;
+}
+
 body {
     font-family: "Roboto", sans-serif;
     font-size: 9pt;
     margin: 0;
     padding: 0;
-    background-color: #f9f9f9;
+    background-color: #fff;
 
     & .page {
         @extend .flex;
@@ -131,7 +160,7 @@ body {
             margin: 0;
         }
 
-        h6 {
+        h5 {
             font-weight: 400;
         }
 
@@ -139,10 +168,48 @@ body {
             @extend .flex;
             @extend .flex-row;
             @extend .align-items-center;
-            @extend .p-2;
-            max-height: 48px;
-            height: 48px;
-            background-color: #1565C0;
+            @extend .p-1;
+            max-height: 42px;
+            height: 42px;
+            background-color: #0078D4;
+
+            & .search-box {
+                @extend .flex;
+                @extend .align-items-center;
+                @extend .m-auto;
+                @extend .w-50;
+                background-color: $blue-200;
+                border-radius: $border-radius;
+                transition: background-color 250ms ease;
+
+                & .octicon {
+                    color: $blue-800;
+                }
+
+                & input {
+                    @extend .p-0;
+                    @extend .form-control;
+                    @extend .form-control-sm;
+                    min-height: auto;
+                    height: 28px;
+                    line-height: 1;
+                    outline: 0 !important;
+                    box-shadow: none !important;
+                    border: 0 none !important;
+                    background: transparent !important;
+                    font-size: 9pt;
+
+                    &::placeholder {
+                        color: $blue-800;
+                    }
+
+                    &:focus {
+                        &::placeholder {
+                            color: $blue-grey-300;
+                        }
+                    }
+                }
+            }
         }
 
         & .page-content {
@@ -158,58 +225,89 @@ body {
             }
 
             & .page-navigation {
-                @extend .navbar;
-                @extend .col-2;
-                @extend .flex;
-                @extend .flex-column;
-                align-items: flex-start;
-                background-color: #fff;
-                height: calc(100vh - 48px);
-                border-right: 1px solid #ccc;
+                width: 225px !important;
 
-                ol {
-                    @extend .mt-3;
-                    display: block;
-                    width: 100%;
-                }
-
-                & .nav-item-header {
-                    @extend .ms-3;
-                    @extend .mb-2;
-                    color: $blue-800;
-                    font-weight: 700;
-                }
-
-                & .nav-item {
-                    display: block;
-                    transition: background-color 250ms ease;
-                    & .nav-link {
-                        @extend .ps-4;
-                        color: $blue-grey-600;
+                & .page-navigation-inner {
+                    @extend .navbar;
+                    @extend .flex;
+                    @extend .flex-column;
+                    align-items: flex-start;
+                    background-color: #fff;
+                    //height: calc(100vh - 48px);
+                    //border-right: 1px solid #ccc;
+    
+                    ol {
+                        display: block;
+                        width: 100%;
                     }
-
-                    &:hover {
-                        & .nav-link:not(.active) {
-                            background-color: $blue-50;
+    
+                    & .nav-item-header {
+                        @extend .ms-3;
+                        @extend .mb-2;
+                        color: $blue-800;
+                        font-weight: 700;
+                    }
+    
+                    & .nav-item {
+                        display: block;
+                        transition: background-color 250ms ease;
+                        & .nav-link {
+                            @extend .ps-4;
+                            @extend .flex;
+                            @extend .align-items-center;
+                            color: $blue-grey-600;
+                        }
+    
+                        &:hover {
+                            & .nav-link:not(.active) {
+                                background-color: $blue-grey-50;
+                            }
+                        }
+    
+                        & .nav-link.active {
+                            background-color: $blue-100;
+                            color: $blue-900;
                         }
                     }
+                }
+            }
 
-                    & .nav-link.active {
-                        background-color: $blue-100;
-                        color: $blue-900;
+            & .command-bar {
+                @extend .flex;
+                @extend .align-items-center;
+                @extend .mb-2;
+                border-bottom: 1px solid $blue-grey-100;
+
+                .btn {
+                    padding: 6px 8px;
+                    border-radius: 0;
+                    &:hover {
+                        background-color: $blue-grey-50;
+                    }
+
+                    &:active, &:focus, &[disabled] {
+                        border-color: transparent;
+                    }
+
+                    &:active {
+                        background-color: $blue-grey-100;
+                    }
+
+                    &[disabled] {
+                        color: $blue-grey-200;
                     }
                 }
             }
 
             & .data-table {
-                @extend .container;
-                @extend .card;
+                @extend .container-fluid;
+                //@extend .card;
                 border: 0;
                 background-color: #fff;
 
                 & .row {
                     display: flex;
-                    border-bottom: 1px solid var(--bs-border-color);
+                    border-bottom: 1px solid $blue-grey-100;
                     transition: background-color 250ms ease;
 
                     & .table-column {
@@ -221,9 +319,10 @@ body {
 
                         &.table-header {
                             @extend .pb-1;
+                            @extend .pt-1;
                             font-weight: 600;
                             font-size: .6rem;
-                            color: $blue-grey-700;
+                            color: $blue-grey-800;
                         }
                     }
 
@@ -231,10 +330,6 @@ body {
                         cursor: pointer;
                         background-color: $blue-grey-50;
                     }
-                }
-
-                & .row:first-of-type {
-                    @extend .mt-2;
                 }
 
                 & .row:last-of-type {

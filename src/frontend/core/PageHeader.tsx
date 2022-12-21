@@ -1,9 +1,13 @@
-
+import { ThreeBarsIcon } from "./icons/ThreeBarsIcon";
+import { Offcanvas } from "bootstrap";
+import { SearchBox } from "./SearchBox";
+ 
 export const PageHeader = () => {
     return <header className="page-header">
-        <div className="flex flex-column ms-2">
-            <h5 className="app-name text-white">EXTRALOAD</h5>
-            <small className="text-white">Version 0.1.0</small>
-        </div>
+        <ThreeBarsIcon className="cursor-pointer text-white ms-2" onClick={() => {
+            const canvas = Offcanvas.getOrCreateInstance(document.querySelector("#offcanvasMenu"));
+            canvas.show();
+        }}/>
+        <SearchBox />
     </header>
 }
