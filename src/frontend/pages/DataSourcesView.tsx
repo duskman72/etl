@@ -7,6 +7,7 @@ import { CredentialsSelect } from "../core/CredentialsSelect";
 import { AddIcon } from "../core/icons/AddIcon";
 import { RefreshIcon } from "../core/icons/RefreshIcon";
 import { PackageDependendsIcon } from "../core/icons/PackageDependendsIcon";
+import { v4 as uuid } from "uuid";
 
 export const DataSourcesView = () => {
     const [items, setItems] = useState([]);
@@ -166,7 +167,7 @@ export const DataSourcesView = () => {
     }, []);
 
     const renderField = (field) => {
-        return <div className="flex flex-column mb-3">
+        return <div key={uuid()} className="flex flex-column mb-3">
             <label className="form-label mb-1 fw-bolder">
                 <span>{field.label}</span>
                 {
