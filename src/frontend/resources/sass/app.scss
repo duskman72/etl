@@ -90,6 +90,8 @@ $border-radius: 3px;
 
     &.alert-sm {
         @extend .p-1;
+        @extend .ps-2;
+        @extend .pe-2;
     }
 
     &.alert-info {
@@ -145,6 +147,9 @@ $border-radius: 3px;
 
 .form-control {
     border-radius: 0;
+    font-weight: 400;
+    font-size: 0.8rem;
+
     &:not(:focus) {
         border-color: $grey-600;
     }
@@ -152,7 +157,7 @@ $border-radius: 3px;
     &:disabled {
         border-color: $grey-300;
         background-color: $grey-100;
-        color: $grey-500;
+        color: $grey-600;
     }
 }
 
@@ -170,6 +175,10 @@ body {
 
     h5, h6 {
         font-weight: 400;
+    }
+
+    .modal-backdrop {
+        --bs-backdrop-opacity: .15;
     }
 
     .modal-dialog {
@@ -200,6 +209,10 @@ body {
         
         & .modal-content {
             --bs-modal-border-radius: 3px;
+
+            & .modal-body {
+                padding-top: 0 !important;
+            }
         }
     
         & .modal-footer {
@@ -238,9 +251,26 @@ body {
             @extend .flex-row;
             @extend .align-items-center;
             @extend .p-1;
+            @extend .ps-0;
             max-height: 42px;
             height: 42px;
-            background-color: #0078D4;
+            background-color: $primary;
+
+            & .btn-menu {
+                border: 0 none;
+                outline: none;
+                box-shadow: none;
+                border-radius: 0;
+                transition: background-color 250ms ease;
+
+                &:hover {
+                    background-color: darken($primary, 5%);
+                }
+
+                &:active {
+                    background-color: darken($primary, 10%);
+                }
+            }
 
             & .search-box {
                 @extend .flex;
