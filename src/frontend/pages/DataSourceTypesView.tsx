@@ -12,6 +12,7 @@ import { PackageIcon } from "../core/icons/PackageIcon";
 export const DataSourceTypesView = () => {
     const [items, setItems] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
+    const [allItemsChecked, setAllItemsChecked] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [dialogError, setDialogError] = useState(null);
@@ -33,7 +34,10 @@ export const DataSourceTypesView = () => {
         })
         .done(response => {
             setLoading(false);
-            setItems( response.items );
+            setItems( response.items.map( item => {
+                item.checked = false;
+                return item;
+            }));
         })
         .fail(() => {
             setLoading(false);
@@ -97,6 +101,32 @@ export const DataSourceTypesView = () => {
 
         if( typeNameRef && typeNameRef.current )
             typeNameRef.current.value = "";
+    }
+
+    const setItemsChecked = (event) => {
+        const checked = event.target.checked;
+        const newItems = items.map( i => {
+            i.checked = checked;
+            return i;
+        });
+
+        setItems( newItems );
+        setAllItemsChecked( checked );
+    }
+
+    const setItemChecked = (event, item) => {
+        const checked = event.target.checked;
+        const newItems = items.map( i => {
+            if( item._id === i._id )
+                i.checked = checked;
+
+            return i;
+        });
+
+        setItems( newItems );
+
+        const allChecked = newItems.filter( i => i.checked ).length === newItems.length;
+        setAllItemsChecked( allChecked );
     }
     
     useEffect(() => {
@@ -171,6 +201,10 @@ export const DataSourceTypesView = () => {
                     <RefreshIcon className="text-primary me-1"/>
                     <span>Refresh</span>
                 </button>
+                <button disabled className="btn btn-sm btn-default flex align-items-center" onClick={refresh}>
+                    <TrashIcon className="me-1"/>
+                    <span>Delete</span>
+                </button>
             </div>
             {
                 loading &&
@@ -191,6 +225,9 @@ export const DataSourceTypesView = () => {
                 items?.length > 0 &&
                 <div className="data-table">
                     <div className="row header-row">
+                        <div className="table-column table-header col-auto icon">
+                            <input type="checkbox" className="form-check-input" checked={allItemsChecked} onChange={(event) => setItemsChecked(event)}/>
+                        </div>
                         <div className="table-column table-header col">TYPENAME</div>
                         <div className="table-column table-header col-1">IN USE</div>
                         <div className="table-column table-header col">CREATED</div>
@@ -199,6 +236,9 @@ export const DataSourceTypesView = () => {
                     {
                         items.map( item => {
                             return <div key={item._id} className="row">
+                                <div className="table-column col-auto icon">
+                                    <input type="checkbox" className="form-check-input" checked={item.checked} onChange={(event) => setItemChecked(event, item)} />
+                                </div>
                                 <div className="table-column col">
                                     {item.typeName}
                                 </div>

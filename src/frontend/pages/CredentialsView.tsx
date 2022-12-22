@@ -112,7 +112,7 @@ export const CredentialsView = () => {
             setItems( response.items.map( item => {
                 item.checked = false;
                 return item;
-            }) );
+            }));
         })
         .fail(() => {
             setLoading( false );
@@ -225,7 +225,7 @@ export const CredentialsView = () => {
     const setItemChecked = (event, item) => {
         const checked = event.target.checked;
         const newItems = items.map( i => {
-            if( item.id === i.id )
+            if( item._id === i._id )
                 i.checked = checked;
 
             return i;
