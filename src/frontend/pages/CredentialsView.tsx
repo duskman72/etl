@@ -286,6 +286,7 @@ export const CredentialsView = () => {
                 <LockIcon size={16} className="text-amber-500 flex me-2"/>
                 <span>Credentials</span>
             </h5>
+            <span className="text-secondary">Credentials are used to authenticate requests.</span>
             <div className="command-bar">
                 <button className="btn btn-sm btn-default me-2 flex align-items-center" disabled={error || loading} onClick={showAddDialog}>
                     <AddIcon className={`me-1 ${error || loading ? "" : "text-primary"}`}/>
@@ -294,6 +295,10 @@ export const CredentialsView = () => {
                 <button className="btn btn-sm btn-default flex align-items-center" onClick={refresh}>
                     <RefreshIcon className="text-primary me-1"/>
                     <span>Refresh</span>
+                </button>
+                <button disabled className="btn btn-sm btn-default flex align-items-center" onClick={refresh}>
+                    <TrashIcon className="me-1"/>
+                    <span>Delete</span>
                 </button>
             </div>
             {
