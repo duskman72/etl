@@ -83,7 +83,6 @@ const OAuthConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
 
 export const CredentialsView = () => {
     const [items, setItems] = useState([]);
-    const [selectedItem, setSelectedItem] = useState(null);
     const [selectedCredentailsType, setSelectedCredentailsType] = useState(null);
     const [allItemsChecked, setAllItemsChecked] = useState(false);
     const [error, setError] = useState(false);
@@ -102,7 +101,6 @@ export const CredentialsView = () => {
     const refresh = () => {
         if( loading ) return;
         setItems([]);
-        setSelectedItem(null);
         setAllItemsChecked( false );
         setError(false);
         setLoading( true );

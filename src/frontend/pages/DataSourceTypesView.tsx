@@ -11,7 +11,6 @@ import { PackageIcon } from "../core/icons/PackageIcon";
 
 export const DataSourceTypesView = () => {
     const [items, setItems] = useState([]);
-    const [selectedItem, setSelectedItem] = useState(null);
     const [allItemsChecked, setAllItemsChecked] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);

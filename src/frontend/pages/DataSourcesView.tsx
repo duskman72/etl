@@ -11,7 +11,6 @@ import { PackageDependendsIcon } from "../core/icons/PackageDependendsIcon";
 export const DataSourcesView = () => {
     const [items, setItems] = useState([]);
     const [dataSourceTypes, setDataSourceTypes] = useState([]);
-    const [selectedItem, setSelectedItem] = useState(null);
     const [selectedDataSourceType, setSelectedDataSourceType] = useState(null);
     const [allItemsChecked, setAllItemsChecked] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -27,7 +26,6 @@ export const DataSourcesView = () => {
         setItems([]);
         setError(false);
         setWizardStep( 0 );
-        setSelectedItem( null );
         setAllItemsChecked( false );
         loadItems();
     }
