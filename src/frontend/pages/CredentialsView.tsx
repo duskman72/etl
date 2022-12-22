@@ -103,6 +103,7 @@ export const CredentialsView = () => {
         if( loading ) return;
         setItems([]);
         setSelectedItem(null);
+        setAllItemsChecked( false );
         setError(false);
         setLoading( true );
 
@@ -120,20 +121,30 @@ export const CredentialsView = () => {
         })
     }
 
-    const deleteItem = () => {
-        const modal = Modal.getOrCreateInstance(document.querySelector("#deleteCredentialsDialog"));
+    const deleteItems = () => {
+        const modal = Modal.getOrCreateInstance(document.querySelector("#deleteDialog"));
         modal.hide();
 
-        $.ajax({
-            url: "/api/credentials/" + selectedItem._id,
-            method: "delete"
-        })
-        .done(() => {
+        Promise.all(items.filter(item => item.checked ).map( item => {
+            return new Promise((accept, _reject) => {
+                const id = item._id;
+                $.ajax({
+                    url: "/api/credentials/" + id,
+                    method: "delete"
+                }).then( () => {
+                    accept(null);
+                })
+            });
+
+        }))
+        .then(() => {
             refresh();
         })
-        .fail(() => {
-            // TODO show error to user
-        });
+    }
+
+    const showDeleteDialog = () => {
+        const modal = Modal.getOrCreateInstance(document.querySelector("#deleteDialog"));
+        modal.show();
     }
 
     const showAddDialog = () => {
@@ -241,6 +252,8 @@ export const CredentialsView = () => {
         refresh();
     }, []);
 
+    const deleteDisabled = items.filter(item => item.checked).length === 0;
+
     return <Page>
         <Dialog id="addCredentialsDialog" title="Add Credentials" onOk={onDialogOk}>
             {
@@ -293,19 +306,19 @@ export const CredentialsView = () => {
             }
         </Dialog>
 
-        <div className={`modal fade`} id="deleteCredentialsDialog" tabIndex={1} aria-labelledby="deleteCredentialsDialogLabel" aria-hidden="true">
+        <div className={`modal fade`} id="deleteDialog" tabIndex={1} aria-labelledby="deleteDialogLabel" aria-hidden="true">
             <div className="modal-dialog">
                 <div className="modal-content">
                 <div className="modal-header">
-                    <h6 id="deleteCredentialsDialogLabel" className="fs-8">Delete Credentials</h6>
+                    <h6 id="deleteDialogLabel" className="fs-8">Delete Data Source</h6>
                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div className="modal-body">
-                    Do you realy want to delete this credentials?
+                    Do you realy want to delete the selected items?
                 </div>
                 <div className="modal-footer">
                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" className="btn btn-danger" onClick={() => deleteItem()}>Delete</button>
+                    <button type="button" className="btn btn-danger" onClick={() => deleteItems()}>Delete</button>
                 </div>
                 </div>
             </div>
@@ -316,7 +329,7 @@ export const CredentialsView = () => {
                 <LockIcon size={16} className="text-amber-500 flex me-2"/>
                 <span>Credentials</span>
             </h5>
-            <div className="text-secondary mb-3">Credentials are used to authenticate requests.</div>
+            <div className="text-secondary fst-italic mb-3">Credentials are used to authenticate requests.</div>
             <div className="command-bar">
                 <button className="btn btn-sm btn-default me-2 flex align-items-center" disabled={error || loading} onClick={showAddDialog}>
                     <AddIcon className={`me-1 ${error || loading ? "" : "text-primary"}`}/>
@@ -326,8 +339,8 @@ export const CredentialsView = () => {
                     <RefreshIcon className="text-primary me-1"/>
                     <span>Refresh</span>
                 </button>
-                <button disabled className="btn btn-sm btn-default flex align-items-center" onClick={refresh}>
-                    <TrashIcon className="me-1"/>
+                <button disabled={deleteDisabled} className="btn btn-sm btn-default flex align-items-center" onClick={showDeleteDialog}>
+                    <TrashIcon className={`me-1 ${deleteDisabled ? "" : "text-primary"}`}/>
                     <span>Delete</span>
                 </button>
             </div>
@@ -356,11 +369,10 @@ export const CredentialsView = () => {
                         <div className="table-column table-header col">NAME</div>
                         <div className="table-column table-header col">TYPE</div>
                         <div className="table-column table-header col">CREATED</div>
-                        <div className="table-column table-header col-auto icon">&nbsp;</div>
                     </div>
                     {
                         items.map( item => {
-                            return <div key={item._id} className="row">
+                            return <div key={item._id} className={`row ${item.checked ? "selected" : ""}`}>
                                 <div className="table-column col-auto icon">
                                     <input type="checkbox" className="form-check-input" checked={item.checked} onChange={(event) => setItemChecked(event, item)} />
                                 </div>
@@ -373,13 +385,6 @@ export const CredentialsView = () => {
                                 
                                 <div className="table-column col">
                                     {moment(item.createdAt).fromNow()}
-                                </div>
-                                <div className="table-column col-auto icon">
-                                    <TrashIcon className="text-danger" size={14} onClick={() => {
-                                        setSelectedItem( item );
-                                        const modal = Modal.getOrCreateInstance(document.querySelector("#deleteCredentialsDialog"));
-                                        modal.show();
-                                    }}/>
                                 </div>
                             </div>
                         })

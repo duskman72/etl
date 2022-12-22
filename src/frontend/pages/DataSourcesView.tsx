@@ -25,6 +25,10 @@ export const DataSourcesView = () => {
 
     const refresh = () => {
         setItems([]);
+        setError(false);
+        setWizardStep( 0 );
+        setSelectedItem( null );
+        setAllItemsChecked( false );
         loadItems();
     }
 
@@ -67,20 +71,30 @@ export const DataSourcesView = () => {
         })
     }
 
-    const deleteItem = () => {
-        const modal = Modal.getInstance(document.querySelector("#deleteSourceDialog"));
+    const deleteItems = () => {
+        const modal = Modal.getOrCreateInstance(document.querySelector("#deleteDialog"));
         modal.hide();
 
-        const id = selectedItem._id;
-        setSelectedItem( null );
-        
-        $.ajax({
-            url: "/api/data-sources/" + id,
-            method: "delete"
-        })
-        .done(() => {
+        Promise.all(items.filter(item => item.checked ).map( item => {
+            return new Promise((accept, _reject) => {
+                const id = item._id;
+                $.ajax({
+                    url: "/api/data-sources/" + id,
+                    method: "delete"
+                }).then( () => {
+                    accept(null);
+                })
+            });
+
+        }))
+        .then(() => {
             refresh();
-        });
+        })
+    }
+
+    const showDeleteDialog = () => {
+        const modal = Modal.getOrCreateInstance(document.querySelector("#deleteDialog"));
+        modal.show();
     }
 
     const addItem = (configValues) => {
@@ -172,6 +186,8 @@ export const DataSourcesView = () => {
             }
         </div>
     }
+
+    const deleteDisabled = items.filter(item => item.checked).length === 0;
 
     return <Page>
         <div className={`modal fade`} id="addSourceDialog" tabIndex={1} aria-labelledby="addSourceDialogLabel" aria-hidden="true">
@@ -316,10 +332,8 @@ export const DataSourcesView = () => {
                                                 }
                                             }
 
-                                            // SAVE TO DATABASE
                                             const fieldMap = {};
                                             for( const field of configuredFields) {
-                                                console.log( field )
                                                 fieldMap[field.name] = field.value
                                             }
 
@@ -345,29 +359,30 @@ export const DataSourcesView = () => {
             </div>
         </div>
 
-        <div className={`modal fade`} id="deleteSourceDialog" tabIndex={1} aria-labelledby="deleteSourceDialogLabel" aria-hidden="true">
+        <div className={`modal fade`} id="deleteDialog" tabIndex={1} aria-labelledby="deleteDialogLabel" aria-hidden="true">
             <div className="modal-dialog">
                 <div className="modal-content">
                 <div className="modal-header">
-                    <h6 id="deleteSourceDialogLabel" className="fs-8">Delete Data Source</h6>
+                    <h6 id="deleteDialogLabel" className="fs-8">Delete Data Source</h6>
                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div className="modal-body">
-                    Do you realy want to delete this data source?
+                    Do you realy want to delete the selected items?
                 </div>
                 <div className="modal-footer">
                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" className="btn btn-danger" onClick={() => deleteItem()}>Delete</button>
+                    <button type="button" className="btn btn-danger" onClick={() => deleteItems()}>Delete</button>
                 </div>
                 </div>
             </div>
         </div>
 
         <div className="flex flex-column p-2">
-            <h5 className="mb-3 flex align-items-center">
+            <h5 className="flex align-items-center">
                 <PackageDependendsIcon size={16} className="text-blue-800 me-2" />
                 <span>Data Sources</span>
             </h5>
+            <div className="text-secondary fst-italic mb-3">Fetch any kind of data from different sources.</div>
             <div className="command-bar">
                 <button className="btn btn-sm btn-default me-2 flex align-items-center" disabled={error || loading} onClick={showAddDialog}>
                     <AddIcon className={`me-1 ${error || loading ? "" : "text-primary"}`}/>
@@ -377,8 +392,8 @@ export const DataSourcesView = () => {
                     <RefreshIcon className="text-primary me-1"/>
                     <span>Refresh</span>
                 </button>
-                <button disabled className="btn btn-sm btn-default flex align-items-center" onClick={refresh}>
-                    <TrashIcon className="me-1"/>
+                <button disabled={deleteDisabled} className="btn btn-sm btn-default flex align-items-center" onClick={showDeleteDialog}>
+                    <TrashIcon className={`me-1 ${deleteDisabled ? "" : "text-primary"}`}/>
                     <span>Delete</span>
                 </button>
             </div>
@@ -407,11 +422,10 @@ export const DataSourcesView = () => {
                         <div className="table-column table-header col">NAME</div>
                         <div className="table-column table-header col">TYPENAME</div>
                         <div className="table-column table-header col">CREATED</div>
-                        <div className="table-column table-header col-1">&nbsp;</div>
                     </div>
                     {
                         items.map( item => {
-                            return <div key={item._id} className="row">
+                            return <div key={item._id} className={`row ${item.checked ? "selected" : ""}`}>
                                 <div className="table-column col-auto icon">
                                     <input type="checkbox" className="form-check-input" checked={item.checked} onChange={(event) => setItemChecked(event, item)} />
                                 </div>
@@ -423,13 +437,6 @@ export const DataSourcesView = () => {
                                 </div>
                                 <div className="table-column col">
                                     {moment(item.createdAt).fromNow()}
-                                </div>
-                                <div className="table-column col-1">
-                                    <TrashIcon className="text-danger" size={14} onClick={() => {
-                                        setSelectedItem( item );
-                                        const modal = Modal.getOrCreateInstance(document.querySelector("#deleteSourceDialog"));
-                                        modal.show();
-                                    }}/>
                                 </div>
                             </div>
                         })

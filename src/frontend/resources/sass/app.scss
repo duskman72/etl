@@ -166,7 +166,7 @@ $border-radius: 3px;
     @extend .mb-0;
     width: 16px;
     height: 16px;
-    border-radius: 0;
+    border-radius: 2px;
     border: 1px solid $grey-500;
     box-shadow: none;
     outline: none;
@@ -392,7 +392,7 @@ body {
                 @extend .flex;
                 @extend .align-items-center;
                 @extend .mb-2;
-                border-bottom: 1px solid $blue-grey-100;
+                border-bottom: 1px solid $grey-300;
 
                 .btn {
                     padding: 6px 8px;
@@ -427,7 +427,7 @@ body {
 
                 & .row {
                     display: flex;
-                    border-bottom: 1px solid $blue-grey-100;
+                    border-bottom: 1px solid $grey-100;
                     transition: background-color 250ms ease;
 
                     & .table-column {
@@ -456,10 +456,18 @@ body {
                         }
                     }
 
-                    &:not(.header-row):hover {
-                        cursor: pointer;
-                        background-color: $blue-grey-50;
+                    &:not(.header-row) {
+                        &:hover {
+                            cursor: pointer;
+                            background-color: $grey-100;
+                        }
+
+                        &.selected {
+                            background-color: $grey-200;
+                        }
                     }
+
+
                 }
 
                 & .row:last-of-type {

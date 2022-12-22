@@ -21,12 +21,13 @@ export const DataSourceTypesView = () => {
 
     const refresh = () => {
         setItems([]);
+        setError(false);
+        setAllItemsChecked( false );
         loadItems();
     }
 
     const loadItems = () => {
         if( loading ) return;
-        setError(false);
         setLoading(true);
 
         $.ajax({
@@ -45,20 +46,30 @@ export const DataSourceTypesView = () => {
         })
     }
 
-    const deleteItem = () => {
-        const modal = Modal.getInstance(document.querySelector("#deleteSourceTypeDialog"));
+    const deleteItems = () => {
+        const modal = Modal.getOrCreateInstance(document.querySelector("#deleteDialog"));
         modal.hide();
 
-        const id = selectedItem._id;
-        setSelectedItem( null );
-        
-        $.ajax({
-            url: "/api/data-source-types/" + id,
-            method: "delete"
-        })
-        .done(() => {
+        Promise.all(items.filter(item => item.checked ).map( item => {
+            return new Promise((accept, _reject) => {
+                const id = item._id;
+                $.ajax({
+                    url: "/api/data-source-types/" + id,
+                    method: "delete"
+                }).then( () => {
+                    accept(null);
+                })
+            });
+
+        }))
+        .then(() => {
             refresh();
-        });
+        })
+    }
+
+    const showDeleteDialog = () => {
+        const modal = Modal.getOrCreateInstance(document.querySelector("#deleteDialog"));
+        modal.show();
     }
 
     const addItem = () => {
@@ -133,6 +144,8 @@ export const DataSourceTypesView = () => {
         loadItems();
     }, []);
 
+    const deleteDisabled = items.filter(item => item.checked).length === 0;
+
     return <Page>
 
         <div className={`modal fade`} id="addSourceTypeDialog" tabIndex={1} aria-labelledby="addSourceTypeDialogLabel" aria-hidden="true">
@@ -169,29 +182,30 @@ export const DataSourceTypesView = () => {
             </div>
         </div>
 
-        <div className={`modal fade`} id="deleteSourceTypeDialog" tabIndex={1} aria-labelledby="deleteSourceTypeDialogLabel" aria-hidden="true">
+        <div className={`modal fade`} id="deleteDialog" tabIndex={1} aria-labelledby="deleteDialogLabel" aria-hidden="true">
             <div className="modal-dialog">
                 <div className="modal-content">
                 <div className="modal-header">
-                    <h6 id="deleteSourceTypeDialogLabel" className="fs-8">Delete Data Source Type</h6>
+                    <h6 id="deleteDialogLabel" className="fs-8">Delete Data Source</h6>
                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div className="modal-body">
-                    Do you realy want to delete this data source type?
+                    Do you realy want to delete the selected items?
                 </div>
                 <div className="modal-footer">
                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" className="btn btn-danger" onClick={() => deleteItem()}>Delete</button>
+                    <button type="button" className="btn btn-danger" onClick={() => deleteItems()}>Delete</button>
                 </div>
                 </div>
             </div>
         </div>
 
         <div className="flex flex-column p-2">
-            <h5 className="mb-3 flex align-items-center">
+            <h5 className="flex align-items-center">
                 <PackageIcon size={16} className="text-blue-800 me-2" />
                 <span>Data Source Types</span>
             </h5>
+            <div className="text-secondary fst-italic mb-3">Basic types to connect your sources for fetching data.</div>
             <div className="command-bar">
                 <button className="btn btn-sm btn-default me-2 flex align-items-center" disabled={error || loading} onClick={showAddDialog}>
                     <AddIcon className={`me-1 ${error || loading ? "" : "text-primary"}`}/>
@@ -201,8 +215,8 @@ export const DataSourceTypesView = () => {
                     <RefreshIcon className="text-primary me-1"/>
                     <span>Refresh</span>
                 </button>
-                <button disabled className="btn btn-sm btn-default flex align-items-center" onClick={refresh}>
-                    <TrashIcon className="me-1"/>
+                <button disabled={deleteDisabled} className="btn btn-sm btn-default flex align-items-center" onClick={showDeleteDialog}>
+                    <TrashIcon className={`me-1 ${deleteDisabled ? "" : "text-primary"}`}/>
                     <span>Delete</span>
                 </button>
             </div>
@@ -231,11 +245,10 @@ export const DataSourceTypesView = () => {
                         <div className="table-column table-header col">TYPENAME</div>
                         <div className="table-column table-header col-1">IN USE</div>
                         <div className="table-column table-header col">CREATED</div>
-                        <div className="table-column table-header col-1">&nbsp;</div>
                     </div>
                     {
                         items.map( item => {
-                            return <div key={item._id} className="row">
+                            return <div key={item._id} className={`row ${item.checked ? "selected" : ""}`}>
                                 <div className="table-column col-auto icon">
                                     <input type="checkbox" className="form-check-input" checked={item.checked} onChange={(event) => setItemChecked(event, item)} />
                                 </div>
@@ -250,13 +263,6 @@ export const DataSourceTypesView = () => {
                                 </div>
                                 <div className="table-column col">
                                     {moment(item.createdAt).fromNow()}
-                                </div>
-                                <div className="table-column col-1">
-                                    <TrashIcon className="text-danger" size={14} onClick={() => {
-                                        setSelectedItem( item );
-                                        const modal = Modal.getOrCreateInstance(document.querySelector("#deleteSourceTypeDialog"));
-                                        modal.show();
-                                    }}/>
                                 </div>
                             </div>
                         })
