@@ -85,6 +85,7 @@ export const CredentialsView = () => {
     const [items, setItems] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const [selectedCredentailsType, setSelectedCredentailsType] = useState(null);
+    const [allItemsChecked, setAllItemsChecked] = useState(false);
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
     const [dialogError, setDialogError] = useState(null);
@@ -108,7 +109,10 @@ export const CredentialsView = () => {
         $.get("/api/credentials")
         .done( response => {
             setLoading( false );
-            setItems( response.items );
+            setItems( response.items.map( item => {
+                item.checked = false;
+                return item;
+            }) );
         })
         .fail(() => {
             setLoading( false );
@@ -207,6 +211,32 @@ export const CredentialsView = () => {
         })
     }
 
+    const setItemsChecked = (event) => {
+        const checked = event.target.checked;
+        const newItems = items.map( i => {
+            i.checked = checked;
+            return i;
+        });
+
+        setItems( newItems );
+        setAllItemsChecked( checked );
+    }
+
+    const setItemChecked = (event, item) => {
+        const checked = event.target.checked;
+        const newItems = items.map( i => {
+            if( item.id === i.id )
+                i.checked = checked;
+
+            return i;
+        });
+
+        setItems( newItems );
+
+        const allChecked = newItems.filter( i => i.checked ).length === newItems.length;
+        setAllItemsChecked( allChecked );
+    }
+
     useEffect(() => {
         refresh();
     }, []);
@@ -282,11 +312,11 @@ export const CredentialsView = () => {
         </div>
 
         <div className="flex flex-column p-2">
-            <h5 className="mb-3 flex align-items-center">
+            <h5 className="flex align-items-center">
                 <LockIcon size={16} className="text-amber-500 flex me-2"/>
                 <span>Credentials</span>
             </h5>
-            <span className="text-secondary">Credentials are used to authenticate requests.</span>
+            <div className="text-secondary mb-3">Credentials are used to authenticate requests.</div>
             <div className="command-bar">
                 <button className="btn btn-sm btn-default me-2 flex align-items-center" disabled={error || loading} onClick={showAddDialog}>
                     <AddIcon className={`me-1 ${error || loading ? "" : "text-primary"}`}/>
@@ -320,14 +350,20 @@ export const CredentialsView = () => {
                 items?.length > 0 &&
                 <div className="data-table">
                     <div className="row header-row">
+                        <div className="table-column table-header col-auto icon">
+                            <input type="checkbox" className="form-check-input" checked={allItemsChecked} onChange={(event) => setItemsChecked(event)}/>
+                        </div>
                         <div className="table-column table-header col">NAME</div>
                         <div className="table-column table-header col">TYPE</div>
                         <div className="table-column table-header col">CREATED</div>
-                        <div className="table-column table-header col-1">&nbsp;</div>
+                        <div className="table-column table-header col-auto icon">&nbsp;</div>
                     </div>
                     {
                         items.map( item => {
                             return <div key={item._id} className="row">
+                                <div className="table-column col-auto icon">
+                                    <input type="checkbox" className="form-check-input" checked={item.checked} onChange={(event) => setItemChecked(event, item)} />
+                                </div>
                                 <div className="table-column col">
                                     {item.name}
                                 </div>
@@ -338,7 +374,7 @@ export const CredentialsView = () => {
                                 <div className="table-column col">
                                     {moment(item.createdAt).fromNow()}
                                 </div>
-                                <div className="table-column col-1">
+                                <div className="table-column col-auto icon">
                                     <TrashIcon className="text-danger" size={14} onClick={() => {
                                         setSelectedItem( item );
                                         const modal = Modal.getOrCreateInstance(document.querySelector("#deleteCredentialsDialog"));
