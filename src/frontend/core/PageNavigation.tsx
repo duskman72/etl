@@ -1,8 +1,9 @@
 import { NavLink } from "react-router-dom";
-import { ArrowLeftIcon } from "./icons/ArrowLeftIcon";
-import { LockIcon } from "./icons/LockIcon";
-import { PackageDependendsIcon } from "./icons/PackageDependendsIcon";
-import { PackageIcon } from "./icons/PackageIcon";
+import { ArrowLeftIcon, 
+    LockIcon, 
+    PackageDependendsIcon, 
+    PackageIcon 
+} from "./icons";
 
 export const PageNavigation = () => {
     return <div className="offcanvas offcanvas-start page-navigation" id="offcanvasMenu">

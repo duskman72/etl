@@ -1,13 +1,19 @@
-import { useEffect, useRef, useState } from "react";
-import { Page } from "../core/Page";
-import { Modal } from "bootstrap";
-import { AlertIcon } from "../core/icons/AlertIcon";
-import { TrashIcon } from "../core/icons/TrashIcon";
-import { CredentialsSelect } from "../core/CredentialsSelect";
-import { AddIcon } from "../core/icons/AddIcon";
-import { RefreshIcon } from "../core/icons/RefreshIcon";
-import { PackageDependendsIcon } from "../core/icons/PackageDependendsIcon";
+import { 
+    useEffect, 
+    useRef, 
+    useState 
+} from "react";
+import { 
+    AddIcon, 
+    AlertIcon, 
+    CredentialsSelect, 
+    PackageDependendsIcon, 
+    Page, 
+    RefreshIcon, 
+    TrashIcon 
+} from "../core";
 import { v4 as uuid } from "uuid";
+import { Modal } from "bootstrap";
 
 export const DataSourcesView = () => {
     const [items, setItems] = useState([]);

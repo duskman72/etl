@@ -1,13 +1,22 @@
-import { useEffect, useRef, useState } from "react";
-import { Page } from "../core/Page";
-import { camelCase, upperFirst } from "lodash";
+import { 
+    useEffect, 
+    useRef, 
+    useState 
+} from "react";
+import { 
+    camelCase, 
+    upperFirst 
+} from "lodash";
+import { 
+    AddIcon, 
+    AlertIcon, 
+    CheckCircleFillIcon, 
+    PackageIcon, 
+    Page, 
+    RefreshIcon, 
+    TrashIcon 
+} from "../core";
 import { Modal } from "bootstrap";
-import { AlertIcon } from "../core/icons/AlertIcon";
-import { TrashIcon } from "../core/icons/TrashIcon";
-import { CheckCircleFillIcon } from "../core/icons/CheckCircleFillIcon";
-import { AddIcon } from "../core/icons/AddIcon";
-import { RefreshIcon } from "../core/icons/RefreshIcon";
-import { PackageIcon } from "../core/icons/PackageIcon";
 
 export const DataSourceTypesView = () => {
     const [items, setItems] = useState([]);

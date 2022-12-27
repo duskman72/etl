@@ -3,7 +3,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
 const ProgressPlugin = require('progress-webpack-plugin');
 const MiniCSSExtractPlugin = require("mini-css-extract-plugin");
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const webpack = require("webpack");
+const TerserPlugin = require('terser-webpack-plugin')
 
 const buildServer = (_, argv) => {
     return {
@@ -51,9 +53,10 @@ const buildServer = (_, argv) => {
 }
 
 const buildFrontend = (_, argv) => {
+    const mode = argv.mode || "development";
     return {
-        mode: argv.mode || "development",
-        devtool: argv.mode === "development" ? "source-map" : undefined,
+        mode,
+        devtool: mode === "development" ? "source-map" : "nosources-source-map",
         target: "web",
         entry: {
             app: "./src/frontend/index.tsx"
@@ -70,7 +73,7 @@ const buildFrontend = (_, argv) => {
                         }
                     }
                 ],
-                exclude: /node_modules/,
+                exclude: [/node_modules/, path.resolve(__dirname, 'src/backend'),],
                 include: [path.resolve(__dirname, 'src/frontend'),]
               },
               { 
@@ -122,7 +125,21 @@ const buildFrontend = (_, argv) => {
                 "react-dom": "ReactDOM",
                 "react-router-dom": "ReactRouterDOM"
             }
-        ]
+        ],
+        optimization: {
+            mangleExports: mode == "production" ? "size" : false,
+            minimize: mode == "production",
+            minimizer: [
+                mode == "production" ? new CssMinimizerPlugin() : undefined,
+                mode == "production" ? new TerserPlugin({
+                    terserOptions: {
+                        compress: {
+                            drop_console: true, // remove console statement
+                        },
+                    },
+                }) : undefined,
+            ],
+        },
     }
 }
 

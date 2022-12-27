@@ -1,12 +1,20 @@
-import { createRef, RefObject, useEffect, useRef, useState } from "react"
-import { Dialog } from "../core/Dialog";
-import { Page } from "../core/Page"
+import { 
+    createRef, 
+    RefObject, 
+    useEffect, 
+    useRef, 
+    useState 
+} from "react"
+import { 
+    AddIcon, 
+    AlertIcon, 
+    Dialog,
+    LockIcon, 
+    Page,
+    RefreshIcon, 
+    TrashIcon 
+} from "../core";
 import { Modal } from "bootstrap";
-import { AlertIcon } from "../core/icons/AlertIcon";
-import { TrashIcon } from "../core/icons/TrashIcon";
-import { AddIcon } from "../core/icons/AddIcon";
-import { RefreshIcon } from "../core/icons/RefreshIcon";
-import { LockIcon } from "../core/icons/LockIcon";
 
 const ApikeyConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
     return <>
