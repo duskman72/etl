@@ -6,6 +6,7 @@ import { Home } from "./pages/Home";
 
 import "./resources/sass/app.scss"
 import { CredentialsView } from './pages/CredentialsView';
+import { NotFound } from './pages/NotFound';
 
 const App = () => {
     return <BrowserRouter>
@@ -14,6 +15,7 @@ const App = () => {
             <Route path="/data-sources" element={<DataSourcesView /> } />
             <Route path="/credentials" element={<CredentialsView /> } />
             <Route path="/" element={<Home /> } />
+            <Route path="*" element={<NotFound />} />
         </Routes>
     </BrowserRouter>
 }

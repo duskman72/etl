@@ -145,6 +145,14 @@ $border-radius: 3px;
     color: $blue-800;
 }
 
+.text-decoration-none {
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline !important;
+    }
+}
+
 .form-control {
     border-radius: 0;
     font-weight: 400;

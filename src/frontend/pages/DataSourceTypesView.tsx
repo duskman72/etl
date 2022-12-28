@@ -17,6 +17,7 @@ import {
     TrashIcon 
 } from "../core";
 import { Modal } from "bootstrap";
+import { NavLink } from "react-router-dom";
 
 export const DataSourceTypesView = () => {
     const [items, setItems] = useState([]);
@@ -261,7 +262,7 @@ export const DataSourceTypesView = () => {
                                     <input type="checkbox" className="form-check-input" checked={item.checked} onChange={(event) => setItemChecked(event, item)} />
                                 </div>
                                 <div className="table-column col">
-                                    {item.typeName}
+                                    <NavLink to={`/data-source-types/${item._id}`} className="text-primary text-decoration-none hover">{item.typeName}</NavLink>
                                 </div>
                                 <div className="table-column col-1">
                                     {
