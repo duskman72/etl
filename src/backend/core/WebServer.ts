@@ -4,6 +4,7 @@ import { routes } from "../config/routes";
 import session from 'express-session';
 import {createClient} from 'redis';
 import connectRedis from 'connect-redis';
+import gzip from "compression";
 
 export class WebServer {
     private static initialized = false;
@@ -26,6 +27,7 @@ export class WebServer {
         const app = express();
         app.use(bodyParser.urlencoded({extended: true}));
         app.use(bodyParser.json());
+        app.use(gzip());
         app.disable("x-powered-by");
 
         app.use(session({

@@ -2,6 +2,10 @@ import { Router } from "express";
 import fs from "fs";
 import path from "path";
 import mime from "mime-types";
+import crypto from "crypto";
+
+const assetsPath = `${process.cwd()}/public/assets`;
+const cache = {};
 
 export const AssetsRouter = Router();
 AssetsRouter.get("/*", (req, res, next) => {
@@ -10,20 +14,28 @@ AssetsRouter.get("/*", (req, res, next) => {
         return;
     }
 
-    const serverRoot = process.cwd();
-    const publicRoot = path.resolve(serverRoot, "public/assets");
-    const fileName   = path.resolve(publicRoot, req.params["0"]);
+    const assetName = `${req.params["0"]}`;
+    const fileName =`${assetsPath}/${assetName}`.replace(/\//g, path.sep);
 
-    const exists = fs.existsSync(fileName);
-    if( !exists ) {
+    if (!fs.existsSync(fileName) ) {
         res.status(404).end();
         return;
     }
 
+    // dont list directory contents
     const stat = fs.statSync( fileName );
     if( stat.isDirectory() ) {
         res.status(404).end();
         return;
+    }
+
+    // check ETag in http request header
+    if( req.headers["if-none-match"] ) {
+        if (cache[fileName] && cache[fileName] === req.headers["if-none-match"]) {
+            // send status 304 - "Not Modified"
+            res.status(304).end();
+            return;
+        }
     }
 
     const isMime = mime.lookup(fileName);
@@ -31,6 +43,18 @@ AssetsRouter.get("/*", (req, res, next) => {
         const contentType = `${mime.lookup(fileName)}`;
         res.set("Content-Type", contentType);
     }
+
+    if( !cache[fileName] ) {
+        const fileBuffer = fs.readFileSync(fileName);
+        const hashSum = crypto.createHash('sha256');
+        hashSum.update(fileBuffer);
+        cache[fileName] = hashSum.digest('hex');
+    }
+
+    const etag = cache[fileName];
+
+    res.set("Cache-Control", "public, max-age=120");
+    res.set("ETag", etag);
 
     const stream = fs.createReadStream(fileName);
     stream.pipe( res );

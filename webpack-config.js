@@ -56,10 +56,10 @@ const buildFrontend = (_, argv) => {
     const mode = argv.mode || "development";
     return {
         mode,
-        devtool: mode === "development" ? "source-map" : "nosources-source-map",
+        devtool: mode === "development" ? "eval-cheap-module-source-map" : "nosources-source-map",
         target: "web",
         entry: {
-            app: "./src/frontend/index.tsx"
+            "app": "./src/frontend/index.tsx"
         },
         module: {
             rules: [
@@ -85,7 +85,7 @@ const buildFrontend = (_, argv) => {
                 test: /\.(woff(2)?|ttf|eot)$/,
                 type: 'asset/resource',
                 generator: {
-                    filename: './fonts/[name][ext]',
+                    filename: 'fonts/[name][ext]',
                 },
               },
             ],
@@ -96,14 +96,14 @@ const buildFrontend = (_, argv) => {
         output: {
             filename: 'js/[name].js',
             path: path.resolve(__dirname, 'public/assets'),
+            publicPath: "/assets/",
+            pathinfo: false,
         },
         plugins: [
             new HtmlWebpackPlugin({
                 template: path.resolve(__dirname, "src/frontend/resources/html/index.html"),
                 filename: path.resolve(__dirname, "dist/frontend.html"),
-                publicPath: "/assets",
-                inject: "body",
-                xhtml: true
+                inject: false
             }),
             new ProgressPlugin({
                 identifier: "Frontend"
@@ -115,6 +115,9 @@ const buildFrontend = (_, argv) => {
             new MiniCSSExtractPlugin({
                 filename: 'css/[name].css',
             }),
+            new webpack.SourceMapDevToolPlugin({
+                filename: "dev/[name][ext].map"
+            })
         ],
         stats: 'errors-only',
         externals: [
@@ -127,17 +130,17 @@ const buildFrontend = (_, argv) => {
             }
         ],
         optimization: {
-            mangleExports: mode == "production" ? "size" : false,
+            mangleExports: mode == "production",
             minimize: mode == "production",
             minimizer: [
-                mode == "production" ? new CssMinimizerPlugin() : undefined,
+                mode == "production" ? new CssMinimizerPlugin() : () => {},
                 mode == "production" ? new TerserPlugin({
                     terserOptions: {
                         compress: {
                             drop_console: true, // remove console statement
                         },
                     },
-                }) : undefined,
+                }) : () => { },
             ],
         },
     }
@@ -146,19 +149,26 @@ const buildFrontend = (_, argv) => {
 const buildVendor = (_, argv) => {
     return {
         mode: argv.mode || "development",
-        devtool: argv.mode === "development" ? "source-map" : undefined,
+        devtool: argv.mode === "development" ? "eval-cheap-module-source-map" : undefined,
         target: "web",
         entry: {
-            vendor: "./src/frontend/resources/vendor.js"
+            "vendor": "./src/frontend/resources/vendor.js"
         },
         output: {
             filename: 'js/[name].js',
             path: path.resolve(__dirname, 'public/assets'),
+            publicPath: "/assets/",
+            pathinfo: false,
         },
         plugins: [
             new ProgressPlugin({
                 identifier: "Vendor"
             }),
+        ],
+        plugins: [
+            new webpack.SourceMapDevToolPlugin({
+                filename: "dev/[name][ext].map"
+            })
         ],
         stats: 'errors-only',
     }
