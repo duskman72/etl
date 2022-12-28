@@ -331,64 +331,66 @@ body {
             }
         }
 
+                & .page-navigation {
+                    width: 225px !important;
+        
+                    & .page-navigation-inner {
+                        @extend .navbar;
+                        @extend .flex;
+                        @extend .flex-column;
+                        align-items: flex-start;
+                        background-color: #fff;
+                        //height: calc(100vh - 48px);
+                        //border-right: 1px solid #ccc;
+        
+                        ol {
+                            display: block;
+                            width: 100%;
+                        }
+        
+                        & .nav-item-header {
+                            @extend .ms-3;
+                            @extend .mb-2;
+                            color: $blue-800;
+                            font-weight: 700;
+                        }
+        
+                        & .nav-item {
+                            display: block;
+                            transition: background-color 250ms ease;
+        
+                            & .nav-link {
+                                @extend .ps-4;
+                                @extend .flex;
+                                @extend .align-items-center;
+                                color: $blue-grey-600;
+                            }
+        
+                            &:hover {
+                                & .nav-link:not(.active) {
+                                    background-color: $blue-grey-50;
+                                }
+                            }
+        
+                            & .nav-link.active {
+                                background-color: $blue-100;
+                                color: $blue-900;
+                            }
+                        }
+                    }
+                }
+
         & .page-content {
             @extend .flex;
             @extend .flex-row;
             @extend .col-12;
+            @extend .p-2;
             height: calc( 100vh - 48px);
             max-height: calc( 100vh - 48px);
 
             & .card {
                 --bs-card-border-radius: 2px;
                 box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-            }
-
-            & .page-navigation {
-                width: 225px !important;
-
-                & .page-navigation-inner {
-                    @extend .navbar;
-                    @extend .flex;
-                    @extend .flex-column;
-                    align-items: flex-start;
-                    background-color: #fff;
-                    //height: calc(100vh - 48px);
-                    //border-right: 1px solid #ccc;
-    
-                    ol {
-                        display: block;
-                        width: 100%;
-                    }
-    
-                    & .nav-item-header {
-                        @extend .ms-3;
-                        @extend .mb-2;
-                        color: $blue-800;
-                        font-weight: 700;
-                    }
-    
-                    & .nav-item {
-                        display: block;
-                        transition: background-color 250ms ease;
-                        & .nav-link {
-                            @extend .ps-4;
-                            @extend .flex;
-                            @extend .align-items-center;
-                            color: $blue-grey-600;
-                        }
-    
-                        &:hover {
-                            & .nav-link:not(.active) {
-                                background-color: $blue-grey-50;
-                            }
-                        }
-    
-                        & .nav-link.active {
-                            background-color: $blue-100;
-                            color: $blue-900;
-                        }
-                    }
-                }
             }
 
             & .command-bar {

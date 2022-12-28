@@ -382,7 +382,7 @@ export const DataSourcesView = () => {
             </div>
         </div>
 
-        <div className="flex flex-column p-2">
+        <div className="container-fluid">
             <h5 className="flex align-items-center">
                 <PackageDependendsIcon size={16} className="text-blue-800 me-2" />
                 <span>Data Sources</span>

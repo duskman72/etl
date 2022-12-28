@@ -208,7 +208,7 @@ export const DataSourceTypesView = () => {
             </div>
         </div>
 
-        <div className="flex flex-column p-2">
+        <div className="container-fluid">
             <h5 className="flex align-items-center">
                 <PackageIcon size={16} className="text-blue-800 me-2" />
                 <span>Data Source Types</span>

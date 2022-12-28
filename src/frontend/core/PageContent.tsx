@@ -3,9 +3,6 @@ import { PageNavigation } from "./PageNavigation";
 
 export const PageContent = (props: PropsWithChildren) => {
     return <div className="page-content">
-        <PageNavigation />
-        <div className="col-12 p-1">
-            {props.children}
-        </div>
+        {props.children}
     </div>
 }
