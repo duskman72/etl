@@ -1,6 +1,7 @@
 import { 
     createRef, 
     RefObject, 
+    useContext, 
     useEffect, 
     useRef, 
     useState 
@@ -16,6 +17,7 @@ import {
 } from "../core";
 import { Modal } from "bootstrap";
 import { DeleteDialog } from "../core/DeleteDialog";
+import { ApplicationContext } from "../contexts/ApplicationContext";
 
 const ApikeyConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
     return <>
@@ -106,6 +108,8 @@ export const CredentialsView = () => {
         createRef(),
         createRef()
     ]
+
+    const ctx = useContext(ApplicationContext);
 
     const refresh = () => {
         if( loading ) return;
@@ -256,6 +260,8 @@ export const CredentialsView = () => {
     }
 
     useEffect(() => {
+        ctx.setContext("Credentials");
+        ctx.setSearchBar(true)
         refresh();
     }, []);
 

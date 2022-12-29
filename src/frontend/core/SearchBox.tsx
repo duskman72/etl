@@ -1,6 +1,12 @@
+import { useContext, useEffect, useState } from "react";
+import { ApplicationContext } from "../contexts/ApplicationContext";
 import { SearchIcon } from "./icons/SearchIcon";
 
 export const SearchBox = () => {
+    const ctx = useContext(ApplicationContext);
+    
+    if( !ctx.searchBar ) return null;
+
     return <div className="search-box">
         <SearchIcon className="ms-2 me-2" size={12} />
         <input type="text"
@@ -12,7 +18,7 @@ export const SearchBox = () => {
                 document.querySelector(".search-box").classList.remove("bg-white");
             }} 
 
-            placeholder="Search for {{context}} "
+            placeholder={`Search in ${ctx.context}`}
         />
     </div>
 }

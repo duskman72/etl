@@ -1,4 +1,5 @@
 import { 
+    useContext,
     useEffect, 
     useRef, 
     useState 
@@ -19,6 +20,7 @@ import {
 import { Modal } from "bootstrap";
 import { NavLink } from "react-router-dom";
 import { DeleteDialog } from "../core/DeleteDialog";
+import { ApplicationContext } from "../contexts/ApplicationContext";
 
 export const DataSourceTypesView = () => {
     const [items, setItems] = useState([]);
@@ -28,6 +30,8 @@ export const DataSourceTypesView = () => {
     const [dialogError, setDialogError] = useState(null);
     const nameRef = useRef<HTMLInputElement>();
     const typeNameRef = useRef<HTMLInputElement>();
+
+    const ctx = useContext(ApplicationContext);
 
     const refresh = () => {
         setItems([]);
@@ -151,6 +155,8 @@ export const DataSourceTypesView = () => {
     }
     
     useEffect(() => {
+        ctx.setContext("Data Source Types");
+        ctx.setSearchBar( true )
         loadItems();
     }, []);
 

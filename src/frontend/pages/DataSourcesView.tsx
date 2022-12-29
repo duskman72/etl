@@ -1,4 +1,5 @@
 import { 
+    useContext,
     useEffect, 
     useRef, 
     useState 
@@ -15,6 +16,7 @@ import {
 import { v4 as uuid } from "uuid";
 import { Modal } from "bootstrap";
 import { DeleteDialog } from "../core/DeleteDialog";
+import { ApplicationContext } from "../contexts/ApplicationContext";
 
 export const DataSourcesView = () => {
     const [items, setItems] = useState([]);
@@ -29,6 +31,8 @@ export const DataSourcesView = () => {
     const [config, setConfig] = useState({});
     const nameRef = useRef<HTMLInputElement>();
     const selectRef = useRef<HTMLSelectElement>();
+
+    const ctx = useContext(ApplicationContext);
 
     const refresh = () => {
         setItems([]);
@@ -170,6 +174,8 @@ export const DataSourcesView = () => {
     }
 
     useEffect(() => {
+        ctx.setContext("Data Sources");
+        ctx.setSearchBar( true )
         loadItems();
     }, []);
 

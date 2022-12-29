@@ -1,6 +1,15 @@
+import { useContext, useEffect } from "react";
+import { ApplicationContext } from "../contexts/ApplicationContext";
 import { AlertIcon, Page } from "../core"
 
 export const NotFound = () => {
+    const ctx = useContext(ApplicationContext);
+
+    useEffect(() => {
+        ctx.setContext("Not Found");
+        ctx.setSearchBar( false )
+    })
+    
     return <Page>
         <>
             <h5 className="flex align-items-center mb-3">
