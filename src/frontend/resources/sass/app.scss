@@ -80,7 +80,7 @@ $border-radius: 3px;
 .octicon {
     fill: currentColor;
     display: flex;
-
+    min-width: 12px;
 }
 
 .alert {
@@ -172,13 +172,22 @@ $border-radius: 3px;
 .form-check-input[type="checkbox"] {
     @extend .mt-0;
     @extend .mb-0;
-    width: 16px;
-    height: 16px;
+    width: 15px;
+    height: 15px;
+    max-width: 15px;
+    min-width: 15px;
+    max-height: 15px;
+    min-height: 15px;
+    display: inline-block;
     border-radius: 2px;
     border: 1px solid $grey-500;
     box-shadow: none;
     outline: none;
     transition: background-color 250ms ease;
+
+    &:hover {
+        border-color: $grey-600;
+    }
 
     &:checked {
         background-color: $primary;
@@ -442,17 +451,17 @@ body {
                     transition: background-color 250ms ease;
 
                     & .table-column {
-                        @extend .ps-3;
-                        @extend .pe-3;
-                        @extend .pt-2;
-                        @extend .pb-2;
+                        @extend .ps-2;
+                        @extend .pe-2;
+                        @extend .pt-1;
+                        @extend .pb-1;
                         @extend .flex;
                         align-items: center;
                         min-width: 50px;
 
                         &.icon {
-                            @extend .ps-1;
-                            @extend .pe-1;
+                            @extend .ps-2;
+                            @extend .pe-2;
                             min-width: 26px;
                             width: 26px;
                         }
@@ -462,8 +471,9 @@ body {
                             @extend .pt-1;
                             align-items: flex-end;
                             font-weight: 600;
-                            font-size: .6rem;
+                            font-size: 8pt;
                             color: $blue-grey-800;
+                            text-transform: uppercase;
                         }
                     }
 

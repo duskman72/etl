@@ -18,6 +18,7 @@ import {
 import { Modal } from "bootstrap";
 import { DeleteDialog } from "../core/DeleteDialog";
 import { ApplicationContext } from "../contexts/ApplicationContext";
+import { DataTable } from "../core/DataTable";
 
 const ApikeyConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
     return <>
@@ -363,35 +364,50 @@ export const CredentialsView = () => {
             }
             {
                 items?.length > 0 &&
-                <div className="data-table">
-                    <div className="row header-row">
-                        <div className="table-column table-header col-auto icon">
-                            <input type="checkbox" className="form-check-input" checked={allItemsChecked} onChange={(event) => setItemsChecked(event)}/>
-                        </div>
-                        <div className="table-column table-header col">NAME</div>
-                        <div className="table-column table-header col">TYPE</div>
-                        <div className="table-column table-header col">CREATED</div>
-                    </div>
-                    {
+                <>
+                    <DataTable headers={[
+                        {
+                            content: <input type="checkbox" className="form-check-input" checked={allItemsChecked} onChange={(event) => setItemsChecked(event)} />,
+                            className: "col-auto icon"
+                        },
+                        {
+                            content: "Name",
+                            className: "col"
+                        },
+                        {
+                            content: "Type",
+                            className: "col"
+                        },
+                        {
+                            content: "Created",
+                            className: "col"
+                        }
+                    ]} items={
                         items.map( item => {
-                            return <div key={item._id} className={`row ${item.checked ? "selected" : ""}`}>
-                                <div className="table-column col-auto icon">
-                                    <input type="checkbox" className="form-check-input" checked={item.checked} onChange={(event) => setItemChecked(event, item)} />
-                                </div>
-                                <div className="table-column col">
-                                    {item.name}
-                                </div>
-                                <div className="table-column col">
-                                    {item.type}
-                                </div>
-                                
-                                <div className="table-column col">
-                                    {moment(item.createdAt).fromNow()}
-                                </div>
-                            </div>
+                            return {
+                                selected: item.checked,
+                                columns: [
+                                    {
+                                        content: <input type="checkbox" className="form-check-input" checked={item.checked} onChange={(event) => setItemChecked(event, item)} />,
+                                        className: "col-auto icon"
+                                    },
+                                    {
+                                        content: item.name,
+                                        className: "col"
+                                    },
+                                    {
+                                        content: item.type,
+                                        className: "col"
+                                    },
+                                    {
+                                        content: moment(item.createdAt).fromNow(),
+                                        className: "col"
+                                    }
+                                ]
+                            }
                         })
-                    }
-                </div>
+                    } />
+                </>
             }
         </>
     </Page>

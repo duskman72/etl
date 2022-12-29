@@ -21,6 +21,7 @@ import { Modal } from "bootstrap";
 import { NavLink } from "react-router-dom";
 import { DeleteDialog } from "../core/DeleteDialog";
 import { ApplicationContext } from "../contexts/ApplicationContext";
+import { DataTable } from "../core/DataTable";
 
 export const DataSourceTypesView = () => {
     const [items, setItems] = useState([]);
@@ -236,38 +237,37 @@ export const DataSourceTypesView = () => {
                 <div className="alert alert-info">There are no items in this view.</div>
             }
             {
-                items?.length > 0 &&
-                <div className="data-table">
-                    <div className="row header-row">
-                        <div className="table-column table-header col-auto icon">
-                            <input type="checkbox" className="form-check-input" checked={allItemsChecked} onChange={(event) => setItemsChecked(event)}/>
-                        </div>
-                        <div className="table-column table-header col">TYPENAME</div>
-                        <div className="table-column table-header col-1">IN USE</div>
-                        <div className="table-column table-header col">CREATED</div>
-                    </div>
-                    {
-                        items.map( item => {
-                            return <div key={item._id} className={`row ${item.checked ? "selected" : ""}`}>
-                                <div className="table-column col-auto icon">
-                                    <input type="checkbox" className="form-check-input" checked={item.checked} onChange={(event) => setItemChecked(event, item)} />
-                                </div>
-                                <div className="table-column col">
-                                    <NavLink to={`/data-source-types/${item._id}`} className="text-primary text-decoration-none hover">{item.typeName}</NavLink>
-                                </div>
-                                <div className="table-column col-1">
-                                    {
-                                        item.dataSources.length > 0 &&
-                                        <CheckCircleFillIcon size={14} className="text-success"/>
-                                    }
-                                </div>
-                                <div className="table-column col">
-                                    {moment(item.createdAt).fromNow()}
-                                </div>
-                            </div>
-                        })
-                    }
-                </div>
+                items.length > 0 &&
+                <DataTable headers={[
+                    { content: <input type="checkbox" className="form-check-input" checked={allItemsChecked} onChange={(event) => setItemsChecked(event)} />, className: "col-auto icon" },
+                    { content: "TypeName", className: "col" },
+                    { content: "in use", className: "col-1" },
+                    { content: "created", className: "col" }
+                ]} items={
+                    items.map(item => {
+                        return {
+                            selected: item.checked,
+                            columns: [
+                                {
+                                    content: <input type="checkbox" className="form-check-input" checked={item.checked} onChange={(event) => setItemChecked(event, item)} />,
+                                    className: "col-auto icon"
+                                },
+                                {
+                                    content: <NavLink to={`/data-source-types/${item._id}`} className="text-primary text-decoration-none hover">{item.typeName}</NavLink>,
+                                    className: "col"
+                                },
+                                {
+                                    content: item.dataSources.length > 0 ? <CheckCircleFillIcon size={14} className="text-success" /> : null,
+                                    className: "col-1"
+                                },
+                                {
+                                    content: moment(item.createdAt).fromNow(),
+                                    className: "col"
+                                }
+                            ]
+                        }
+                    })
+                } />
             }
         </>
     </Page>
