@@ -326,7 +326,7 @@ body {
                     border: 0 none !important;
                     background: transparent !important;
                     font-size: 13px;
-                    line-height: 28px;
+                    line-height: 22px;
 
                     &::placeholder {
                         color: $blue-800;
@@ -389,7 +389,7 @@ body {
         }
 
         & .page-content {
-            @extend .container-fluid;
+            @extend .container;
             @extend .p-3;
             height: calc( 100vh - 48px);
             max-height: calc( 100vh - 48px);
@@ -469,7 +469,6 @@ body {
 
                     &:not(.header-row) {
                         &:hover {
-                            cursor: pointer;
                             background-color: $grey-100;
                         }
 

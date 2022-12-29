@@ -4,67 +4,75 @@ import SourceTypes from "../data-source-types";
 
 export const ApiRouter = Router();
 
-ApiRouter.get("/data-source-types", async (_req, res) => {
-    const items = await DataSourceType.find().populate("dataSources");
-    let responseItems = [];
-    if( items.length ) {
-        items.forEach( item => {
-            let config = undefined;
-            if( SourceTypes[item.typeName] ) {
-                config = (new SourceTypes[item.typeName]).config()
-            }
+ApiRouter.get("/data-source-types", (_req, res) => {
+    DataSourceType.find().populate("dataSources")
+    .exec((error, items) => {
+        let responseItems = [];
+        if (items.length) {
+            items.forEach(item => {
+                let config = undefined;
+                if (SourceTypes[item.typeName]) {
+                    config = (new SourceTypes[item.typeName]).config()
+                }
 
-            responseItems.push({
-                _id: item._id,
-                active: item.active || "false",
-                typeName: item.typeName,
-                createdAt: item.createdAt,
-                dataSources: item.dataSources,
-                config
-            });
-        })
-    }
-    res.json({items: responseItems})
+                responseItems.push({
+                    _id: item._id,
+                    active: item.active || "false",
+                    typeName: item.typeName,
+                    createdAt: item.createdAt,
+                    dataSources: item.dataSources,
+                    config
+                });
+            })
+        }
+        res.json({ items: responseItems })
+    });
 });
 
-ApiRouter.get("/data-source-types/:id", async (req, res) => {
-    const item = await DataSourceType.findOne({_id: req.params.id}).populate("dataSources");
-    if( item ) {
-        let typeConfig = undefined;
-        if( SourceTypes[item.typeName] ) {
-            typeConfig = (new SourceTypes[item.typeName]).config()
+ApiRouter.get("/data-source-types/:id", (req, res) => {
+    DataSourceType.findOne({_id: req.params.id}).populate("dataSources")
+    .exec((error, item) => {
+        if (item) {
+            let typeConfig = undefined;
+            if (SourceTypes[item.typeName]) {
+                typeConfig = (new SourceTypes[item.typeName]).config()
+            }
+            res.status(200).json({
+                item: {
+                    _id: item._id,
+                    active: item.active || "false",
+                    typeName: item.typeName,
+                    createdAt: item.createdAt,
+                    dataSources: item.dataSources,
+                    config: typeConfig
+                }
+            });
+            return;
         }
-        res.status(200).json({item: {
-            _id: item._id,
-            active: item.active || "false",
-            typeName: item.typeName,
-            createdAt: item.createdAt,
-            dataSources: item.dataSources,
-            config: typeConfig
-        }});
-        return;
-    }
-    res.status(404).json({item});
+        res.status(404).json({});
+    });
 })
 
-ApiRouter.delete("/data-source-types/:id", async (req, res) => {
-    const item = await DataSourceType.findOne({_id: req.params.id});
-    if( item ) {
-        const dataSources = await DataSource.find({
-            "type": item._id
-        });
-        
-        if( dataSources.length ) {
-            for( const ds of dataSources ) {
-                await ds.delete();
-            }
-        }
+ApiRouter.delete("/data-source-types/:id", (req, res) => {
+    DataSourceType.findOne({_id: req.params.id})
+    .exec(async (error, item) => {
+        if (item) {
+            const dataSources = await DataSource.find({
+                "type": item._id
+            });
 
-        item.delete();
-        res.status(200).end();
-        return;
-    }
-    res.status(404).end();
+            if (dataSources.length) {
+                for (const ds of dataSources) {
+                    await ds.delete();
+                }
+            }
+
+            item.delete();
+            res.status(200).end();
+            return;
+        }
+        res.status(404).end();
+    });
 })
 
 ApiRouter.post("/data-source-types", async (req, res) => {
