@@ -5,7 +5,7 @@ const ProgressPlugin = require('progress-webpack-plugin');
 const MiniCSSExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const webpack = require("webpack");
-const TerserPlugin = require('terser-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin');
 
 const buildServer = (_, argv) => {
     return {
@@ -54,6 +54,33 @@ const buildServer = (_, argv) => {
 
 const buildFrontend = (_, argv) => {
     const mode = argv.mode || "development";
+    
+    const plugins = [
+        new HtmlWebpackPlugin({
+            template: path.resolve(__dirname, "src/frontend/resources/html/index.html"),
+            filename: path.resolve(__dirname, "dist/frontend.html"),
+            inject: false
+        }),
+        new ProgressPlugin({
+            identifier: "Frontend"
+        }),
+        new webpack.ProvidePlugin({
+            React: "react",
+            ReactDOM: "react-dom"
+        }),
+        new MiniCSSExtractPlugin({
+            filename: 'css/[name].css',
+        })
+    ];
+
+    if( mode === "development" ) {
+        plugins.push(
+            new webpack.SourceMapDevToolPlugin({
+                filename: "dev/[name][ext].map"
+            })
+        );
+    }
+
     return {
         mode,
         devtool: mode === "development" ? "eval-cheap-module-source-map" : "nosources-source-map",
@@ -99,26 +126,7 @@ const buildFrontend = (_, argv) => {
             publicPath: "/assets/",
             pathinfo: false,
         },
-        plugins: [
-            new HtmlWebpackPlugin({
-                template: path.resolve(__dirname, "src/frontend/resources/html/index.html"),
-                filename: path.resolve(__dirname, "dist/frontend.html"),
-                inject: false
-            }),
-            new ProgressPlugin({
-                identifier: "Frontend"
-            }),
-            new webpack.ProvidePlugin({
-                React: "react",
-                ReactDOM: "react-dom"
-            }),
-            new MiniCSSExtractPlugin({
-                filename: 'css/[name].css',
-            }),
-            new webpack.SourceMapDevToolPlugin({
-                filename: "dev/[name][ext].map"
-            })
-        ],
+        plugins,
         stats: 'errors-only',
         externals: [
             { 
@@ -135,6 +143,8 @@ const buildFrontend = (_, argv) => {
             minimizer: [
                 mode == "production" ? new CssMinimizerPlugin() : () => {},
                 mode == "production" ? new TerserPlugin({
+                    minify: TerserPlugin.uglifyJsMinify,
+                    extractComments: "all",
                     terserOptions: {
                         compress: {
                             drop_console: true, // remove console statement
@@ -147,8 +157,10 @@ const buildFrontend = (_, argv) => {
 }
 
 const buildVendor = (_, argv) => {
+    const mode = argv.mode || "development";
+
     return {
-        mode: argv.mode || "development",
+        mode,
         devtool: argv.mode === "development" ? "eval-cheap-module-source-map" : undefined,
         target: "web",
         entry: {
@@ -166,9 +178,9 @@ const buildVendor = (_, argv) => {
             }),
         ],
         plugins: [
-            new webpack.SourceMapDevToolPlugin({
+            mode === "development" ? new webpack.SourceMapDevToolPlugin({
                 filename: "dev/[name][ext].map"
-            })
+            }) : () => {}
         ],
         stats: 'errors-only',
     }
