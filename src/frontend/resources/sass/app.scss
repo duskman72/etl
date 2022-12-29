@@ -281,8 +281,7 @@ body {
             @extend .flex;
             @extend .flex-row;
             @extend .align-items-center;
-            @extend .p-1;
-            @extend .ps-0;
+            @extend .p-0;
             max-height: 42px;
             height: 42px;
             background-color: $primary;
@@ -292,6 +291,8 @@ body {
                 outline: none;
                 box-shadow: none;
                 border-radius: 0;
+                min-width: 42px;
+                min-height: 42px;
                 transition: background-color 250ms ease;
 
                 &:hover {
@@ -317,14 +318,15 @@ body {
                 }
 
                 & input {
-                    @extend .p-0;
+                    @extend .ps-0;
                     @extend .form-control;
                     @extend .form-control-sm;
                     outline: 0 !important;
                     box-shadow: none !important;
                     border: 0 none !important;
                     background: transparent !important;
-                    font-size: 9pt;
+                    font-size: 13px;
+                    line-height: 28px;
 
                     &::placeholder {
                         color: $blue-800;
@@ -387,11 +389,8 @@ body {
         }
 
         & .page-content {
-            @extend .flex;
-            @extend .flex-row;
-            @extend .col-12;
-            @extend .p-0;
-            @extend .pt-2;
+            @extend .container-fluid;
+            @extend .p-3;
             height: calc( 100vh - 48px);
             max-height: calc( 100vh - 48px);
 

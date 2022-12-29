@@ -330,7 +330,7 @@ export const CredentialsView = () => {
             </div>
         </div>
 
-        <div className="container-fluid">
+        <>
             <h5 className="flex align-items-center">
                 <LockIcon size={16} className="text-amber-500 flex me-2"/>
                 <span>Credentials</span>
@@ -397,6 +397,6 @@ export const CredentialsView = () => {
                     }
                 </div>
             }
-        </div>
+        </>
     </Page>
 }

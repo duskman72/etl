@@ -4,7 +4,7 @@ import { SearchBox } from "./SearchBox";
  
 export const PageHeader = () => {
     return <header className="page-header">
-        <button className="btn btn-menu h-100 ps-2 pe-2 ms-1" onClick={() => {
+        <button className="btn btn-menu" onClick={() => {
             const canvas = Offcanvas.getOrCreateInstance(document.querySelector("#offcanvasMenu"));
             canvas.show();
         }}>
