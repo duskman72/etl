@@ -213,7 +213,6 @@ export const CredentialsView = () => {
         }
         modal.hide();
 
-        // TODO send values to database
         $.ajax({
             url: "/api/credentials",
             method: "post",
@@ -268,7 +267,13 @@ export const CredentialsView = () => {
     const deleteDisabled = items.filter(item => item.checked).length === 0;
 
     return <Page>
-        <Dialog id="addCredentialsDialog" title="Add Credentials" onOk={onDialogOk}>
+        <Dialog buttons={[
+            {
+                className: "btn-primary",
+                onClick: onDialogOk,
+                children: "Save"
+            }
+        ]} id="addCredentialsDialog" title="Add Credentials">
             {
                 dialogError &&
                 <div className="alert alert-sm alert-danger">

@@ -1,9 +1,12 @@
-import { PropsWithChildren } from "react";
+import { HTMLAttributes, PropsWithChildren } from "react";
+
+export type DialogButton = {
+} & PropsWithChildren<HTMLAttributes<HTMLButtonElement>>
 
 export type DialogProps = {
     id: string;
     title: string;
-    onOk: () => any;
+    buttons: Array<DialogButton>
 }
 
 export const Dialog = (props: PropsWithChildren<DialogProps>) => {
@@ -23,7 +26,27 @@ export const Dialog = (props: PropsWithChildren<DialogProps>) => {
             </div>
             <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" className="btn btn-primary" onClick={props.onOk}>OK</button>
+                {
+                    props.buttons.map( button => {
+                        const classList = ["btn"];
+                        const attributes = {};
+
+                        for(const key in button) {
+                            if( key === "label" ) continue;
+
+                            if( key === "className" ) {
+                                button[key].split(" ").map( cls => {
+                                    classList.push( cls );
+                                });
+                                continue;
+                            }
+
+                            attributes[key] = button[key];
+                        }
+
+                        return <button className={classList.join(" ")} {...attributes}>{button.children}</button>
+                    })
+                }
             </div>
         </div>
     </div>
