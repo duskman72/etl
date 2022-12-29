@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { ApplicationContext } from "../contexts/ApplicationContext";
 import { SearchIcon } from "./icons/SearchIcon";
 

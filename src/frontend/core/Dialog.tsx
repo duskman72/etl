@@ -1,4 +1,5 @@
 import { HTMLAttributes, PropsWithChildren } from "react";
+import { v4 as uuid } from "uuid";
 
 export type DialogButton = {
 } & PropsWithChildren<HTMLAttributes<HTMLButtonElement>>
@@ -44,7 +45,7 @@ export const Dialog = (props: PropsWithChildren<DialogProps>) => {
                             attributes[key] = button[key];
                         }
 
-                        return <button className={classList.join(" ")} {...attributes}>{button.children}</button>
+                        return <button key={uuid()} className={classList.join(" ")} {...attributes}>{button.children}</button>
                     })
                 }
             </div>

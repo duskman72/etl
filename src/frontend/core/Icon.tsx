@@ -23,6 +23,8 @@ export const Icon = (props: PropsWithChildren<IconAttributes>) => {
         }
     })
     return <span className={classNames.join(" ")} onClick={props.onClick} {...filteredProps}>
-        {props.children}
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox={`0 0 16 16`} width={props.size} height={props.size}>
+            {props.children}
+        </svg>
     </span>
 }
