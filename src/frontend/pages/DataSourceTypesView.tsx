@@ -58,8 +58,8 @@ export default () => {
                 "X-Requested-With": "XmlHttpRequest"
             }
         })
-        .then(response => {
-            response.json().then(data => {
+            .then(response => response.json() )
+            .then(data => {
                 setAjaxData(prev => {
                     return {
                         ...prev,
@@ -69,8 +69,7 @@ export default () => {
                         }),
                         loading: false
                     }
-                });
-            })
+            });
         })
         .catch(() => {
             setAjaxData(prev => {

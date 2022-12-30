@@ -136,19 +136,18 @@ export default () => {
                 "X-Requested-With": "XmlHttpRequest"
             }
         })
-        .then( response => {
-            response.json().then( data => {
-                setAjaxData(prev => {
-                    return {
-                        ...prev,
-                        items: data.items.map(item => {
-                            item.checked = false;
-                            return item;
-                        }),
-                        loading: false
-                    }
-                });
-            })
+        .then(response => response.json() )
+        .then( data => {
+            setAjaxData(prev => {
+                return {
+                    ...prev,
+                    items: data.items.map(item => {
+                        item.checked = false;
+                        return item;
+                    }),
+                    loading: false
+                }
+            });
         })
         .catch(() => {
             setAjaxData(prev => {
