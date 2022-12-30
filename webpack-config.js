@@ -141,7 +141,6 @@ const buildFrontend = (_, argv) => {
         externals: [
             { 
                 moment: "moment",
-                jquery: "jQuery",
                 react: "React",
                 "react-dom": "ReactDOM",
                 "react-router-dom": "ReactRouterDOM"

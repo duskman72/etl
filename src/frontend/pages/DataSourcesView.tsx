@@ -21,13 +21,10 @@ import { MessageBar, MessageBarType } from "../core/MessageBar";
 import { CommandBarButton } from "../core/CommandBarButton";
 
 export default () => {
-    const [items, setItems] = useState([]);
     const [dataSourceTypes, setDataSourceTypes] = useState([]);
     const [selectedDataSourceType, setSelectedDataSourceType] = useState(null);
     const [allItemsChecked, setAllItemsChecked] = useState(false);
-    const [loading, setLoading] = useState(false);
     const [dataSourceTypesLoading, setDataSourceTypesLoading] = useState(false);
-    const [error, setError] = useState(false);
     const [dialogError, setDialogError] = useState(null);
     const [wizardStep, setWizardStep] = useState(0);
     const [config, setConfig] = useState({});
@@ -36,50 +33,74 @@ export default () => {
 
     const ctx = useContext(ApplicationContext);
 
+    const [ajaxData, setAjaxData] = useState({
+        items: [],
+        error: false,
+        loading: false
+    });
+
     const refresh = () => {
-        setItems([]);
-        setError(false);
+        if (ajaxData.loading) return;
+        setAjaxData(prev => {
+            return {
+                ...prev,
+                items: [],
+                error: false,
+                loading: true
+            }
+        });
+
         setWizardStep( 0 );
         setAllItemsChecked( false );
-        loadItems();
-    }
 
-    const loadItems = () => {
-        if( loading ) return;
-        setError(false);
-        setLoading(true);
-
-        $.ajax({
-            url: "/api/data-sources"
+        fetch("/api/data-sources", {
+            headers: {
+                "X-Requested-With": "XmlHttpRequest"
+            }
         })
-        .done(response => {
-            setLoading(false);
-            setItems( response.items.map( item => {
-                item.checked = false;
-                return item;
-            }));
+        .then(response => {
+            response.json().then(data => {
+                setAjaxData(prev => {
+                    return {
+                        ...prev,
+                        items: data.items.map(item => {
+                            item.checked = false;
+                            return item;
+                        }),
+                        loading: false
+                    }
+                });
+            })
         })
-        .fail(() => {
-            setLoading(false);
-            setError(true);
+        .catch(() => {
+            setAjaxData(prev => {
+                return {
+                    ...prev,
+                    items: [],
+                    error: true,
+                    loading: false
+                }
+            });
         })
     }
 
     const loadDataSourceTypes = () => {
-        if( loading ) return;
-        setError(false);
+        if (dataSourceTypesLoading ) return;
         setDataSourceTypesLoading(true);
 
-        $.ajax({
-            url: "/api/data-source-types"
+        fetch("/api/data-source-types", {
+            headers: {
+                "X-Requested-With": "XmlHttpRequest"
+            }
         })
-        .done(response => {
-            setDataSourceTypesLoading(false);
-            setDataSourceTypes( response.items );
+        .then(response => {
+            response.json().then(data => {
+                setDataSourceTypesLoading(false);
+                setDataSourceTypes(data.items);
+            })
         })
-        .fail(() => {
+        .catch(() => {
             setDataSourceTypesLoading(false);
-            setError(true);
         })
     }
 
@@ -87,13 +108,10 @@ export default () => {
         const modal = Modal.getOrCreateInstance(document.querySelector("#deleteDialog"));
         modal.hide();
 
-        Promise.all(items.filter(item => item.checked ).map( item => {
+        Promise.all(ajaxData.items.filter(item => item.checked ).map( item => {
             return new Promise((accept, _reject) => {
-                const id = item._id;
-                $.ajax({
-                    url: "/api/data-sources/" + id,
-                    method: "delete"
-                }).then( () => {
+                const url = "/api/data-sources/" + item._id;
+                fetch(url, { method: "delete", headers: { "X-Requested-Width": "XmlHttpRequest" } }).then(() => {
                     accept(null);
                 })
             });
@@ -119,17 +137,26 @@ export default () => {
         const modal = Modal.getInstance(el);
         modal.hide();
 
-        $.ajax({
-            url: "/api/data-sources",
+        fetch("/api/data-sources", {
+            headers: {
+                "X-Requested-With": "XmlHttpRequest",
+                "Content-Type": "application/json; charset=utf-8"
+            },
             method: "post",
-            contentType: "application/json",
-            data: JSON.stringify({...configValues})
+            body: JSON.stringify({ ...configValues })
         })
-        .done(() => {
-           refresh();
+        .then(() => {
+            refresh();
         })
-        .fail(() => {
-            console.log("ERROR!!!")
+        .catch(() => {
+            setAjaxData(prev => {
+                return {
+                    ...prev,
+                    items: [],
+                    error: true,
+                    loading: false
+                }
+            });
         });
     }
 
@@ -151,25 +178,35 @@ export default () => {
 
     const setItemsChecked = (event) => {
         const checked = event.target.checked;
-        const newItems = items.map( i => {
+        const newItems = ajaxData.items.map( i => {
             i.checked = checked;
             return i;
         });
 
-        setItems( newItems );
+        setAjaxData(prev => {
+            return {
+                ...prev,
+                items: newItems
+            }
+        });
         setAllItemsChecked( checked );
     }
 
     const setItemChecked = (event, item) => {
         const checked = event.target.checked;
-        const newItems = items.map( i => {
+        const newItems = ajaxData.items.map( i => {
             if( item._id === i._id )
                 i.checked = checked;
 
             return i;
         });
 
-        setItems( newItems );
+        setAjaxData(prev => {
+            return {
+                ...prev,
+                items: newItems
+            }
+        });
 
         const allChecked = newItems.filter( i => i.checked ).length === newItems.length;
         setAllItemsChecked( allChecked );
@@ -178,7 +215,7 @@ export default () => {
     useEffect(() => {
         ctx.setContext("Data Sources");
         ctx.setSearchBar( true )
-        loadItems();
+        refresh();
     }, []);
 
     const renderField = (field) => {
@@ -201,7 +238,7 @@ export default () => {
         </div>
     }
 
-    const deleteDisabled = items.filter(item => item.checked).length === 0;
+    const deleteDisabled = ajaxData.items.filter(item => item.checked).length === 0;
 
     return <Page>
         <div className={`modal fade`} id="addSourceDialog" tabIndex={1} aria-labelledby="addSourceDialogLabel" aria-hidden="true">
@@ -376,24 +413,24 @@ export default () => {
             </h5>
             <div className="text-secondary fst-italic mb-3">Fetch any kind of data from different sources.</div>
             <div className="command-bar">
-                <CommandBarButton label="Create" disabled={error || loading} icon={<AddIcon />} onClick={showAddDialog} />
+                <CommandBarButton label="Create" disabled={ajaxData.error || ajaxData.loading} icon={<AddIcon />} onClick={showAddDialog} />
                 <CommandBarButton label="Refresh" icon={<RefreshIcon />} onClick={refresh} />
                 <CommandBarButton label="Delete" disabled={deleteDisabled} icon={<TrashIcon />} onClick={showDeleteDialog} />
             </div>
             {
-                loading &&
+                ajaxData.loading &&
                 <MessageBar type={MessageBarType.INFO} message={"Please wait while loading..."} />
             }
             {
-                !loading && error &&
+                !ajaxData.loading && ajaxData.error &&
                 <MessageBar type={MessageBarType.ERROR} message={"Unable to load items"} />
             }
             {
-                !loading && !error && items?.length === 0 &&
+                !ajaxData.loading && !ajaxData.error && ajaxData.items?.length === 0 &&
                 <MessageBar type={MessageBarType.INFO} message={"There are no items in this view"} />
             }
             {
-                items?.length > 0 &&
+                ajaxData.items?.length > 0 &&
                 <>
                     <DataTable headers={[
                         {
@@ -413,7 +450,7 @@ export default () => {
                             className: "col"
                         }
                     ]} items={
-                        items.map( item => {
+                        ajaxData.items.map( item => {
                             return {
                                 selected: item.checked,
                                 columns: [
