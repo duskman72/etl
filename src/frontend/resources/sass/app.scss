@@ -97,11 +97,22 @@ $border-radius: 3px;
     &.alert-info {
         background-color: $blue-50;
         color: $blue-900;
-        border-color: $blue-100;
     }
 
     &.alert-danger {
         background-color: #fde7e9;
+    }
+
+    &.alert-default {
+        background-color: #F3F2F1;
+    }
+
+    &.alert-warning {
+        background-color: #FFF4CE;
+    }
+
+    &.alert-severe-warning {
+        background-color: #FED9CC;
     }
 }
 

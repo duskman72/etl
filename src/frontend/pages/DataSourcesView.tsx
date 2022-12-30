@@ -5,8 +5,7 @@ import {
     useState 
 } from "react";
 import { 
-    AddIcon, 
-    AlertIcon, 
+    AddIcon,
     CredentialsSelect, 
     PackageDependendsIcon, 
     Page, 
@@ -18,6 +17,7 @@ import { Modal } from "bootstrap";
 import { DeleteDialog } from "../core/DeleteDialog";
 import { ApplicationContext } from "../contexts/ApplicationContext";
 import { DataTable } from "../core/DataTable";
+import { MessageBar, MessageBarType } from "../core/MessageBar";
 
 export const DataSourcesView = () => {
     const [items, setItems] = useState([]);
@@ -216,9 +216,7 @@ export const DataSourcesView = () => {
                     <div className="modal-body">
                         {
                             dialogError &&
-                            <div className="alert alert-sm alert-danger">
-                                {dialogError}
-                            </div>
+                            <MessageBar type={MessageBarType.ERROR} message={dialogError} className="alert-sm" />
                         }
                         {
                             !dataSourceTypesLoading && wizardStep === 0 &&
@@ -263,14 +261,10 @@ export const DataSourcesView = () => {
                         }
                         {
                             !dataSourceTypesLoading && wizardStep === 1 &&
-                            <>
-                            {
-                                // render general fields
-                                selectedDataSourceType.config.formFields.general.map( field => {
-                                    return renderField(field);
-                                })
-                            }
-                            </>
+                            // render general fields
+                            selectedDataSourceType.config.formFields.general.map( field => {
+                                return renderField(field);
+                            })
                         }
                     </div>
                     {
@@ -396,18 +390,15 @@ export const DataSourcesView = () => {
             </div>
             {
                 loading &&
-                <div className="alert alert-info">Please wait while loading...</div>
+                <MessageBar type={MessageBarType.INFO} message={"Please wait while loading..."} />
             }
             {
                 !loading && error &&
-                <div className="alert alert-danger flex align-items-center">
-                    <AlertIcon size={14} className="text-danger me-2"/>
-                    <span>Unable to load items.</span>
-                </div>
+                <MessageBar type={MessageBarType.ERROR} message={"Unable to load items"} />
             }
             {
                 !loading && !error && items?.length === 0 &&
-                <div className="alert alert-info">There are no items in this view.</div>
+                <MessageBar type={MessageBarType.INFO} message={"There are no items in this view"} />
             }
             {
                 items?.length > 0 &&
