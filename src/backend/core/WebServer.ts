@@ -5,6 +5,7 @@ import session from 'express-session';
 import {createClient} from 'redis';
 import connectRedis from 'connect-redis';
 import gzip from "compression";
+import metrics from "express-prom-bundle";
 
 export class WebServer {
     private static initialized = false;
@@ -12,7 +13,6 @@ export class WebServer {
     public static start = () => {
         if( WebServer.initialized ) return;
 
-        // PUT OUT REDIS AND SESSION HANDLING
         const RedisStore = connectRedis(session)
         const redisClient = createClient({
             url: "redis://localhost:6379"
@@ -48,7 +48,9 @@ export class WebServer {
             res.set("X-Frame-Options", "SAMEORIGIN");
             res.set("X-Content-Type-Options", "nosniff");
             next();
-        })
+        });
+
+        app.use(metrics({ includeMethod: true, includeStatusCode: true, includePath: true }));
 
         // add routes
         routes.forEach( route => {
