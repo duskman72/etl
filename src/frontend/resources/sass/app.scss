@@ -424,13 +424,14 @@ body {
                 @extend .mb-2;
                 border-bottom: 1px solid $grey-300;
 
-                .command-btn {
+                & .command-btn {
                     @extend .btn;
                     @extend .btn-sm;
                     @extend .flex;
                     @extend .align-items-center;
+                    @extend .border-0;
 
-                    padding: 6px 8px;
+                    padding: 5px 8px;
                     border-radius: 0;
                     text-transform: none;
                     font-size: 9pt !important;
@@ -444,12 +445,8 @@ body {
                         background-color: $grey-200;
                     }
 
-                    &:active, &:focus, &[disabled] {
-                        border-color: transparent;
-                    }
-
                     &:active {
-                        background-color: $grey-300;
+                        background-color: $grey-300 !important;
                     }
 
                     &:not([disabled]) {
