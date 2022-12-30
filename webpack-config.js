@@ -104,9 +104,12 @@ const buildFrontend = (_, argv) => {
                         options: {
                             transpileOnly: mode === "development",
                             compilerOptions: {
-                                module: "es2020",
+                                "skipLibCheck": true,
+                                "module": "es2020",
                                 "removeComments": false,
-                                "sourceMap": mode === "development"
+                                "sourceMap": mode === "development",
+                                "isolatedModules": true,
+                                "noEmit": false,
                             }
                         }
                     }
@@ -139,14 +142,16 @@ const buildFrontend = (_, argv) => {
         },
         plugins,
         stats: 'errors-only',
-        externals: [
+        externals:
             { 
                 moment: "moment",
                 react: "React",
                 "react-dom": "ReactDOM",
-                "react-router-dom": "ReactRouterDOM"
+                "react-router-dom": "ReactRouterDOM",
+                "bootstrap": "bootstrap",
+                "uuid": "uuid"
             }
-        ],
+        ,
         optimization: {
             mangleExports: mode == "production",
             minimize: mode == "production",

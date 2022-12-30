@@ -16,8 +16,8 @@ export const PageNavigation = memo(() => {
         const href = e.currentTarget.getAttribute("href");
         
         const el = document.querySelector("#offcanvasMenu");
-        el.addEventListener("hidden.bs.offcanvas", () => {
-            navigate(href);
+        el.addEventListener("hide.bs.offcanvas", () => {
+            setTimeout(() => navigate(href), 100);
         });
 
         const canvas = Offcanvas.getOrCreateInstance(el);

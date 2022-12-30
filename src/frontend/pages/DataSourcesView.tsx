@@ -20,6 +20,7 @@ import {
 import { v4 as uuid } from "uuid";
 import { Modal } from "bootstrap";
 import { ApplicationContext } from "../contexts/ApplicationContext";
+import moment from "moment";
 
 export default () => {
     const [dataSourceTypes, setDataSourceTypes] = useState([]);

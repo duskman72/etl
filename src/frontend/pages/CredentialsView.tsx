@@ -21,6 +21,7 @@ import {
 } from "../core";
 import { Modal } from "bootstrap";
 import { ApplicationContext } from "../contexts/ApplicationContext";
+import moment from "moment";
 
 const ApikeyConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
     return <>
