@@ -119,7 +119,6 @@ $border-radius: 3px;
 .btn {
     font-weight: 400;
     --bs-btn-font-size: .75rem;
-    //text-transform: uppercase;
     border-radius: $border-radius;
 
     &.btn-sm {
@@ -425,12 +424,21 @@ body {
                 @extend .mb-2;
                 border-bottom: 1px solid $grey-300;
 
-                .btn {
+                .command-btn {
+                    @extend .btn;
+                    @extend .btn-sm;
+                    @extend .flex;
+                    @extend .align-items-center;
+
                     padding: 6px 8px;
                     border-radius: 0;
                     text-transform: none;
                     font-size: 9pt !important;
                     font-weight: 400 !important;
+
+                    & .octicon {
+                        @extend .me-1;
+                    }
 
                     &:hover {
                         background-color: $grey-200;
@@ -442,6 +450,12 @@ body {
 
                     &:active {
                         background-color: $grey-300;
+                    }
+
+                    &:not([disabled]) {
+                        & .octicon {
+                            @extend .text-primary;
+                        }
                     }
 
                     &[disabled] {

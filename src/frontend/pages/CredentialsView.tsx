@@ -19,6 +19,7 @@ import { DeleteDialog } from "../core/DeleteDialog";
 import { ApplicationContext } from "../contexts/ApplicationContext";
 import { DataTable } from "../core/DataTable";
 import { MessageBar, MessageBarType } from "../core/MessageBar";
+import { CommandBarButton } from "../core/CommandBarButton";
 
 const ApikeyConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
     return <>
@@ -332,18 +333,9 @@ export const CredentialsView = () => {
             </h5>
             <div className="text-secondary fst-italic mb-3">Credentials are used to authenticate requests.</div>
             <div className="command-bar">
-                <button className="btn btn-sm btn-default me-2 flex align-items-center" disabled={error || loading} onClick={showAddDialog}>
-                    <AddIcon className={`me-1 ${error || loading ? "" : "text-primary"}`}/>
-                    <span>Create</span>
-                </button>
-                <button className="btn btn-sm btn-default flex align-items-center" onClick={refresh}>
-                    <RefreshIcon className="text-primary me-1"/>
-                    <span>Refresh</span>
-                </button>
-                <button disabled={deleteDisabled} className="btn btn-sm btn-default flex align-items-center" onClick={showDeleteDialog}>
-                    <TrashIcon className={`me-1 ${deleteDisabled ? "" : "text-primary"}`}/>
-                    <span>Delete</span>
-                </button>
+                <CommandBarButton label="Create" disabled={error || loading} icon={<AddIcon />} onClick={showAddDialog} />
+                <CommandBarButton label="Refresh" icon={<RefreshIcon />} onClick={refresh} />
+                <CommandBarButton label="Delete" disabled={deleteDisabled} icon={<TrashIcon />} onClick={showDeleteDialog} />
             </div>
             {
                 loading &&
