@@ -1,4 +1,4 @@
-import { HTMLAttributes, ReactElement } from "react";
+import { HTMLAttributes, ReactElement, memo } from "react";
 
 export interface  CommandBarButton extends  HTMLAttributes<HTMLButtonElement> {
     label: string,
@@ -6,7 +6,7 @@ export interface  CommandBarButton extends  HTMLAttributes<HTMLButtonElement> {
     disabled?: boolean
 };
 
-export const CommandBarButton = (props: CommandBarButton) => {
+export const CommandBarButton = memo((props: CommandBarButton) => {
     const classList = [
         "command-btn" 
     ];
@@ -33,4 +33,4 @@ export const CommandBarButton = (props: CommandBarButton) => {
         {props.icon}
         <span>{props.label}</span>
     </button>
-}
+});

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Offcanvas } from "bootstrap";
 import { ArrowLeftIcon, 
@@ -6,7 +7,7 @@ import { ArrowLeftIcon,
     PackageIcon 
 } from "./icons";
 
-export const PageNavigation = () => {
+export const PageNavigation = memo(() => {
     const navigate = useNavigate();
 
     const closeCanvas = (e) => {
@@ -54,4 +55,4 @@ export const PageNavigation = () => {
             </nav>
         </div>
     </div>
-}
+});

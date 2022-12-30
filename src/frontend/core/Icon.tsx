@@ -1,13 +1,14 @@
 import { 
     HTMLAttributes, 
-    PropsWithChildren 
+    PropsWithChildren,
+    memo 
 } from "react";
 
 export interface IconAttributes extends HTMLAttributes<HTMLElement> {
     size?: number;
 }
 
-export const Icon = (props: PropsWithChildren<IconAttributes>) => {
+export const Icon = memo((props: PropsWithChildren<IconAttributes>) => {
     const classNames = [];
     classNames.push("octicon");
 
@@ -27,4 +28,4 @@ export const Icon = (props: PropsWithChildren<IconAttributes>) => {
             {props.children}
         </svg>
     </span>
-}
+})

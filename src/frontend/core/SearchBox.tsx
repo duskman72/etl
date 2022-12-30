@@ -1,8 +1,8 @@
-import { useContext } from "react";
+import { memo, useContext } from "react";
 import { ApplicationContext } from "../contexts/ApplicationContext";
 import { SearchIcon } from "./icons/SearchIcon";
 
-export const SearchBox = () => {
+export const SearchBox = memo(() => {
     const ctx = useContext(ApplicationContext);
     
     if( !ctx.searchBar ) return null;
@@ -21,4 +21,4 @@ export const SearchBox = () => {
             placeholder={`Search in ${ctx.context}`}
         />
     </div>
-}
+});

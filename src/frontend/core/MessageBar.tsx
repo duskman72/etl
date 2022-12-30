@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react"
+import { memo } from "react"
 
 export enum MessageBarType {
     DEFAULT = "default",
@@ -9,8 +9,8 @@ export enum MessageBarType {
     INFO = "info"
 }
 
-export const MessageBar = (props: {message: string, type: MessageBarType, className?: string}) => {
+export const MessageBar = memo((props: {message: string, type: MessageBarType, className?: string}) => {
     return <div className={`alert alert-${props.type} ${props.className}`}>
         {props.message}
     </div>
-}
+});
