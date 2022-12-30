@@ -20,7 +20,7 @@ import { DataTable } from "../core/DataTable";
 import { MessageBar, MessageBarType } from "../core/MessageBar";
 import { CommandBarButton } from "../core/CommandBarButton";
 
-export const DataSourcesView = () => {
+export default () => {
     const [items, setItems] = useState([]);
     const [dataSourceTypes, setDataSourceTypes] = useState([]);
     const [selectedDataSourceType, setSelectedDataSourceType] = useState(null);

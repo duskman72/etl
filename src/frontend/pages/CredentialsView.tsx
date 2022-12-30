@@ -94,7 +94,7 @@ const OAuthConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
     </>
 }
 
-export const CredentialsView = () => {
+export default () => {
     const [items, setItems] = useState([]);
     const [selectedCredentailsType, setSelectedCredentailsType] = useState(null);
     const [allItemsChecked, setAllItemsChecked] = useState(false);

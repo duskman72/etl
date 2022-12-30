@@ -1,14 +1,15 @@
 import { createRoot } from 'react-dom/client';
+import { ApplicationContext } from './contexts/ApplicationContext';
+import { Suspense, useState } from 'react';
+
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { DataSourceTypesView } from "./pages/DataSourceTypesView";
-import { DataSourcesView } from "./pages/DataSourcesView";
-import { Home } from "./pages/Home";
-import { CredentialsView } from './pages/CredentialsView';
-import { NotFound } from './pages/NotFound';
+const DataSourceTypesView = React.lazy(() => import("./pages/DataSourceTypesView"));
+const DataSourcesView = React.lazy(() => import("./pages/DataSourcesView"));
+const Home = React.lazy(() => import("./pages/Home"));
+const CredentialsView = React.lazy(() => import('./pages/CredentialsView'));
+const NotFound = React.lazy(() => import('./pages/NotFound'));
 
 import "./resources/sass/app.scss"
-import { ApplicationContext } from './contexts/ApplicationContext';
-import { useState } from 'react';
 
 const App = () => {
     const [context, setContext] = useState("home");
@@ -16,15 +17,17 @@ const App = () => {
     const value = { context, setContext, searchBar, setSearchBar };
 
     return <ApplicationContext.Provider value={value}>
-        <BrowserRouter>
-            <Routes>
-                <Route path="/data-source-types" element={<DataSourceTypesView />} />
-                <Route path="/data-sources" element={<DataSourcesView /> } />
-                <Route path="/credentials" element={<CredentialsView /> } />
-                <Route path="/" element={<Home /> } />
-                <Route path="*" element={<NotFound />} />
-            </Routes>
-        </BrowserRouter>
+        <Suspense fallback={<div>Loading...</div>}>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/data-source-types" element={<DataSourceTypesView />} />
+                    <Route path="/data-sources" element={<DataSourcesView /> } />
+                    <Route path="/credentials" element={<CredentialsView /> } />
+                    <Route path="/" element={<Home /> } />
+                    <Route path="*" element={<NotFound />} />
+                </Routes>
+            </BrowserRouter>
+        </Suspense>
     </ApplicationContext.Provider>
 }
 

@@ -8,8 +8,10 @@ const webpack = require("webpack");
 const TerserPlugin = require('terser-webpack-plugin');
 
 const buildServer = (_, argv) => {
+    const mode = argv.mode || "development";
+
     return {
-        mode: argv.mode || "development",
+        mode,
         target: "node",
         entry: {
             server: "./src/backend/index.ts"
@@ -22,7 +24,11 @@ const buildServer = (_, argv) => {
                     {
                         loader: 'ts-loader',
                         options: {
-                            transpileOnly: true
+                            transpileOnly: true,
+                            compilerOptions: {
+                                module: "es6",
+                                "sourceMap": mode === "development"
+                            }
                         }
                     }
                 ],
@@ -96,7 +102,11 @@ const buildFrontend = (_, argv) => {
                     {
                         loader: 'ts-loader',
                         options: {
-                            transpileOnly: true
+                            transpileOnly: mode === "development",
+                            compilerOptions: {
+                                module: "commonjs",
+                                "sourceMap": mode === "development"
+                            }
                         }
                     }
                 ],
@@ -180,7 +190,7 @@ const buildVendor = (_, argv) => {
         plugins: [
             mode === "development" ? new webpack.SourceMapDevToolPlugin({
                 filename: "dev/[name][ext].map"
-            }) : () => {}
+            }) : () => { }
         ],
         stats: 'errors-only',
     }

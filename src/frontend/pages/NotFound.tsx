@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import { ApplicationContext } from "../contexts/ApplicationContext";
 import { AlertIcon, Page } from "../core"
 
-export const NotFound = () => {
+export default () => {
     const ctx = useContext(ApplicationContext);
 
     useEffect(() => {

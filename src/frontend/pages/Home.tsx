@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import { ApplicationContext } from "../contexts/ApplicationContext";
 import { Page } from "../core/Page";
 
-export const Home = () => {
+export default () => {
     const ctx = useContext(ApplicationContext);
     
     useEffect(() => {

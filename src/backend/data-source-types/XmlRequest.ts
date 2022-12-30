@@ -8,14 +8,16 @@ export class XmlRequest extends DataSourceType {
 
     config = () => {
         return {
-            formFields: [
-                {
-                    name: "url",
-                    label: "Url",
-                    type: "input",
-                    required: true
-                }
-            ]
+            formFields: {
+                general: [
+                    {
+                        name: "url",
+                        label: "Url",
+                        type: "input",
+                        required: true
+                    }
+                ]
+            }
         }
     };
 }
