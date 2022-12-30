@@ -89,7 +89,7 @@ const buildFrontend = (_, argv) => {
 
     return {
         mode,
-        devtool: mode === "development" ? "eval-cheap-module-source-map" : "nosources-source-map",
+        devtool: mode === "development" ? "eval-cheap-module-source-map" : undefined,//"nosources-source-map",
         target: "web",
         entry: {
             "app": "./src/frontend/index.tsx"
@@ -104,7 +104,8 @@ const buildFrontend = (_, argv) => {
                         options: {
                             transpileOnly: mode === "development",
                             compilerOptions: {
-                                module: "commonjs",
+                                module: "es2020",
+                                "removeComments": false,
                                 "sourceMap": mode === "development"
                             }
                         }

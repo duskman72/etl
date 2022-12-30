@@ -14,15 +14,16 @@ import {
     PackageIcon, 
     Page, 
     RefreshIcon, 
-    TrashIcon 
+    TrashIcon,
+    DataTable,
+    DeleteDialog,
+    MessageBar,
+    MessageBarType,
+    CommandBarButton
 } from "../core";
 import { Modal } from "bootstrap";
 import { NavLink } from "react-router-dom";
-import { DeleteDialog } from "../core/DeleteDialog";
 import { ApplicationContext } from "../contexts/ApplicationContext";
-import { DataTable } from "../core/DataTable";
-import { MessageBar, MessageBarType } from "../core/MessageBar";
-import { CommandBarButton } from "../core/CommandBarButton";
 
 export default () => {
     const [allItemsChecked, setAllItemsChecked] = useState(false);

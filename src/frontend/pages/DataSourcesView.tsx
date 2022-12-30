@@ -6,19 +6,20 @@ import {
 } from "react";
 import { 
     AddIcon,
-    CredentialsSelect, 
-    PackageDependendsIcon, 
-    Page, 
-    RefreshIcon, 
-    TrashIcon 
+    CredentialsSelect,
+    PackageDependendsIcon,
+    Page,
+    RefreshIcon,
+    TrashIcon,
+    CommandBarButton, 
+    DataTable, 
+    DeleteDialog, 
+    MessageBar, 
+    MessageBarType 
 } from "../core";
 import { v4 as uuid } from "uuid";
 import { Modal } from "bootstrap";
-import { DeleteDialog } from "../core/DeleteDialog";
 import { ApplicationContext } from "../contexts/ApplicationContext";
-import { DataTable } from "../core/DataTable";
-import { MessageBar, MessageBarType } from "../core/MessageBar";
-import { CommandBarButton } from "../core/CommandBarButton";
 
 export default () => {
     const [dataSourceTypes, setDataSourceTypes] = useState([]);

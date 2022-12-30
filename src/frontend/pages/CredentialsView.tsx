@@ -9,17 +9,18 @@ import {
 import { 
     AddIcon,
     Dialog,
-    LockIcon, 
+    LockIcon,
     Page,
-    RefreshIcon, 
-    TrashIcon
+    RefreshIcon,
+    TrashIcon,
+    CommandBarButton, 
+    DataTable, 
+    DeleteDialog, 
+    MessageBar, 
+    MessageBarType 
 } from "../core";
 import { Modal } from "bootstrap";
-import { DeleteDialog } from "../core/DeleteDialog";
 import { ApplicationContext } from "../contexts/ApplicationContext";
-import { DataTable } from "../core/DataTable";
-import { MessageBar, MessageBarType } from "../core/MessageBar";
-import { CommandBarButton } from "../core/CommandBarButton";
 
 const ApikeyConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
     return <>
