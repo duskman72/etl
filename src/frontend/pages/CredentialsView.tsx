@@ -22,17 +22,14 @@ import {
 import { Modal } from "bootstrap";
 import { ApplicationContext } from "../contexts/ApplicationContext";
 import moment from "moment";
+import { FormInput } from "../core/FormInput";
 
 const ApikeyConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
     return <>
-        <div className="flex flex-column mb-3">
-            <label className="form-label mb-1 fw-bolder">API Key Name <span className="text-danger">*</span></label>
-            <input ref={props.refObjects[0]} name="name" data-display-name="API Key Name" data-required={true} type="text" className="form-control form-control-sm" />
-        </div>
-        <div className="flex flex-column mb-3">
-            <label className="form-label mb-1 fw-bolder">API Key <span className="text-danger">*</span></label>
-            <input ref={props.refObjects[1]} type="text" data-display-name="API Key" data-required={true} name="value" className="form-control form-control-sm" />
-        </div>
+
+        <FormInput label="API Key Name" inputRef={props.refObjects[0]} required name="name" />
+        <FormInput label="API Key" inputRef={props.refObjects[1]} required name="value"/>
+
         <div className="flex flex-column mb-3">
             <label className="form-label mb-1 fw-bolder">API Key Location <span className="text-danger">*</span></label>
             <select ref={props.refObjects[2]} defaultValue={""} data-required={true} data-display-name="API Key Location" name="location" className="form-control form-control-sm form-select">
@@ -45,54 +42,28 @@ const ApikeyConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
 }
 
 const BearerConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
-    return <>
-        <div className="flex flex-column mb-3">
-            <label className="form-label mb-1 fw-bolder">JWT / Bearer Token <span className="text-danger">*</span></label>
-            <input ref={props.refObjects[0]} type="text" data-required={true} name="token" data-display-name="JWT / Bearer Token" className="form-control form-control-sm" />
-        </div>
-    </>
+    return <FormInput label="JWT / Bearer Token" required inputRef={props.refObjects[0]} name="token" />
 }
 
 const UserConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
     return <>
-        <div className="flex flex-column mb-3">
-            <label className="form-label mb-1 fw-bolder">Username <span className="text-danger">*</span></label>
-            <input ref={props.refObjects[0]} type="text" data-required={true} name="user" data-display-name="Username" className="form-control form-control-sm" />
-        </div>
-        <div className="flex flex-column mb-3">
-            <label className="form-label mb-1 fw-bolder">Password <span className="text-danger">*</span></label>
-            <input ref={props.refObjects[1]} type="text" data-required={true} name="password" data-display-name="Password" className="form-control form-control-sm" />
-        </div>
+        <FormInput label="User Name" required inputRef={props.refObjects[0]} name="user" />
+        <FormInput label="API Key" inputRef={props.refObjects[1]} name="password" />
     </>
 }
 
 const BasicConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
     return <>
-        <div className="flex flex-column mb-3">
-            <label className="form-label mb-1 fw-bolder">Username <span className="text-danger">*</span></label>
-            <input ref={props.refObjects[0]} type="text" data-required={true} name="user" data-display-name="Username" className="form-control form-control-sm" />
-        </div>
-        <div className="flex flex-column mb-3">
-            <label className="form-label mb-1 fw-bolder">Password <span className="text-danger">*</span></label>
-            <input ref={props.refObjects[1]} type="text" data-required={true} name="password" data-display-name="Password" className="form-control form-control-sm" />
-        </div>
+        <FormInput label="User Name" required inputRef={props.refObjects[0]} name="user" />
+        <FormInput label="Password" inputRef={props.refObjects[1]} name="password" />
     </>
 }
 
 const OAuthConfigFields = (props: {refObjects: Array<RefObject<any>>}) => {
     return <>
-        <div className="flex flex-column mb-3">
-            <label className="form-label mb-1 fw-bolder">OAuth Client ID <span className="text-danger">*</span></label>
-            <input ref={props.refObjects[0]} type="text" data-required={true} name="client-id" data-display-name="OAuth Client ID" className="form-control form-control-sm" />
-        </div>
-        <div className="flex flex-column mb-3">
-            <label className="form-label mb-1 fw-bolder">OAuth Client Secret <span className="text-danger">*</span></label>
-            <input ref={props.refObjects[1]} type="text" data-required={true} name="client-secret" data-display-name="OAuth Client Secret" className="form-control form-control-sm" />
-        </div>
-        <div className="flex flex-column mb-3">
-            <label className="form-label mb-1 fw-bolder">OAuth Token Url <span className="text-danger">*</span></label>
-            <input ref={props.refObjects[2]} type="text" data-required={true} name="token-url" data-display-name="OAuth Token Url" className="form-control form-control-sm" />
-        </div>
+        <FormInput label="OAuth Client ID" required inputRef={props.refObjects[0]} name="client-id" />
+        <FormInput label="OAuth Client Secret" required inputRef={props.refObjects[1]} name="client-secret" />
+        <FormInput label="OAuth Token Url" required inputRef={props.refObjects[2]} name="token-url" />
     </>
 }
 

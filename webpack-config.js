@@ -105,7 +105,7 @@ const buildFrontend = (_, argv) => {
                             transpileOnly: mode === "development",
                             compilerOptions: {
                                 "skipLibCheck": true,
-                                "module": "es2020",
+                                "module": "commonjs",
                                 "removeComments": false,
                                 "sourceMap": mode === "development",
                                 "isolatedModules": true,
