@@ -149,7 +149,9 @@ const buildFrontend = (_, argv) => {
                 "react-dom": "ReactDOM",
                 "react-router-dom": "ReactRouterDOM",
                 "bootstrap": "bootstrap",
-                "uuid": "uuid"
+                "uuid": "uuid",
+                "juery": "jQuery",
+                "$": "jQuery"
             }
         ,
         optimization: {
