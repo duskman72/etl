@@ -2,6 +2,7 @@ export * from "./AddIcon";
 export * from "./AlertIcon";
 export * from "./ArrowLeftIcon";
 export * from "./CheckCircleFillIcon";
+export * from "./ClockIcon";
 export * from "./EditIcon";
 export * from "./HomeIcon";
 export * from "./LockIcon";

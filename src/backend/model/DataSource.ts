@@ -7,7 +7,7 @@ export const DataSourceSchema = new Schema({
     name: String,
     type: {
         type: ObjectId,
-        ref: "DataSourceType"
+        ref: "DataType"
     },
     config: Object,
     active: Boolean,

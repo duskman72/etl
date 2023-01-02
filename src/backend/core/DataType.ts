@@ -1,4 +1,4 @@
-import { FormField } from "../core/FormField";
+import { FormField } from "./FormField";
 
 export type DataSourceConfig = {
     formFields: {
@@ -7,7 +7,7 @@ export type DataSourceConfig = {
     };
 }
 
-export abstract class DataSourceType {
+export abstract class DataType {
     config: () => DataSourceConfig;
     contentType: () => string;
 }

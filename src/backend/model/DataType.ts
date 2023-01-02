@@ -3,7 +3,7 @@ import { DataSourceSchema } from "./DataSource";
 
 const ObjectId = Schema.Types.ObjectId;
 
-export const DataSourceTypeSchema = new Schema({
+export const DataTypeSchema = new Schema({
     id: ObjectId,
     typeName: String,
     active: Boolean,
@@ -17,4 +17,4 @@ export const DataSourceTypeSchema = new Schema({
     }
 });
 
-export const DataSourceType = mongoose.model("DataSourceType", DataSourceTypeSchema);
+export const DataType = mongoose.model("DataType", DataTypeSchema);

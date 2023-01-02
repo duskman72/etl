@@ -1,6 +1,6 @@
-import { DataSourceType } from "../core/DataSourceType";
+import { DataType } from "../core/DataType";
 
-export class JsonRequest extends DataSourceType {
+export class JsonRequest extends DataType {
 
     contentType = () => {
         return "application/json"

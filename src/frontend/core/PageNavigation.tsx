@@ -1,7 +1,9 @@
 import { memo } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Offcanvas } from "bootstrap";
-import { ArrowLeftIcon, 
+import { 
+    ArrowLeftIcon, 
+    ClockIcon,
     LockIcon, 
     PackageDependendsIcon, 
     PackageIcon 
@@ -31,11 +33,26 @@ export const PageNavigation = memo(() => {
         <div className="offcanvas-body p-0">
             <nav className="page-navigation-inner">
                 <ol className="navbar-nav">
-                    <li className="nav-item-header">Import</li>
+
+                    <li className="nav-item-header">Repetitive jobs</li>
                     <li className="nav-item">
-                        <NavLink to="/data-source-types" className="nav-link" onClick={closeCanvas}>
+                        <NavLink to="/data-sources/jobs" className="nav-link" onClick={closeCanvas}>
+                            <ClockIcon size={12} className="text-blue-800 me-2" />
+                            <span>Imports</span>
+                        </NavLink>
+                    </li>
+                    <li className="nav-item mb-3">
+                        <NavLink to="/data-sources/jobs" className="nav-link" onClick={closeCanvas}>
+                            <ClockIcon size={12} className="text-blue-800 me-2" />
+                            <span>Exports</span>
+                        </NavLink>
+                    </li>
+
+                    <li className="nav-item-header">Configuration</li>
+                    <li className="nav-item">
+                        <NavLink to="/data-types" className="nav-link" onClick={closeCanvas}>
                             <PackageIcon size={12} className="text-blue-800 me-2" />
-                            <span>Data Source Types</span>
+                            <span>Data Types</span>
                         </NavLink>
                     </li>
                     <li className="nav-item">
@@ -44,7 +61,6 @@ export const PageNavigation = memo(() => {
                             <span>Data Sources</span>
                         </NavLink>
                     </li>
-                    <li className="nav-item-header mt-3">Security</li>
                     <li className="nav-item">
                         <NavLink to="/credentials" className="nav-link" onClick={closeCanvas}>
                             <LockIcon size={12} className="text-amber-500 me-2" />

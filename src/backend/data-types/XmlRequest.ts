@@ -1,6 +1,6 @@
-import { DataSourceType } from "../core/DataSourceType";
+import { DataType } from "../core/DataType";
 
-export class XmlRequest extends DataSourceType {
+export class XmlRequest extends DataType {
 
     contentType = () => {
         return "application/xml"

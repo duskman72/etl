@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { Credentials, DataSource, DataSourceType } from "../model";
-import SourceTypes from "../data-source-types";
+import { Credentials, DataSource, DataType } from "../model";
+import SourceTypes from "../data-types";
 
 export const ApiRouter = Router();
 
-ApiRouter.get("/data-source-types", (_req, res) => {
-    DataSourceType.find().populate("dataSources")
+ApiRouter.get("/data-types", (_req, res) => {
+    DataType.find().populate("dataSources")
     .exec((error, items) => {
         let responseItems = [];
         if (items.length) {
@@ -29,8 +29,8 @@ ApiRouter.get("/data-source-types", (_req, res) => {
     });
 });
 
-ApiRouter.get("/data-source-types/:id", (req, res) => {
-    DataSourceType.findOne({_id: req.params.id}).populate("dataSources")
+ApiRouter.get("/data-types/:id", (req, res) => {
+    DataType.findOne({_id: req.params.id}).populate("dataSources")
     .exec((error, item) => {
         if (item) {
             let typeConfig = undefined;
@@ -53,8 +53,8 @@ ApiRouter.get("/data-source-types/:id", (req, res) => {
     });
 })
 
-ApiRouter.delete("/data-source-types/:id", (req, res) => {
-    DataSourceType.findOne({_id: req.params.id})
+ApiRouter.delete("/data-types/:id", (req, res) => {
+    DataType.findOne({_id: req.params.id})
     .exec(async (error, item) => {
         if (item) {
             const dataSources = await DataSource.find({
@@ -75,16 +75,16 @@ ApiRouter.delete("/data-source-types/:id", (req, res) => {
     });
 })
 
-ApiRouter.post("/data-source-types", async (req, res) => {
+ApiRouter.post("/data-types", async (req, res) => {
     const typeName = req.body?.typeName;
 
-    let type = await DataSourceType.findOne({typeName});
+    let type = await DataType.findOne({typeName});
     if( type ) {
         res.status(200).end();
         return;
     }
 
-    type = new DataSourceType();
+    type = new DataType();
     type.typeName = typeName;
     await type.save();
 
@@ -95,7 +95,7 @@ ApiRouter.post("/data-source-types", async (req, res) => {
 
 ApiRouter.get("/data-sources", async (_req, res) => {
     const items = await DataSource.find().populate("type");
-    const responseItems = items.map( item => {
+    const responseItems = items.filter(item => item.type).map( item => {
         let type: any = item.type;
         let typeConfig = undefined;
         if( SourceTypes[type?.typeName] ) {
@@ -113,7 +113,7 @@ ApiRouter.get("/data-sources", async (_req, res) => {
                 typeName: type.typeName,
                 createdAt: type.createdAt,
                 config: typeConfig
-            } : null,
+            } : {},
             createdAt: item.createdAt
         }
     })
@@ -124,7 +124,7 @@ ApiRouter.get("/data-sources", async (_req, res) => {
 ApiRouter.delete("/data-sources/:id", async (req, res) => {
     const item = await DataSource.findOne({_id: req.params.id});
     if( item ) {
-        const type = await DataSourceType.findOne({_id: item.type._id});
+        const type = await DataType.findOne({_id: item.type._id});
         if( type ) {
             type.dataSources.pull({_id: item._id});
             await type.save();
@@ -141,7 +141,7 @@ ApiRouter.post("/data-sources", async (req, res) => {
     const name = req?.body?.name;
     const config = req?.body?.config;
 
-    const type = await DataSourceType.findOne({_id: typeId});
+    const type = await DataType.findOne({_id: typeId});
     if( !type ) {
         res.status(404).end();
         return;

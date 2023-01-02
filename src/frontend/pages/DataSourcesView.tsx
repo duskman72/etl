@@ -89,7 +89,7 @@ export default () => {
         if (dataSourceTypesLoading ) return;
         setDataSourceTypesLoading(true);
 
-        fetch("/api/data-source-types", {
+        fetch("/api/data-types", {
             headers: {
                 "X-Requested-With": "XmlHttpRequest"
             }

@@ -53,7 +53,7 @@ export default () => {
             }
         });
 
-        fetch("/api/data-source-types", {
+        fetch("/api/data-types", {
             headers: {
                 "X-Requested-With": "XmlHttpRequest"
             }
@@ -89,7 +89,7 @@ export default () => {
 
         Promise.all(ajaxData.items.filter(item => item.checked ).map( item => {
             return new Promise((accept, _reject) => {
-                const url = "/api/data-source-types/" + item._id;
+                const url = "/api/data-types/" + item._id;
                 fetch(url, { method: "delete", headers: { "X-Requested-Width": "XmlHttpRequest" } }).then(() => {
                     accept(null);
                 })
@@ -120,7 +120,7 @@ export default () => {
         const modal = Modal.getInstance(el);
         modal.hide();
 
-        fetch("/api/data-source-types", {
+        fetch("/api/data-types", {
             headers: {
                 "X-Requested-With": "XmlHttpRequest",
                 "Content-Type": "application/json; charset=utf-8"
@@ -193,7 +193,7 @@ export default () => {
     }
     
     useEffect(() => {
-        ctx.setContext("Data Source Types");
+        ctx.setContext("Data Types");
         ctx.setSearchBar( true )
         refresh();
     }, []);
@@ -206,7 +206,7 @@ export default () => {
             <div className="modal-dialog">
                 <div className="modal-content">
                 <div className="modal-header">
-                    <h6 id="addSourceTypeDialogLabel" className="fs-8">Add Data Source Type</h6>
+                    <h6 id="addSourceTypeDialogLabel" className="fs-8">Add Data Type</h6>
                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div className="modal-body">
@@ -215,7 +215,7 @@ export default () => {
                         <MessageBar type={MessageBarType.ERROR} message={dialogError} className="alert-sm" />
                     }
                     <div className="flex flex-column mb-3">
-                        <label className="form-label mb-1 fw-bolder">Source Type Name <span className="text-danger">*</span></label>
+                        <label className="form-label mb-1 fw-bolder">Type Name <span className="text-danger">*</span></label>
                         <input type="text"  onKeyUp={(e: any) => {
                             const text = e.target.value.trim(); 
                             typeNameRef.current.value = upperFirst(camelCase(text.toUpperCase()));  
@@ -239,7 +239,7 @@ export default () => {
         <>
             <h5 className="flex align-items-center">
                 <PackageIcon size={16} className="text-blue-800 me-2" />
-                <span>Data Source Types</span>
+                <span>Data Types</span>
             </h5>
             <div className="text-secondary fst-italic mb-3">Basic types to connect your sources for fetching data.</div>
             <div className="command-bar">
@@ -276,7 +276,7 @@ export default () => {
                                     className: "col-auto icon"
                                 },
                                 {
-                                    content: <NavLink to={`/data-source-types/${item._id}`} className="text-primary text-decoration-none hover">{item.typeName}</NavLink>,
+                                    content: <NavLink to={`/data-types/${item._id}`} className="text-primary text-decoration-none hover">{item.typeName}</NavLink>,
                                     className: "col"
                                 },
                                 {

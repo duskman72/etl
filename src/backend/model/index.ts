@@ -1,3 +1,3 @@
 export * from "./Credentials";
-export * from "./DataSourceType";
+export * from "./DataType";
 export * from "./DataSource";
