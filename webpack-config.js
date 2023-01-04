@@ -14,7 +14,8 @@ const buildServer = (_, argv) => {
         mode,
         target: "node",
         entry: {
-            server: "./src/backend/index.ts"
+            server: "./src/backend/index.ts",
+            cron: "./src/backend/cron.ts"
         },
         module: {
             rules: [
