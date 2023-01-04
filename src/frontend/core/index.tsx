@@ -4,6 +4,8 @@ export * from "./DataTable";
 export * from "./Dialog";
 export * from "./DeleteDialog";
 export * from "./CommandBarButton";
+export * from "./DateInput";
+export * from "./FormInput";
 export * from "./Icon";
 export * from "./MessageBar";
 export * from "./Page";

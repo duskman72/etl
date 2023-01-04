@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { Credentials, DataSource, DataType } from "../model";
 import SourceTypes from "../data-types";
+import { RepetitiveJob } from "../model/RepetitiveJob";
+import moment from "moment";
 
 export const ApiRouter = Router();
 
@@ -196,87 +198,41 @@ ApiRouter.delete("/credentials/:id", async (req, res) => {
     res.status(404).end();
 })
 
-/*
-ApiRouter.post("/data-sources/types", async (req, res) => {
+/**************************************************************************************/
+
+ApiRouter.get("/jobs", async (req, res) => {
+    const items = await RepetitiveJob.find().populate("source");
+    res.json({ items }).end();
+});
+
+ApiRouter.post("/jobs", async (req, res) => {
     const name = req.body?.name;
-    let groups = await InventoryGroup.find({name});
-    if( groups.length ) {
-        res.status(201).json(groups[0]);
-        return;
+    const repeat = req.body?.repeat;
+    const jobDate = new Date(req.body?.date);
+    const source = req.body?.source;
+
+    const job = new RepetitiveJob();
+    job.name = name;
+    job.source = source;
+    job.jobDate = jobDate;
+    
+    if( repeat ) {
+        job.repeatType = repeat.type;
+        job.repeatValue = repeat.value;
+        job.repeat = true
     }
 
-    const group = new InventoryGroup();
-    group.name = name;
-    await group.save();
-    groups = await InventoryGroup.find({name});
-    if( groups.length ) {
-        res.status(201).json(groups[0]);
+    await job.save();
+
+    res.status(200).json(job).end();
+});
+
+ApiRouter.delete("/jobs/:id", async (req, res) => {
+    const item = await RepetitiveJob.findOne({ _id: req.params.id });
+    if (item) {
+        item.delete();
+        res.status(200).end();
         return;
     }
-
-    // send error to user
+    res.status(404).end();
 })
-*/
-/*
-ApiRouter.get("/inventory/groups/:id", async (req, res) => {
-    const _id = req.params.id || -1;
-    const group = await InventoryGroup.findOne({_id}).populate("children")
-    if( group ) {
-        res.json({group});
-        return;
-    }
-    res.status(404).json({});
-})
-
-ApiRouter.delete("/inventory/groups/:id", async (req, res) => {
-    const group = await InventoryGroup.findOne({_id: req.params.id});
-    if( group ) {
-        group.delete();
-        res.status(200).json({});
-        return;
-    }
-    res.status(404).json({});
-})
-
-ApiRouter.get("/inventory/item-groups/:id", async (req, res) => {
-    const group = await InventoryItemGroup.findOne({_id: req.params.id}).populate("group");
-
-    const parent = await InventoryGroup.findOne({'children._id':group._id})
-    if( group && parent ) {
-        res.json({
-            group: {
-                _id: group._id,
-                name: group.name,
-                parent: {
-                    name: parent.name,
-                    _id: parent._id
-                }
-            }
-        });
-        return;
-    }
-    res.status(404).json({});
-})
-
-ApiRouter.post("/inventory/item-groups", async (req, res) => {
-    const name = req.body?.name;
-    const parent = req.body?.parent;
-
-    let group = await InventoryGroup.findOne({_id: parent}).populate("children");
-    if( !group ) {
-        res.status(404).json({});
-        return;
-    }
-
-    const iGroup = new InventoryItemGroup({
-        name
-    });
-    await iGroup.save();
-
-    group.children.push(iGroup);
-    await group.save();
-
-    res.status(201).json(group);
-    return;
-})
-*/

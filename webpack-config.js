@@ -33,7 +33,7 @@ const buildServer = (_, argv) => {
                     }
                 ],
                 exclude: /node_modules/,
-                include: [path.resolve(__dirname, 'src/backend'),]
+                include: [path.resolve(__dirname, 'src/backend'), path.resolve(__dirname, 'src/shared')]
               },
             ],
         },
@@ -72,7 +72,9 @@ const buildFrontend = (_, argv) => {
         }),
         new webpack.ProvidePlugin({
             React: "react",
-            ReactDOM: "react-dom"
+            ReactDOM: "react-dom",
+            //"$": "jquery",
+            //"jQuery": "jquery"
         }),
         new MiniCSSExtractPlugin({
             filename: 'css/[name].css',
@@ -115,7 +117,7 @@ const buildFrontend = (_, argv) => {
                     }
                 ],
                 exclude: [/node_modules/, path.resolve(__dirname, 'src/backend'),],
-                include: [path.resolve(__dirname, 'src/frontend'),]
+                include: [path.resolve(__dirname, 'src/frontend'), path.resolve(__dirname, 'src/shared'),]
               },
               { 
                 test: /\.scss$/, 
@@ -150,7 +152,8 @@ const buildFrontend = (_, argv) => {
                 "react-router-dom": "ReactRouterDOM",
                 "bootstrap": "bootstrap",
                 "uuid": "uuid",
-                "juery": "jQuery",
+                "jquery": "jQuery",
+                //"bootstrap-datepicker": "window.datepicker",
                 "$": "jQuery"
             }
         ,

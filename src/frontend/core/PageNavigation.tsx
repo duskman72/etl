@@ -34,17 +34,11 @@ export const PageNavigation = memo(() => {
             <nav className="page-navigation-inner">
                 <ol className="navbar-nav">
 
-                    <li className="nav-item-header">Repetitive jobs</li>
-                    <li className="nav-item">
-                        <NavLink to="/data-sources/jobs" className="nav-link" onClick={closeCanvas}>
+                    <li className="nav-item-header">Repetitive Jobs</li>
+                    <li className="nav-item mb-3">
+                        <NavLink to="/jobs" className="nav-link" onClick={closeCanvas}>
                             <ClockIcon size={12} className="text-blue-800 me-2" />
                             <span>Imports</span>
-                        </NavLink>
-                    </li>
-                    <li className="nav-item mb-3">
-                        <NavLink to="/data-sources/jobs" className="nav-link" onClick={closeCanvas}>
-                            <ClockIcon size={12} className="text-blue-800 me-2" />
-                            <span>Exports</span>
                         </NavLink>
                     </li>
 

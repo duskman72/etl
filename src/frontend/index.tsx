@@ -8,6 +8,7 @@ const DataSourcesView = React.lazy(() => import("./pages/DataSourcesView"));
 const Home = React.lazy(() => import("./pages/Home"));
 const CredentialsView = React.lazy(() => import('./pages/CredentialsView'));
 const NotFound = React.lazy(() => import('./pages/NotFound'));
+const RepetitiveJobsView = React.lazy(() => import('./pages/RepetitiveJobsView'));
 
 import "./resources/sass/app.scss"
 
@@ -20,6 +21,7 @@ const App = () => {
         <Suspense fallback={<div>Loading...</div>}>
             <BrowserRouter>
                 <Routes>
+                    <Route path="/jobs" element={<RepetitiveJobsView />} />
                     <Route path="/data-types" element={<DataTypesView />} />
                     <Route path="/data-sources" element={<DataSourcesView /> } />
                     <Route path="/credentials" element={<CredentialsView /> } />

@@ -39,6 +39,7 @@ $primary: #0078D4;
 $secondary: $grey-500;
 
 @import "bootstrap";
+@import "bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css";
 //@import "select2-component/dist/select2.css";
 @import "breadcrumb";
 @import 'material-icons/iconfont/material-icons.css';
@@ -167,6 +168,8 @@ $border-radius: 3px;
     border-radius: 0;
     font-weight: 400;
     font-size: 0.8rem;
+    max-height: 30px;
+    height: 30px;
 
     &:not(:focus) {
         border-color: $grey-600;
@@ -209,6 +212,37 @@ $border-radius: 3px;
             background-color: darken($primary, 10%);
         }
     }
+}
+
+.no-text-wrap {
+    white-space: nowrap;
+}
+
+.datepicker {
+    @extend .p-2;
+    font-size: 8pt;
+    box-shadow: 0 0 8px rgba(0, 0, 0, .25);
+    border: 0;
+    border-radius: 2px;
+
+    & .day.active,
+    & .month.active,
+    & .year.active {
+        background-image: none !important;
+        background-color: $primary !important;
+
+        &:hover {
+            background-image: none !important;
+        }
+    }
+}
+
+.form-select {
+    @extend .p-0;
+    @extend .ps-2;
+    @extend .pe-2;
+    height: 30px;
+    max-height: 30px;
 }
 
 body {
