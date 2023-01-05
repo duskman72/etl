@@ -202,7 +202,7 @@ ApiRouter.delete("/credentials/:id", async (req, res) => {
 
 ApiRouter.get("/jobs", async (req, res) => {
     const items = await RepetitiveJob.find().populate("source");
-    res.json({ items }).end();
+    res.json({ items: items.filter( item => item.source) }).end();
 });
 
 ApiRouter.post("/jobs", async (req, res) => {

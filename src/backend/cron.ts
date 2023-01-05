@@ -1,16 +1,17 @@
 import mongoose from "mongoose";
 import * as models from "./model";
-import moment from "moment";
+import { Logger } from "../shared/Logger";
 
-const log = (message) => {
-    console.log(`${moment(new Date()).format("YYYY-MM-DD HH:mm")} [CRON]: ${message}`);
+const getJobs = async () => {
+    const jobs = (await models.RepetitiveJob.find({ repeat: true }).populate("source")).filter( job => job.source );
+    Logger.info(`found ${jobs.length} repeatable jobs`);
 }
 
 mongoose.set('strictQuery', true);
 mongoose.connect("mongodb://localhost/inventory").then( () => {
-    log("Connected to mongodb database");
-    setInterval(async () => {
-        const jobs = await models.RepetitiveJob.find({ repeat: true }).populate("source");
-        log(`found ${jobs.length} repeatable jobs`);
+    Logger.info("Connected to mongodb database");
+    getJobs();
+    setInterval(() => {
+        getJobs();
     }, 1000 * 60);
 })

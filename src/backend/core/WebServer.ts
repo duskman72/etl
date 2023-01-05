@@ -6,6 +6,7 @@ import {createClient} from 'redis';
 import connectRedis from 'connect-redis';
 import gzip from "compression";
 import metrics from "express-prom-bundle";
+import { Logger } from "../../shared/Logger";
 
 export class WebServer {
     private static initialized = false;
@@ -65,7 +66,7 @@ export class WebServer {
 
         WebServer.initialized = true;
         app.listen(80, () => {
-            console.log("Server started")
+            Logger.info("Server started at port 80 (TBD make configurable!)")
         })
     }
 

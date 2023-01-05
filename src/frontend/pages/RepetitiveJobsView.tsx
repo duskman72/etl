@@ -1,5 +1,5 @@
 import { Modal } from "bootstrap";
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { isAutoAccessorPropertyDeclaration } from "typescript";
 import { ApplicationContext } from "../contexts/ApplicationContext";
 import { 
@@ -43,6 +43,7 @@ export default () => {
     const refresh = () => {
         if (ajaxData.loading ) return;
 
+        setAllItemsChecked( false );
         setAjaxData( prev => {
             return {
                 ...prev,
@@ -50,7 +51,7 @@ export default () => {
                 error: false,
                 loading: true
             }
-        })
+        });
 
         fetch("/api/jobs", {
             headers: {
@@ -83,7 +84,12 @@ export default () => {
         ctx.setSearchBar( true );
         refresh();
 
-        setInterval(() => {setTimer(moment().toDate().getTime()); console.log( "tick" )}, 1000);
+        setInterval(() => {
+            if( ajaxData.items.length ) {
+                setTimer(moment().toDate().getTime()); 
+                console.log("tick")
+            }
+        }, 1000);
     }, []);
 
     const showAddDialog = () => {
@@ -104,6 +110,9 @@ export default () => {
         if( repeatValueRef.current )
             repeatValueRef.current.value = "";
 
+        if ( sourceRef.current )
+            sourceRef.current.selectedIndex = 0;
+
         const el = document.querySelector("#addJobDialog");
         const modal = Modal.getOrCreateInstance(el);
         modal.show();
@@ -121,7 +130,7 @@ export default () => {
         const modal = Modal.getOrCreateInstance(el);
 
         const data: any = {};
-        data.source = sourceRef.current.value;
+        data.source = sourceRef.current?.value;
         data.name = nameRef.current.value.trim();
         data.date = dateRef.current.value.trim() + "T" + hourRef.current.value + ":00.000Z";
         data.repeat = null;
@@ -192,17 +201,24 @@ export default () => {
 
     const deleteDisabled = ajaxData.items.filter(item => item.checked).length === 0;
 
-    const hours = []
     const quarters = ["00", "15", "30", "45"];
-    for( let i = 0; i < 24; i++) {
-        let hour = `${i}`;
-        if( hour.length === 1 )
-            hour = `0${hour}`;
 
-        quarters.forEach( q => {
-            hours.push(`${hour}:${q}`)
-        })
-    }
+    const h = [];
+    const hours = useMemo(() => {
+        if( h.length > 0 ) return h;
+        
+        for (let i = 0; i < 24; i++) {
+            let hour = `${i}`;
+            if (hour.length === 1)
+                hour = `0${hour}`;
+
+            quarters.forEach(q => {
+                h.push(`${hour}:${q}`)
+            })
+        }
+
+        return h;
+    }, [h]);
 
     const setItemsChecked = (event) => {
         const checked = event.target.checked;
