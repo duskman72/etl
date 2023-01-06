@@ -1,11 +1,11 @@
-import express from "express";
-import bodyParser from "body-parser";
+import koa from "koa";
+import bodyParser from "koa-body";
+import compress from "koa-compress";
+import zlib from "zlib";
+import session from "koa-session";
+import etag from "koa-etag";
+import RedisStore from "koa-redis-session";
 import { routes } from "../config/routes";
-import session from 'express-session';
-import {createClient} from 'redis';
-import connectRedis from 'connect-redis';
-import gzip from "compression";
-import metrics from "express-prom-bundle";
 import { Logger } from "../../shared/Logger";
 
 export class WebServer {
@@ -14,59 +14,51 @@ export class WebServer {
     public static start = () => {
         if( WebServer.initialized ) return;
 
-        const RedisStore = connectRedis(session)
-        const redisClient = createClient({
-            url: "redis://localhost:6379"
-        })
+        const app = new koa();
+        app.use(bodyParser());
+        app.use(etag());
+        app.use(compress({
+            threshold: 1024,
+            gzip: {
+                flush: zlib.constants.Z_SYNC_FLUSH
+            },
+            deflate: {
+                flush: zlib.constants.Z_SYNC_FLUSH,
+            },
+            br: false
+        }));
 
-        redisClient.on('error', function (err) {
-            throw new Error('Could not establish a connection with redis. ' + err);
+        app.use(async (ctx, next) => {
+            ctx.set("Referrer-Policy", "no-referrer");
+            ctx.set("Strict-Transport-Security", "max-age=15552000; includeSubDomains");
+            ctx.set("X-Frame-Options", "SAMEORIGIN");
+            ctx.set("X-Content-Type-Options", "nosniff");
+            await next();
         });
-
-        redisClient.connect()
-
-        const app = express();
-        app.use(bodyParser.urlencoded({extended: true}));
-        app.use(bodyParser.json());
-        app.use(gzip());
-        app.disable("x-powered-by");
 
         app.use(session({
-            store: new RedisStore({ client: redisClient }),
-            secret: 'secret$%^134',
-            resave: false,
-            saveUninitialized: false,
-            cookie: {
-                secure: false, // if true only transmit cookie over https
-                httpOnly: false, // if true prevent client side JS from reading the cookie 
-                maxAge: 1000 * 60 * 10 // session max age in miliseconds
-            }
-        }))
+            key: 'koa:sess',
+            maxAge: 86400000,
 
-        app.use((_req, res, next) => {
-            res.set("Referrer-Policy", "no-referrer");
-            res.set("Strict-Transport-Security", "max-age=15552000; includeSubDomains");
-            res.set("X-Frame-Options", "SAMEORIGIN");
-            res.set("X-Content-Type-Options", "nosniff");
-            next();
-        });
+            store: new RedisStore({
+                port: 6379,
+                host: '127.0.0.1',
+                family: 4,
+                db: 0,
+                // See: https://github.com/luin/ioredis/blob/HEAD/API.md#new_Redis
+                onError: (e) => console.log(e), // Optional. it will be called when redis client emits an error event.
+            }),
+        }, app));
 
-        app.use(metrics({ includeMethod: true, includeStatusCode: true, includePath: true }));
-
-        // add routes
-        routes.forEach( route => {
-            app.use(route.prefix, route.router);
+        routes.forEach(route => {
+            app.use(route.router.routes()).use(route.router.allowedMethods());;
         })
+       
+        Logger.info("Starting WebServer...");
 
-        app.use((req, res, next) => {
-            res.status( 404 ).end();
-        });
-
-        // start server
-
-        WebServer.initialized = true;
         app.listen(80, () => {
-            Logger.info("Server started at port 80 (TBD make configurable!)")
+            WebServer.initialized = true;
+            Logger.info("WebServer started at port 80 (TBD make configurable!)")
         })
     }
 

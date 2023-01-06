@@ -10,4 +10,5 @@ export type DataSourceConfig = {
 export abstract class DataType {
     config: () => DataSourceConfig;
     contentType: () => string;
+    exec:(config: object) => Promise<any>;
 }

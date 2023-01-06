@@ -27,7 +27,7 @@ const buildServer = (_, argv) => {
                         options: {
                             transpileOnly: true,
                             compilerOptions: {
-                                module: "es6",
+                                module: "es2020",
                                 "sourceMap": mode === "development"
                             }
                         }
@@ -108,7 +108,7 @@ const buildFrontend = (_, argv) => {
                             transpileOnly: mode === "development",
                             compilerOptions: {
                                 "skipLibCheck": true,
-                                "module": "commonjs",
+                                "module": "es2020",
                                 "removeComments": false,
                                 "sourceMap": mode === "development",
                                 "isolatedModules": true,

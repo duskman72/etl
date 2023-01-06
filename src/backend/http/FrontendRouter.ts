@@ -1,8 +1,15 @@
-import { Router } from "express";
+import Router from "koa-router";
 import fs from "fs";
 
-export const FrontendRouter = Router();
-FrontendRouter.use("/*", (_req, res) => {
-    const html = fs.readFileSync(__dirname + "/frontend.html", "utf-8");
-    res.send(html).end();
+export const FrontendRouter = new Router();
+const cache = {};
+const htmlFile = __dirname + "/frontend.html";
+
+FrontendRouter.all("/:all*", (ctx) => {
+    if( !cache[htmlFile] ) {
+        cache[htmlFile] = fs.readFileSync(__dirname + "/frontend.html", "utf-8");
+    }
+
+    ctx.set("Content-Type", "text/html");
+    ctx.body = cache[htmlFile];
 })

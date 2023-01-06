@@ -55,7 +55,7 @@ export default () => {
 
         fetch("/api/jobs", {
             headers: {
-                "X-Requested-With": "XmlHttpRequest"
+                "X-Requested-With": "XmlHttpRequest",
             }
         })
         .then( response => response.json())
@@ -351,6 +351,10 @@ export default () => {
                     className: "col"
                 },
                 {
+                    content: "Last Execution",
+                    className: "col"
+                },
+                {
                     content: "Repeat",
                     className: "col"
                 },
@@ -377,6 +381,10 @@ export default () => {
                             },
                             {
                                 content: moment(item.jobDate).format("YYYY-MM-DD HH:mm"),
+                                className: "col"
+                            },
+                            {
+                                content: moment(item.lastExec).format("YYYY-MM-DD HH:mm"),
                                 className: "col"
                             },
                             {

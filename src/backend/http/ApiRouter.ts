@@ -1,88 +1,83 @@
-import { Router } from "express";
+import Router from "koa-router";
 import { Credentials, DataSource, DataType } from "../model";
 import SourceTypes from "../data-types";
 import { RepetitiveJob } from "../model/RepetitiveJob";
-import moment from "moment";
 
-export const ApiRouter = Router();
-
-ApiRouter.get("/data-types", (_req, res) => {
-    DataType.find().populate("dataSources")
-    .exec((error, items) => {
-        let responseItems = [];
-        if (items.length) {
-            items.forEach(item => {
-                let config = undefined;
-                if (SourceTypes[item.typeName]) {
-                    config = (new SourceTypes[item.typeName]).config()
-                }
-
-                responseItems.push({
-                    _id: item._id,
-                    active: item.active || "false",
-                    typeName: item.typeName,
-                    createdAt: item.createdAt,
-                    dataSources: item.dataSources,
-                    config
-                });
-            })
-        }
-        res.json({ items: responseItems })
-    });
+const ApiRouterConfig = new Router({
+    prefix: "/api"
 });
 
-ApiRouter.get("/data-types/:id", (req, res) => {
-    DataType.findOne({_id: req.params.id}).populate("dataSources")
-    .exec((error, item) => {
-        if (item) {
-            let typeConfig = undefined;
+ApiRouterConfig.get("/data-types", async (ctx, next) => {
+    let responseItems = [];
+    const items = await DataType.find().populate("dataSources")
+    if (items?.length) {
+        items.forEach(item => {
+            let config = undefined;
             if (SourceTypes[item.typeName]) {
-                typeConfig = (new SourceTypes[item.typeName]).config()
-            }
-            res.status(200).json({
-                item: {
-                    _id: item._id,
-                    active: item.active || "false",
-                    typeName: item.typeName,
-                    createdAt: item.createdAt,
-                    dataSources: item.dataSources,
-                    config: typeConfig
-                }
-            });
-            return;
-        }
-        res.status(404).json({});
-    });
-})
-
-ApiRouter.delete("/data-types/:id", (req, res) => {
-    DataType.findOne({_id: req.params.id})
-    .exec(async (error, item) => {
-        if (item) {
-            const dataSources = await DataSource.find({
-                "type": item._id
-            });
-
-            if (dataSources.length) {
-                for (const ds of dataSources) {
-                    await ds.delete();
-                }
+                config = (new SourceTypes[item.typeName]).config()
             }
 
-            item.delete();
-            res.status(200).end();
-            return;
+            responseItems.push({
+                _id: item._id,
+                active: item.active || "false",
+                typeName: item.typeName,
+                createdAt: item.createdAt,
+                dataSources: item.dataSources,
+                config
+            });
+        })
+    }
+    ctx.body = { items: responseItems }
+});
+
+ApiRouterConfig.get("/data-types/:id", async (ctx) => {
+    const item = await DataType.findOne({_id: ctx.params.id}).populate("dataSources");
+    if (item) {
+        let typeConfig = undefined;
+        if (SourceTypes[item.typeName]) {
+            typeConfig = (new SourceTypes[item.typeName]).config()
         }
-        res.status(404).end();
-    });
+        ctx.body = {
+            item: {
+                _id: item._id,
+                active: item.active || "false",
+                typeName: item.typeName,
+                createdAt: item.createdAt,
+                dataSources: item.dataSources,
+                config: typeConfig
+            }
+        }
+        return;
+    }
+    ctx.status = 404;
 })
 
-ApiRouter.post("/data-types", async (req, res) => {
-    const typeName = req.body?.typeName;
+ApiRouterConfig.delete("/data-types/:id", async (ctx) => {
+    const item = await DataType.findOne({_id: ctx.params.id});
+    if (item) {
+        const dataSources = await DataSource.find({
+            "type": item._id
+        });
+
+        if (dataSources.length) {
+            for (const ds of dataSources) {
+                await ds.delete();
+            }
+        }
+
+        item.delete();
+        ctx.status = 200;
+        return;
+    }
+    ctx.status = 404;
+})
+
+ApiRouterConfig.post("/data-types", async (ctx) => {
+    const typeName = ctx.body?.typeName;
 
     let type = await DataType.findOne({typeName});
     if( type ) {
-        res.status(200).end();
+        ctx.status = 200;
         return;
     }
 
@@ -90,12 +85,12 @@ ApiRouter.post("/data-types", async (req, res) => {
     type.typeName = typeName;
     await type.save();
 
-    res.status(201).end();
+    ctx.status = 201;
 });
 
 /************************************************************************/
 
-ApiRouter.get("/data-sources", async (_req, res) => {
+ApiRouterConfig.get("/data-sources", async (ctx) => {
     const items = await DataSource.find().populate("type");
     const responseItems = items.filter(item => item.type).map( item => {
         let type: any = item.type;
@@ -120,11 +115,11 @@ ApiRouter.get("/data-sources", async (_req, res) => {
         }
     })
 
-    res.json({items: responseItems})
+    ctx.body = {items: responseItems};
 });
 
-ApiRouter.delete("/data-sources/:id", async (req, res) => {
-    const item = await DataSource.findOne({_id: req.params.id});
+ApiRouterConfig.delete("/data-sources/:id", async (ctx) => {
+    const item = await DataSource.findOne({_id: ctx.params.id});
     if( item ) {
         const type = await DataType.findOne({_id: item.type._id});
         if( type ) {
@@ -132,20 +127,20 @@ ApiRouter.delete("/data-sources/:id", async (req, res) => {
             await type.save();
         }
         await item.delete();
-        res.status(200).end();
+        ctx.status = 200;
         return;
     }
-    res.status(404).end();
+    ctx.status = 404;
 });
 
-ApiRouter.post("/data-sources", async (req, res) => {
-    const typeId = req.body?.typeId;
-    const name = req?.body?.name;
-    const config = req?.body?.config;
+ApiRouterConfig.post("/data-sources", async (ctx) => {
+    const typeId = ctx.body?.typeId;
+    const name = ctx?.body?.name;
+    const config = ctx?.body?.config;
 
     const type = await DataType.findOne({_id: typeId});
     if( !type ) {
-        res.status(404).end();
+        ctx.status = 404;
         return;
     }
 
@@ -158,24 +153,25 @@ ApiRouter.post("/data-sources", async (req, res) => {
     type.dataSources.push( source );
     await type.save();
 
-    res.status(201).end();
+    ctx.status = 201;
 });
 
 /************************************************************************/
 
-ApiRouter.get("/credentials", async (req, res) => {
+ApiRouterConfig.get("/credentials", async (ctx) => {
     const items = await Credentials.find();
-    res.json({items}).end();
+    ctx.body = { items };
 });
 
-ApiRouter.post("/credentials", async (req, res) => {
-    const name = req.body?.name;
-    const config = req.body?.config;
-    const type = req.body?.type;
+ApiRouterConfig.post("/credentials", async (ctx) => {
+    const name = ctx.body?.name;
+    const config = ctx.body?.config;
+    const type = ctx.body?.type;
 
     let cred = await Credentials.findOne({name});
     if( cred ) {
-        res.status(400).json({error: {message: "Credentials with name already exists"}});
+        ctx.status = 400;
+        ctx.body = {error: {message: "Credentials with name already exists"}};
         return;
     }
 
@@ -185,31 +181,31 @@ ApiRouter.post("/credentials", async (req, res) => {
     cred.type = type;
     await cred.save();
 
-    res.status(201).json( cred );
+    ctx.status = 201;
 })
 
-ApiRouter.delete("/credentials/:id", async (req, res) => {
-    const item = await Credentials.findOne({_id: req.params.id});
+ApiRouterConfig.delete("/credentials/:id", async (ctx) => {
+    const item = await Credentials.findOne({_id: ctx.params.id});
     if( item ) {
         item.delete();
-        res.status(200).end();
+        ctx.status = 200;
         return;
     }
-    res.status(404).end();
+    ctx.status = 404;
 })
 
 /**************************************************************************************/
 
-ApiRouter.get("/jobs", async (req, res) => {
+ApiRouterConfig.get("/jobs", async (ctx) => {
     const items = await RepetitiveJob.find().populate("source");
-    res.json({ items: items.filter( item => item.source) }).end();
+    ctx.body = {items: items.filter(item => item.source)}
 });
 
-ApiRouter.post("/jobs", async (req, res) => {
-    const name = req.body?.name;
-    const repeat = req.body?.repeat;
-    const jobDate = new Date(req.body?.date);
-    const source = req.body?.source;
+ApiRouterConfig.post("/jobs", async (ctx) => {
+    const name = ctx.body?.name;
+    const repeat = ctx.body?.repeat;
+    const jobDate = new Date(ctx.body?.date);
+    const source = ctx.body?.source;
 
     const job = new RepetitiveJob();
     job.name = name;
@@ -224,15 +220,17 @@ ApiRouter.post("/jobs", async (req, res) => {
 
     await job.save();
 
-    res.status(200).json(job).end();
+    ctx.status = 201;
 });
 
-ApiRouter.delete("/jobs/:id", async (req, res) => {
-    const item = await RepetitiveJob.findOne({ _id: req.params.id });
+ApiRouterConfig.delete("/jobs/:id", async (ctx) => {
+    const item = await RepetitiveJob.findOne({ _id: ctx.params.id });
     if (item) {
         item.delete();
-        res.status(200).end();
+        ctx.status = 200;
         return;
     }
-    res.status(404).end();
+    ctx.status = 404;
 })
+
+export const ApiRouter = ApiRouterConfig;
