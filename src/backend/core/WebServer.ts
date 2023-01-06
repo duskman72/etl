@@ -3,7 +3,6 @@ import bodyParser from "koa-body";
 import compress from "koa-compress";
 import zlib from "zlib";
 import session from "koa-session";
-import etag from "koa-etag";
 import RedisStore from "koa-redis-session";
 import { routes } from "../config/routes";
 import { Logger } from "../../shared/Logger";
@@ -16,7 +15,6 @@ export class WebServer {
 
         const app = new koa();
         app.use(bodyParser());
-        app.use(etag());
         app.use(compress({
             threshold: 1024,
             gzip: {
