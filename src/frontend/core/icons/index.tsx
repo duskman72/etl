@@ -12,3 +12,4 @@ export * from "./RefreshIcon";
 export * from "./SearchIcon";
 export * from "./ThreeBarsIcon";
 export * from "./TrashIcon";
+export * from "./CheckIcon";

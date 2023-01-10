@@ -237,6 +237,62 @@ ApiRouterConfig.post("/jobs", async (ctx) => {
     ctx.status = 201;
 });
 
+ApiRouterConfig.get("/jobs/:id", async (ctx) => {
+    const item = await RepetitiveJob.findOne({ _id: ctx.params.id })
+        .populate(
+            {
+                path: "source",
+                select: {
+                    name: 1,
+                    config: 1,
+                    _id: 0,
+                    type: 1
+                },
+                populate: {
+                    path: "type",
+                    select: {
+                        _id: 0,
+                        typeName: 1
+                    }
+                }
+            }
+        );
+        
+    ctx.status = item ? 200 : 404;
+    ctx.body = {item};
+})
+
+ApiRouterConfig.post("/jobs/:id", async (ctx) => {
+    const name = ctx.request.body?.name;
+
+    const item = await RepetitiveJob.findOne({ _id: ctx.params.id })
+        .populate(
+            {
+                path: "source",
+                select: {
+                    name: 1,
+                    config: 1,
+                    _id: 0,
+                    type: 1
+                },
+                populate: {
+                    path: "type",
+                    select: {
+                        _id: 0,
+                        typeName: 1
+                    }
+                }
+            }
+        );
+
+    if( item && name ) {
+        item.name = name;
+        await item.save();    
+    }
+    ctx.status = item ? 200 : 404;
+    ctx.body = { item };
+})
+
 ApiRouterConfig.delete("/jobs/:id", async (ctx) => {
     const item = await RepetitiveJob.findOne({ _id: ctx.params.id });
     if (item) {

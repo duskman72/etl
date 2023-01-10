@@ -11,6 +11,7 @@ const NotFound = React.lazy(() => import('./pages/NotFound'));
 const RepetitiveJobsView = React.lazy(() => import('./pages/RepetitiveJobsView'));
 
 import "./resources/sass/app.scss"
+import { RepetitiveJob } from './pages/RepetitiveJob';
 
 const App = () => {
     const [context, setContext] = useState("home");
@@ -21,6 +22,7 @@ const App = () => {
         <Suspense fallback={<div>Loading...</div>}>
             <BrowserRouter>
                 <Routes>
+                    <Route path="/jobs/:id" element={<RepetitiveJob />} />
                     <Route path="/jobs" element={<RepetitiveJobsView />} />
                     <Route path="/data-types" element={<DataTypesView />} />
                     <Route path="/data-sources" element={<DataSourcesView /> } />

@@ -1,5 +1,6 @@
 import { Modal } from "bootstrap";
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { NavLink } from "react-router-dom";
 import { isAutoAccessorPropertyDeclaration } from "typescript";
 import { ApplicationContext } from "../contexts/ApplicationContext";
 import { 
@@ -372,7 +373,7 @@ export default () => {
                                 className: "col-auto icon"
                             },
                             {
-                                content: item.name,
+                                content: <NavLink to={`/jobs/${item._id}`} className="text-primary text-decoration-none hover">{item.name}</NavLink>,
                                 className: "col"
                             },
                             {
