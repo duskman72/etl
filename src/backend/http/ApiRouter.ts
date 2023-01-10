@@ -197,8 +197,22 @@ ApiRouterConfig.delete("/credentials/:id", async (ctx) => {
 /**************************************************************************************/
 
 ApiRouterConfig.get("/jobs", async (ctx) => {
-    const items = await RepetitiveJob.find().populate("source");
-    ctx.body = {items: items.filter(item => item.source)}
+    const { limit, page, pageable } = ctx.state.paginate;
+    
+    const count = await RepetitiveJob.count();
+    const total = Math.ceil(count / limit);
+
+    const items = await RepetitiveJob.find()
+    .populate("source")
+    .limit(limit * 1)
+    .skip((page - 1) * limit);
+
+    const data = {
+        items: items.filter(item => item.source ),
+        _meta: pageable(total)
+    }
+
+    ctx.body = data;
 });
 
 ApiRouterConfig.post("/jobs", async (ctx) => {

@@ -6,6 +6,7 @@ import session from "koa-session";
 import RedisStore from "koa-redis-session";
 import { routes } from "../config/routes";
 import { Logger } from "../../shared/Logger";
+import pagination from "koa-pagination-v2";
 
 export class WebServer {
     private static initialized = false;
@@ -48,6 +49,8 @@ export class WebServer {
             }),
         }, app));
 
+        app.use(pagination({ defaultLimit: 20, maximumLimit: 50 }));
+        
         routes.forEach(route => {
             app.use(route.router.routes()).use(route.router.allowedMethods());;
         })

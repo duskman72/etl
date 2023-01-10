@@ -63,5 +63,5 @@ mongoose.connect("mongodb://localhost/inventory").then( () => {
     getJobs();
     setInterval(() => {
         getJobs();
-    }, 1000 * 30);
+    }, 1000 * 60);
 })
