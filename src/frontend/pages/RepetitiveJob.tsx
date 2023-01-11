@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeftIcon, CheckIcon, ClockIcon, CommandBarButton, EditIcon, MessageBar, MessageBarType, Page, RefreshIcon } from "../core"
 
-export const RepetitiveJob = () => {
+export default () => {
     const {id} = useParams();
     const [editTitle, setEditTitle] = useState(false);
+    const [timer, setTimer] = useState(undefined);
+    const [intervalValue, setIntervalValue] = useState(0);
     const [ajaxData, setAjaxData] = useState({
         loading: false,
         loaded: false,
@@ -70,6 +72,13 @@ export const RepetitiveJob = () => {
             titleRef.current.select();
         }
 
+        if( !timer ) {
+            const interval = setInterval(() => {
+                setIntervalValue(new Date().getTime());
+            }, 1000 * 5);
+            setTimer( interval );
+        }
+
     }, [editTitle]);
 
     const updateTitle = () => {
@@ -108,6 +117,7 @@ export const RepetitiveJob = () => {
     }
 
     return <Page>
+        <input type="hidden" defaultValue={intervalValue} />
         {
             ajaxData.loading &&
             <>

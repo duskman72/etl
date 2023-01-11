@@ -9,9 +9,9 @@ const Home = React.lazy(() => import("./pages/Home"));
 const CredentialsView = React.lazy(() => import('./pages/CredentialsView'));
 const NotFound = React.lazy(() => import('./pages/NotFound'));
 const RepetitiveJobsView = React.lazy(() => import('./pages/RepetitiveJobsView'));
+const RepetitiveJob = React.lazy(() => import('./pages/RepetitiveJob'));
 
 import "./resources/sass/app.scss"
-import { RepetitiveJob } from './pages/RepetitiveJob';
 
 const App = () => {
     const [context, setContext] = useState("home");

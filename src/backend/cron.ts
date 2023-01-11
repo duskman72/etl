@@ -6,6 +6,9 @@ import moment from "moment";
 import DataTypes from "./data-types";
 import { DataType } from "./core/DataType";
 
+// TODO 
+// remove async here, because its blocking other jobs at runtime
+
 const getJobs = async () => {
     const jobs = (await models.RepetitiveJob.find({ repeat: true })
         .populate(
@@ -36,7 +39,7 @@ const getJobs = async () => {
         const value = job.repeatValue;
 
         const diff = lastExec.add(value, rtype);
-        if( diff < now ) {
+        if( diff <= now ) {
             Logger.info(`Executing import job "${job.name}" for DataSource "${job.source.name}" of DataType "${job.source.type.typeName}": last execution = ${moment(job.lastExec).format("YYYY-MM-DD HH:mm")}`)
             // TODO spawn child process to execute job
             // use base64 encoded data as start arg
@@ -44,6 +47,7 @@ const getJobs = async () => {
             const sc = job.source.config;
             const type = job.source.type.typeName;
             const dt: DataType = new DataTypes[type]();
+
             dt.exec( sc )
             .then( content => {
                 Logger.info(JSON.stringify(content));

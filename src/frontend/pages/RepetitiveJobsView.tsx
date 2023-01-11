@@ -33,7 +33,8 @@ export default () => {
     const [repeatJob, setRepeatJob] = useState(false);
     const [allItemsChecked, setAllItemsChecked] = useState(false);
 
-    const [timer, setTimer] = useState(0);
+    const [timer, setTimer] = useState(undefined);
+    const [intervalValue, setIntervalValue] = useState(0);
 
     const [ajaxData, setAjaxData] = useState({
         items: [],
@@ -85,12 +86,12 @@ export default () => {
         ctx.setSearchBar( true );
         refresh();
 
-        setInterval(() => {
-            if( ajaxData.items.length ) {
-                setTimer(moment().toDate().getTime()); 
-                console.log("tick")
-            }
-        }, 1000);
+        if (!timer) {
+            const interval = setInterval(() => {
+                setIntervalValue(new Date().getTime());
+            }, 1000 * 5);
+            setTimer(interval);
+        }
     }, []);
 
     const showAddDialog = () => {
@@ -258,7 +259,7 @@ export default () => {
     }
 
     return <Page>
-        <input type="hidden" value={timer} />
+        <input type="hidden" defaultValue={intervalValue} />
         <div className={`modal fade`} id="addJobDialog" tabIndex={1} aria-labelledby="addJobDialogLabel" aria-hidden="true">
             <div className="modal-dialog">
                 <div className="modal-content">
