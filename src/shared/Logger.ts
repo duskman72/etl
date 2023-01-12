@@ -37,7 +37,6 @@ export class Logger {
             console.log(entry);
         }
 
-        console.log("TAGS: ", tags)
         this.fluentd.emit(this.opts.context, {time, level, context: this.opts.context, message, tags });
     }
 
