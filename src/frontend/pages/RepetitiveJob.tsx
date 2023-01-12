@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeftIcon, CheckIcon, ClockIcon, CommandBarButton, EditIcon, MessageBar, MessageBarType, Page, RefreshIcon } from "../core"
+import { ApplicationContext } from "../contexts/ApplicationContext";
+import { ArrowLeftIcon, CheckIcon, ClockIcon, CommandBarButton, EditIcon, ListIcon, MessageBar, MessageBarType, Page, RefreshIcon } from "../core"
 
 export default () => {
     const {id} = useParams();
@@ -16,6 +17,11 @@ export default () => {
 
     const navigate = useNavigate();
     const titleRef = useRef<HTMLInputElement>();
+    const ctx = useContext(ApplicationContext);
+
+    const viewLogs = () => {
+        navigate(`/jobs/${id}/logs`);
+    }
 
     const refresh = () => {
         setAjaxData(prev => {
@@ -175,6 +181,7 @@ export default () => {
                 </h5>
                 <div className="command-bar">
                     <CommandBarButton label="Refresh" icon={<RefreshIcon />} onClick={refresh} />
+                    <CommandBarButton label="View Logs" icon={<ListIcon />} onClick={viewLogs} />
                 </div>
                 <table className="table w-100 border-1 border border-grey-100">
                     <tbody>
