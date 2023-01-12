@@ -9,7 +9,7 @@ import { Logger } from "../../shared/Logger";
 import pagination from "koa-pagination-v2";
 
 const logger = Logger.create({
-    context: "http-service",
+    context: "WebServer",
     console: true
 });
 
@@ -54,7 +54,7 @@ export class WebServer {
             }),
         }, app));
 
-        app.use(pagination({ defaultLimit: 20, maximumLimit: 50 }));
+        app.use(pagination({ defaultLimit: 5, maximumLimit: 5 }));
         
         routes.forEach(route => {
             app.use(route.router.routes()).use(route.router.allowedMethods());;

@@ -9,11 +9,62 @@ export default () => {
         loading: false,
         loaded: false,
         error: null,
-        items: null
+        items: null,
+        currentPage: 0,
+        pages: 0,
+        total: 0
     });
 
     const navigate = useNavigate();
     const ctx = useContext(ApplicationContext);
+
+    const fetchPage = (page) => {
+
+        fetch("/api/jobs/" + id + "/logs?page=" + page, {
+            headers: {
+                "X-Requested-With": "XmlHttpRequest"
+            }
+        })
+        .then(async response => {
+            if (!response.ok) {
+                throw new Error();
+            }
+            return await response.json()
+        })
+        .then((data) => {
+            const sorted: any = data.items;
+            sorted.sort((a: any, b: any) => {
+                return moment(b.time).toDate().getTime() - moment(a.time).toDate().getTime();
+            })
+
+            setAjaxData(prev => {
+                return {
+                    ...prev,
+                    loaded: true,
+                    loading: false,
+                    items: sorted,
+                    error: null,
+                    currentPage: data._meta.currentPage,
+                    pages: data._meta.pages,
+                    total: data._meta.total
+                }
+            });
+        })
+        .catch(() => {
+            setAjaxData(prev => {
+                return {
+                    ...prev,
+                    loaded: true,
+                    loading: false,
+                    items: [],
+                    currentPage: 0,
+                    pages: 0,
+                    total: 0,
+                    error: "Unable to load item " + id
+                }
+            });
+        });
+    }
 
     const refresh = () => {
         setAjaxData(prev => {
@@ -22,47 +73,14 @@ export default () => {
                 loaded: false,
                 loading: true,
                 error: false,
-                items: []
+                items: [],
+                currentPage: 1,
+                pages: 0,
+                total: 0
             }
         });
 
-        fetch("/api/jobs/" + id + "/logs", {
-            headers: {
-                "X-Requested-With": "XmlHttpRequest"
-            }
-        })
-            .then(async response => {
-                if (!response.ok) {
-                    throw new Error();
-                }
-                return await response.json()
-            })
-            .then((data) => {
-                const sorted: any = data.items;
-                sorted.sort( (a: any, b: any) => {
-                    return moment(b.time).toDate().getTime() - moment(a.time).toDate().getTime();
-                })
-
-                setAjaxData(prev => {
-                    return {
-                        ...prev,
-                        loaded: true,
-                        loading: false,
-                        items: sorted
-                    }
-                });
-            })
-            .catch(() => {
-                setAjaxData(prev => {
-                    return {
-                        ...prev,
-                        loaded: true,
-                        loading: false,
-                        items: [],
-                        error: "Unable to load item " + id
-                    }
-                });
-            });
+        fetchPage(1);
     }
 
     useEffect(() => {
@@ -76,7 +94,7 @@ export default () => {
     }, []);
 
     return <Page>
-        <h5 className="flex align-items-center mb-2">
+        <h5 className="flex align-items-center mb-3">
             <ArrowLeftIcon size={16} className="me-2 cursor-pointer" onClick={() => navigate(`/jobs/${id}`)} />
             <ListIcon size={16} className="text-blue-800 me-2" />
             <span>Repetitive Job Logs</span>
@@ -126,6 +144,34 @@ export default () => {
                         })
                     }
                 />
+                {
+                    ajaxData.total > 1 &&
+                    <nav className="mt-3">
+                        <ul className="pagination pagination-sm justify-content-start">
+                            {
+                                ajaxData.currentPage > 1 &&
+                                <li className="page-item" onClick={() => fetchPage(ajaxData.currentPage - 1)}>
+                                    <span className="page-link cursor-pointer" aria-disabled="true">Previous</span>
+                                </li>
+                            }
+                            {
+                                Array(ajaxData.total).fill(1).map((e, i) => {
+                                    return <li onClick={() => {
+                                        if (ajaxData.currentPage === i + 1 ) return;
+
+                                        fetchPage(i+1);
+                                    }} className={`page-item cursor-pointer ${ajaxData.currentPage === i + 1 ? "active" : ""}`}><span className="page-link">{i + 1}</span></li>
+                                })
+                            }
+                            {
+                                ajaxData.currentPage < ajaxData.total &&
+                                    <li className="page-item" onClick={() => fetchPage(ajaxData.currentPage + 1)}>
+                                        <span className="page-link cursor-pointer" aria-disabled="true">Next</span>
+                                    </li>
+                            }
+                        </ul>
+                    </nav>
+                }
             </>
         }
     </Page>

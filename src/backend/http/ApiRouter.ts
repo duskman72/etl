@@ -3,7 +3,6 @@ import { Credentials, DataSource, DataType } from "../model";
 import SourceTypes from "../data-types";
 import { RepetitiveJob } from "../model/RepetitiveJob";
 import { LogEntry } from "../model/LogEntry";
-import mongoose from "mongoose";
 
 const ApiRouterConfig = new Router({
     prefix: "/api"
@@ -11,7 +10,16 @@ const ApiRouterConfig = new Router({
 
 ApiRouterConfig.get("/data-types", async (ctx, next) => {
     let responseItems = [];
-    const items = await DataType.find().populate("dataSources")
+    const { limit, page, pageable } = ctx.state.paginate;
+
+    const count = await DataType.count();
+    const total = Math.ceil(count / limit);
+
+    const items = await DataType.find()
+    .populate("dataSources")
+    .limit(limit * 1)
+    .skip((page - 1) * limit);
+
     if (items?.length) {
         items.forEach(item => {
             let config = undefined;
@@ -29,7 +37,7 @@ ApiRouterConfig.get("/data-types", async (ctx, next) => {
             });
         })
     }
-    ctx.body = { items: responseItems }
+    ctx.body = { items: responseItems, _meta: pageable(total) }
 });
 
 ApiRouterConfig.get("/data-types/:id", async (ctx) => {
@@ -93,7 +101,16 @@ ApiRouterConfig.post("/data-types", async (ctx) => {
 /************************************************************************/
 
 ApiRouterConfig.get("/data-sources", async (ctx) => {
-    const items = await DataSource.find().populate("type");
+    const { limit, page, pageable } = ctx.state.paginate;
+
+    const count = await DataSource.count();
+    const total = Math.ceil(count / limit);
+
+    const items = await DataSource.find()
+    .populate("type")
+    .limit(limit * 1)
+    .skip((page - 1) * limit);
+
     const responseItems = items.filter(item => item.type).map( item => {
         let type: any = item.type;
         let typeConfig = undefined;
@@ -117,7 +134,7 @@ ApiRouterConfig.get("/data-sources", async (ctx) => {
         }
     })
 
-    ctx.body = {items: responseItems};
+    ctx.body = { items: responseItems, _meta: pageable(total) };
 });
 
 ApiRouterConfig.delete("/data-sources/:id", async (ctx) => {
@@ -161,8 +178,17 @@ ApiRouterConfig.post("/data-sources", async (ctx) => {
 /************************************************************************/
 
 ApiRouterConfig.get("/credentials", async (ctx) => {
-    const items = await Credentials.find();
-    ctx.body = { items };
+    const { limit, page, pageable } = ctx.state.paginate;
+
+    const count = await Credentials.count();
+    const total = Math.ceil(count / limit);
+
+    const items = await Credentials
+    .find()
+    .limit(limit * 1)
+    .skip((page - 1) * limit);
+
+    ctx.body = { items, _meta: pageable(total) };
 });
 
 ApiRouterConfig.post("/credentials", async (ctx) => {
@@ -240,8 +266,18 @@ ApiRouterConfig.post("/jobs", async (ctx) => {
 });
 
 ApiRouterConfig.get("/jobs/:id/logs", async (ctx) => {
-    const items = await LogEntry.find({context: "cron", tags: ctx.params.id});
-    ctx.body = { items };
+    const { limit, page, pageable } = ctx.state.paginate;
+
+    const count = await LogEntry.count({ context: "cron", tags: ctx.params.id });
+    const total = Math.ceil(count / limit);
+
+    const items = await LogEntry
+    .find({context: "cron", tags: ctx.params.id})
+    .sort({"time": -1})
+    .limit(limit * 1)
+    .skip((page - 1) * limit);
+    
+    ctx.body = { items, _meta: pageable(total) };
 });
 
 ApiRouterConfig.get("/jobs/:id", async (ctx) => {

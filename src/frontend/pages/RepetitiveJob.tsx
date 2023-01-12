@@ -160,7 +160,7 @@ export default () => {
                         editTitle &&
                         <input type="text" ref={titleRef} className="form-control form-control-sm w-25" defaultValue={ajaxData.item.name} />
                     }
-                    <button className="btn btn-sm bg-grey-200 p-2 ms-2 border-0" onClick={() => {
+                    <button className="btn btn-sm bg-grey-200 p-1 ms-2 border-0" onClick={() => {
                         setEditTitle(prev => {
                             const newValue = !prev;
                             if( !newValue ) {
@@ -171,11 +171,11 @@ export default () => {
                     }}>
                         {
                             !editTitle &&
-                            <EditIcon size={18} />
+                            <EditIcon size={16} />
                         }
                         {
                             editTitle &&
-                            <CheckIcon size={18} className="text-success"/>
+                            <CheckIcon size={16} className="text-success"/>
                         }
                     </button>
                 </h5>
