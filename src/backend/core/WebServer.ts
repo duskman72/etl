@@ -8,6 +8,11 @@ import { routes } from "../config/routes";
 import { Logger } from "../../shared/Logger";
 import pagination from "koa-pagination-v2";
 
+const logger = Logger.create({
+    context: "http-service",
+    console: true
+});
+
 export class WebServer {
     private static initialized = false;
 
@@ -55,11 +60,11 @@ export class WebServer {
             app.use(route.router.routes()).use(route.router.allowedMethods());;
         })
        
-        Logger.info("Starting WebServer...");
+        logger.info("Starting WebServer...");
 
         app.listen(80, () => {
             WebServer.initialized = true;
-            Logger.info("WebServer started at port 80 (TBD make configurable!)")
+            logger.info("WebServer started at port 80 (TBD make configurable!)")
         })
     }
 

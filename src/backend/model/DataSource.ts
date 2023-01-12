@@ -1,5 +1,7 @@
 import mongoose, { Schema } from "mongoose";
+import db from "../config/databases";
 
+mongoose.set('strictQuery', true);
 const ObjectId = Schema.Types.ObjectId;
 
 export const DataSourceSchema = new Schema({
@@ -17,4 +19,4 @@ export const DataSourceSchema = new Schema({
     }
 });
 
-export const DataSource = mongoose.model("DataSource", DataSourceSchema);
+export const DataSource = db.inventory.model("DataSource", DataSourceSchema);

@@ -1,5 +1,7 @@
 import mongoose, { Schema } from "mongoose";
+import db from "../config/databases";
 
+mongoose.set('strictQuery', true);
 const ObjectId = Schema.Types.ObjectId;
 
 export enum SupportedCredentialsTypes {
@@ -27,4 +29,4 @@ export const CredentialsSchema = new Schema({
     }
 });
 
-export const Credentials = mongoose.model("Credentials", CredentialsSchema);
+export const Credentials = db.inventory.model("Credentials", CredentialsSchema);

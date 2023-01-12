@@ -1,16 +1,20 @@
-import mongoose from "mongoose";
-import * as models from "./model";
+import { RepetitiveJob } from "./model";
 import { Logger } from "../shared/Logger";
 import moment from "moment";
 
 import DataTypes from "./data-types";
 import { DataType } from "./core/DataType";
 
+const logger = Logger.create({
+    context: "cron",
+    console: true
+});
+
 // TODO 
 // remove async here, because its blocking other jobs at runtime
 
 const getJobs = async () => {
-    const jobs = (await models.RepetitiveJob.find({ repeat: true })
+    const jobs = (await RepetitiveJob.find({ repeat: true })
         .populate(
             {
                 path:"source",
@@ -30,7 +34,6 @@ const getJobs = async () => {
             }
     )).filter( (job: any) => job.source && job.source.type);
     
-    Logger.info(`found ${jobs.length} repeatable jobs`);
     jobs.map( (job: any) => {
         const lastExec = moment(job.lastExec);
         const now = moment();
@@ -40,7 +43,7 @@ const getJobs = async () => {
 
         const diff = lastExec.add(value, rtype);
         if( diff <= now ) {
-            Logger.info(`Executing import job "${job.name}" for DataSource "${job.source.name}" of DataType "${job.source.type.typeName}": last execution = ${moment(job.lastExec).format("YYYY-MM-DD HH:mm")}`)
+            logger.info(`Executing import job "${job.name}"`, [job._id.toString()])
             // TODO spawn child process to execute job
             // use base64 encoded data as start arg
 
@@ -50,22 +53,19 @@ const getJobs = async () => {
 
             dt.exec( sc )
             .then( content => {
-                Logger.info(JSON.stringify(content));
+                //logger.info(JSON.stringify(content));
                 job.lastExec = moment(new Date()).toDate();
                 job.save();
             })
             .catch(e => {
-                Logger.err( JSON.stringify(e) );
+                logger.err( JSON.stringify(e) );
             })
         }
     });
 }
 
-mongoose.set('strictQuery', true);
-mongoose.connect("mongodb://localhost/inventory").then( () => {
-    Logger.info("Connected to mongodb database");
+getJobs();
+setInterval(() => {
+    logger.info("--- Tick ---")
     getJobs();
-    setInterval(() => {
-        getJobs();
-    }, 1000 * 60);
-})
+}, 1000 * 60);

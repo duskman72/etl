@@ -1,5 +1,7 @@
 import mongoose, { Schema } from "mongoose";
+import db from "../config/databases";
 
+mongoose.set('strictQuery', true);
 const ObjectId = Schema.Types.ObjectId;
 
 export const RepetitiveJobSchema = new Schema({
@@ -33,4 +35,4 @@ export const RepetitiveJobSchema = new Schema({
     }
 });
 
-export const RepetitiveJob = mongoose.model("RepetitiveJob", RepetitiveJobSchema);
+export const RepetitiveJob = db.inventory.model("RepetitiveJob", RepetitiveJobSchema);

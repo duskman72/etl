@@ -2,6 +2,8 @@ import Router from "koa-router";
 import { Credentials, DataSource, DataType } from "../model";
 import SourceTypes from "../data-types";
 import { RepetitiveJob } from "../model/RepetitiveJob";
+import { LogEntry } from "../model/LogEntry";
+import mongoose from "mongoose";
 
 const ApiRouterConfig = new Router({
     prefix: "/api"
@@ -73,7 +75,7 @@ ApiRouterConfig.delete("/data-types/:id", async (ctx) => {
 })
 
 ApiRouterConfig.post("/data-types", async (ctx) => {
-    const typeName = ctx.body?.typeName;
+    const typeName = ctx.request.body?.typeName;
 
     let type = await DataType.findOne({typeName});
     if( type ) {
@@ -134,9 +136,9 @@ ApiRouterConfig.delete("/data-sources/:id", async (ctx) => {
 });
 
 ApiRouterConfig.post("/data-sources", async (ctx) => {
-    const typeId = ctx.body?.typeId;
-    const name = ctx?.body?.name;
-    const config = ctx?.body?.config;
+    const typeId = ctx.request.body?.typeId;
+    const name = ctx.request.body?.name;
+    const config = ctx.request.body?.config;
 
     const type = await DataType.findOne({_id: typeId});
     if( !type ) {
@@ -164,9 +166,9 @@ ApiRouterConfig.get("/credentials", async (ctx) => {
 });
 
 ApiRouterConfig.post("/credentials", async (ctx) => {
-    const name = ctx.body?.name;
-    const config = ctx.body?.config;
-    const type = ctx.body?.type;
+    const name = ctx.request.body?.name;
+    const config = ctx.request.body?.config;
+    const type = ctx.request.body?.type;
 
     let cred = await Credentials.findOne({name});
     if( cred ) {
@@ -216,10 +218,10 @@ ApiRouterConfig.get("/jobs", async (ctx) => {
 });
 
 ApiRouterConfig.post("/jobs", async (ctx) => {
-    const name = ctx.body?.name;
-    const repeat = ctx.body?.repeat;
-    const jobDate = new Date(ctx.body?.date);
-    const source = ctx.body?.source;
+    const name = ctx.request.body?.name;
+    const repeat = ctx.request.body?.repeat;
+    const jobDate = new Date(ctx.request.body?.date);
+    const source = ctx.request.body?.source;
 
     const job = new RepetitiveJob();
     job.name = name;
@@ -235,6 +237,11 @@ ApiRouterConfig.post("/jobs", async (ctx) => {
     await job.save();
 
     ctx.status = 201;
+});
+
+ApiRouterConfig.get("/jobs/:id/logs", async (ctx) => {
+    const items = await LogEntry.find({context: "cron", tags: ctx.params.id});
+    ctx.body = { items };
 });
 
 ApiRouterConfig.get("/jobs/:id", async (ctx) => {
